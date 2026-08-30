@@ -73,7 +73,9 @@ h1 em{font-style:italic;color:var(--hydro)}
 }
 .viewer.open{display:grid}
 .plate{width:min(940px,100%)}
-.plate .art{aspect-ratio:3/2;border-radius:3px;position:relative;overflow:hidden}
+.plate .art{border-radius:3px;position:relative;overflow:hidden;display:flex;justify-content:center;align-items:center;background:var(--ground)}
+.plate .art.bos{aspect-ratio:3/2}
+.plate .art img{max-width:100%;max-height:72vh;display:block;object-fit:contain}
 .plate .art::after{content:"";position:absolute;inset:0;background-image:var(--grain);mix-blend-mode:overlay;opacity:.45}
 .plate h3{font-family:"Instrument Serif",serif;font-weight:400;font-size:27px;margin:20px 0 8px}
 .exif{display:flex;flex-wrap:wrap;gap:8px 22px;padding-top:14px;border-top:1px solid var(--line);margin-top:14px}
@@ -303,7 +305,16 @@ const places = [...new Set(frames.map(f=>f.place.split(',').pop().trim()))].sort
 const viewer = document.getElementById('viewer');
 function openViewer(i){
   const f = frames[i]; activeIdx = i;
-  document.getElementById('v-art').style.cssText = art(f);
+  const sahne = document.getElementById('v-art');
+  if(f.src){
+    sahne.className = 'art';
+    sahne.style.cssText = '';
+    sahne.innerHTML = `<img src="${f.src}" alt="${(f.title||'').replace(/"/g,'&quot;')}">`;
+  }else{
+    sahne.className = 'art bos';
+    sahne.innerHTML = '';
+    sahne.style.cssText = art(f);
+  }
   document.getElementById('v-title').textContent = f.title;
   document.getElementById('v-place').textContent = `${f.place} — ${trDate(f.date)}`;
   document.getElementById('v-exif').innerHTML =
