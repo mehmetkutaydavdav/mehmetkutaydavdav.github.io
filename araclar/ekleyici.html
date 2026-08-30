@@ -28,6 +28,9 @@ h1 em{font-style:italic;color:var(--hydro)}
 .lede{color:#BECAC6;line-height:1.65;max-width:56ch;margin:0 0 34px}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 
+.bar{position:sticky;top:var(--nav-h);z-index:500;background:rgba(7,16,15,.94);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  margin:0 -26px 8px;padding:14px 26px;}
 .bag{display:flex;align-items:flex-start;gap:18px;justify-content:space-between;align-items:center;flex-wrap:wrap;
   background:var(--ground);border:1px solid var(--line);border-radius:4px;padding:18px 20px;margin-bottom:16px}
 .bag strong{font-family:"Instrument Serif",serif;font-weight:400;font-size:20px}
@@ -149,26 +152,28 @@ code{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--hydro)}
   </div>
   <input type="file" id="file" accept="image/jpeg" multiple class="hidden">
 
+  <div class="bar hidden" id="bar">
+    <button class="btn filled" id="save">Siteye kaydet</button>
+    <button class="btn" id="dl">Küçültülmüş fotoğrafları indir</button>
+    <button class="btn hidden" id="copy">Kodu kopyala</button>
+    <button class="btn" id="yerdoldur">Eksik ülke/şehri bul</button>
+    <button class="btn" id="clear">Listeyi temizle</button>
+    <span class="mono" id="status"></span>
+  </div>
+
   <div class="cards" id="cards"></div>
 
   <h2 id="kayitli-baslik" class="hidden">Sitedeki kareler</h2>
   <div class="cards" id="kayitli-cards"></div>
 
-  <div class="bar hidden" id="bar">
-    <button class="btn filled" id="save">Siteye kaydet</button>
-    <button class="btn" id="copy">Kodu kopyala</button>
-    <button class="btn" id="dl">Küçültülmüş fotoğrafları indir</button>
-    <button class="btn" id="yerdoldur">Eksik ülke/şehri bul</button>
-    <button class="btn" id="clear">Listeyi temizle</button>
-    <span class="mono" id="status"></span>
-  </div>
   <textarea id="out" class="hidden" spellcheck="false" readonly></textarea>
+
 
   <h2>Sonra ne yapacaksın</h2>
   <div id="ne-yapmali">
     <p class="hint" style="font-size:15px"><strong>Depo bağlıysa</strong> — <strong>Siteye kaydet</strong>'e bas, hepsi bu. Fotoğraflar ve liste depoya yazılır, site bir dakika içinde güncellenir. Yenilemen bile gerekmez, sadece bekle.</p>
     <p class="hint" style="font-size:15px"><strong>Klasör bağlıysa</strong> — <strong>Siteye kaydet</strong>'e bas. Fotoğraflar <code>fotograflar/web/</code> klasörüne yazılır, <code>fotograflar.js</code> güncellenir. Atlas sayfasını yenile. Siten yayındaysa değişikliği ayrıca GitHub'a da yüklemen gerekir.</p>
-    <p class="hint" style="font-size:15px"><strong>Hiçbiri bağlı değilse</strong> — üç adım:</p>
+    <p class="hint" style="font-size:15px"><strong>Hiçbiri bağlı değilse</strong> — üç adım. Bu durumda alt tarafta kod alanı ve indirme düğmesi belirir:</p>
     <ol>
       <li><strong>Küçültülmüş fotoğrafları indir</strong>, <code>fotograflar/web/</code> klasörüne koy</li>
       <li><strong>Kodu kopyala</strong>ya bas</li>
@@ -548,7 +553,12 @@ function ciz(){
   kayitliBaslik.classList.toggle('hidden', !kayitli.length);
 
   barEl.classList.toggle('hidden', !items.length && !kayitli.length);
-  outEl.classList.toggle('hidden', !items.length);
+
+  // Kod alanı yalnızca elle taşıma gerektiğinde — bağlantı varken gereksiz
+  const elle = !kaynak && items.length;
+  outEl.classList.toggle('hidden', !elle);
+  document.getElementById('copy').classList.toggle('hidden', !elle);
+  document.getElementById('dl').classList.toggle('hidden', !elle);
   code();
 }
 const draw = ciz;
