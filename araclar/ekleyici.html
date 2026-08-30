@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fotoğraf ekleyici</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="../ortak/tema.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#07100F; --ground:#0C1918; --line:#1E3230;
+  --paper:#ECE7DA; --muted:#8AA09C; --hydro:#6BC0B4; --gold:#C9A227;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--void);color:var(--paper);
+  font-family:"Inter",system-ui,sans-serif;font-weight:300;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:900px;margin:0 auto;padding:38px 26px 90px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:"Instrument Serif",serif;font-weight:400;font-size:clamp(30px,4.4vw,44px);margin:14px 0 12px;line-height:1.05}
+h1 em{font-style:italic;color:var(--hydro)}
+.lede{color:#BECAC6;line-height:1.65;max-width:56ch;margin:0 0 34px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+.bag{display:flex;gap:18px;justify-content:space-between;align-items:center;flex-wrap:wrap;
+  background:var(--ground);border:1px solid var(--line);border-radius:4px;padding:18px 20px;margin-bottom:16px}
+.bag strong{font-family:"Instrument Serif",serif;font-weight:400;font-size:20px}
+.bag.ok{border-color:var(--hydro)}
+.bag.ok strong{color:var(--hydro)}
+.drop{
+  border:1px dashed var(--line);border-radius:4px;padding:52px 24px;text-align:center;
+  cursor:pointer;transition:.2s;background:var(--ground);
+}
+.drop:hover,.drop.hot{border-color:var(--hydro);background:#112322}
+.drop strong{display:block;font-family:"Instrument Serif",serif;font-weight:400;font-size:23px;margin-bottom:8px}
+
+.cards{margin:34px 0 0}
+.card{
+  display:grid;grid-template-columns:132px 1fr;gap:20px;
+  padding:22px 0;border-bottom:1px solid var(--line);align-items:start;
+}
+.card img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:2px;background:var(--ground)}
+.fields{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:78px 1fr;gap:12px;align-items:center}
+label{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+input{
+  background:var(--ground);border:1px solid var(--line);color:var(--paper);
+  border-radius:3px;padding:8px 11px;font:inherit;font-size:14px;width:100%;
+}
+input:focus{border-color:var(--hydro);outline:none}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.readonly{color:var(--muted);line-height:1.7;padding-top:4px}
+.warn{color:var(--gold)}
+
+.btn{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;
+  padding:9px 16px;cursor:pointer;transition:.18s;
+}
+.btn:hover{background:var(--paper);color:var(--void);border-color:var(--paper)}
+.btn.filled{background:var(--hydro);border-color:var(--hydro);color:var(--void);font-weight:500}
+.btn.filled:hover{background:var(--paper);border-color:var(--paper)}
+.btn.tiny{padding:5px 11px;font-size:10px}
+
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:30px 0 16px}
+textarea{
+  width:100%;min-height:280px;background:var(--ground);border:1px solid var(--line);
+  color:var(--paper);border-radius:3px;padding:16px;
+  font-family:"IBM Plex Mono",monospace;font-size:12px;line-height:1.65;resize:vertical;
+}
+.hidden{display:none}
+h2{font-family:"Instrument Serif",serif;font-weight:400;font-size:27px;margin:52px 0 10px}
+#kayitli-baslik{margin-bottom:0;padding-top:34px;border-top:1px solid var(--line)}
+ol{color:#BECAC6;line-height:1.8;padding-left:20px;max-width:60ch}
+code{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--hydro)}
+.note{border-left:2px solid var(--gold);padding:2px 0 2px 16px;color:#BECAC6;line-height:1.65;margin:26px 0;max-width:58ch}
+.modal{position:fixed;inset:0;z-index:900;background:rgba(4,9,8,.94);display:none;place-items:center;padding:22px}
+.modal.open{display:grid}
+.panel{width:min(760px,100%);background:var(--ground);border:1px solid var(--line);border-radius:4px;padding:20px}
+.panel .head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px}
+.panel .head strong{font-family:"Instrument Serif",serif;font-weight:400;font-size:21px}
+.seek{display:flex;gap:8px;margin-bottom:12px}
+#m-map{height:min(52vh,420px);border:1px solid var(--line);border-radius:3px;background:var(--void)}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+.hint{color:var(--muted);font-size:13px;line-height:1.55;margin:6px 0 0}
+.leaflet-tile-pane{filter:invert(1) hue-rotate(185deg) brightness(.93) contrast(.86) saturate(.55)}
+.leaflet-container{background:var(--void)}
+.leaflet-control-attribution{background:rgba(7,16,15,.85)!important;color:var(--muted)!important;font-size:10px!important}
+.leaflet-control-attribution a{color:var(--muted)!important}
+.leaflet-bar a{background:var(--ground)!important;color:var(--paper)!important;border-color:var(--line)!important}
+.dot{width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid var(--paper);box-shadow:0 2px 10px rgba(0,0,0,.7)}
+@media (max-width:620px){.card{grid-template-columns:1fr}.row{grid-template-columns:1fr;gap:5px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="wordmark" href="../index.html">Fotoğraf <em>ekleyici</em></a>
+  <nav class="mono"><a href="../index.html">← Ana sayfa</a></nav>
+</header>
+<div class="wrap">
+
+  <p class="mono">Atlas · atölye</p>
+  <h1>Fotoğraf <em>ekleyici</em></h1>
+  <p class="lede">Fotoğrafları buraya bırak. Tarih, koordinat, makine ve poz bilgisini dosyanın içinden okur, siteye yapıştıracağın satırları hazırlar. Ayrıca web için küçültülmüş sürümleri üretir. Fotoğraflar bilgisayarından çıkmıyor, hiçbir yere yüklenmiyor.</p>
+
+  <div class="bag" id="bag">
+    <div>
+      <p class="mono" style="margin:0 0 4px">Site klasörü</p>
+      <strong id="bag-durum">bağlı değil</strong>
+      <p class="hint" id="bag-not" style="margin:6px 0 0">Sitenin <strong>atlas</strong> klasörünü bağlarsan fotoğrafları ve listeyi doğrudan yerine yazarım — kopyalama, taşıma, yapıştırma olmaz.</p>
+    </div>
+    <button class="btn filled" id="bag-btn">Klasörü bağla</button>
+  </div>
+
+  <div class="drop" id="drop" tabindex="0" role="button">
+    <strong>Fotoğrafları buraya bırak</strong>
+    <span class="mono">ya da tıklayıp seç · jpg</span>
+  </div>
+  <input type="file" id="file" accept="image/jpeg" multiple class="hidden">
+
+  <div class="cards" id="cards"></div>
+
+  <h2 id="kayitli-baslik" class="hidden">Sitedeki kareler</h2>
+  <div class="cards" id="kayitli-cards"></div>
+
+  <div class="bar hidden" id="bar">
+    <button class="btn filled" id="save">Siteye kaydet</button>
+    <button class="btn" id="copy">Kodu kopyala</button>
+    <button class="btn" id="dl">Küçültülmüş fotoğrafları indir</button>
+    <button class="btn" id="clear">Listeyi temizle</button>
+    <span class="mono" id="status"></span>
+  </div>
+  <textarea id="out" class="hidden" spellcheck="false" readonly></textarea>
+
+  <h2>Sonra ne yapacaksın</h2>
+  <p style="color:#BECAC6;line-height:1.65;max-width:58ch;margin:0 0 10px"><strong>Klasör bağlıysa</strong> — <strong>Siteye kaydet</strong>e bas, hepsi bu. Fotoğraflar yerine yazılır, liste güncellenir. <code>index.html</code>'i yenile.</p>
+  <p style="color:#BECAC6;line-height:1.65;max-width:58ch;margin:0 0 8px"><strong>Bağlı değilse</strong> — üç adım:</p>
+  <ol>
+    <li>Küçültülmüş fotoğrafları indir, <code>fotograflar/web/</code> klasörüne koy</li>
+    <li><strong>Kodu kopyala</strong>ya bas</li>
+    <li><code>fotograflar.js</code>'i aç, <code>const frames = [</code> satırının altına yapıştır</li>
+  </ol>
+
+  <div class="note">
+    Koordinatı olmayan fotoğraflarda <span class="warn">lat/lng boş kalır</span> — Google Haritalar'da yere sağ tıklayıp kopyaladığın sayıları elle yazarsın. Ev gibi yerlerde <strong>Yaklaşıklaştır</strong> düğmesi koordinatı yaklaşık bir kilometreye yuvarlar.
+  </div>
+
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Konum seç">
+  <div class="panel">
+    <div class="head">
+      <div><p class="mono" style="margin:0 0 5px">Konumu düzelt</p><strong id="m-title"></strong></div>
+      <button class="btn" id="m-close">Kapat</button>
+    </div>
+    <div class="seek">
+      <input id="m-q" placeholder="Yer ara — Kaş limanı, Göreme, Kadıköy iskele…">
+      <button class="btn" id="m-go">Ara</button>
+    </div>
+    <div id="m-map"></div>
+    <p class="hint">Haritaya tıkla ya da işareti sürükle. Doğru noktaya geldiğinde alttaki düğmeye bas.</p>
+    <div class="foot">
+      <span class="mono" id="m-coords">—</span>
+      <button class="btn filled" id="m-use">Bu noktayı kullan</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* ---------------- EXIF okuyucu ---------------- */
+const SIZES = {1:1,2:1,3:2,4:4,5:8,7:1,9:4,10:8};
+
+function readValue(dv, tiff, le, entry){
+  const type = dv.getUint16(entry+2, le);
+  const count = dv.getUint32(entry+4, le);
+  const total = (SIZES[type]||1) * count;
+  let p = total <= 4 ? entry+8 : tiff + dv.getUint32(entry+8, le);
+  if(p < 0 || p + total > dv.byteLength) return null;
+  const out = [];
+  for(let i=0;i<count;i++){
+    switch(type){
+      case 1: case 7: out.push(dv.getUint8(p)); p+=1; break;
+      case 2: out.push(String.fromCharCode(dv.getUint8(p))); p+=1; break;
+      case 3: out.push(dv.getUint16(p,le)); p+=2; break;
+      case 4: out.push(dv.getUint32(p,le)); p+=4; break;
+      case 9: out.push(dv.getInt32(p,le)); p+=4; break;
+      case 5: {const n=dv.getUint32(p,le), d=dv.getUint32(p+4,le); out.push(d?n/d:0); p+=8; break;}
+      case 10:{const n=dv.getInt32(p,le), d=dv.getInt32(p+4,le); out.push(d?n/d:0); p+=8; break;}
+      default: return null;
+    }
+  }
+  if(type===2) return out.join('').replace(/\0+$/,'').trim();
+  return count===1 ? out[0] : out;
+}
+
+function readIfd(dv, tiff, le, start, into){
+  if(start+2 > dv.byteLength) return;
+  const n = dv.getUint16(start, le);
+  for(let i=0;i<n;i++){
+    const e = start + 2 + i*12;
+    if(e+12 > dv.byteLength) return;
+    into[dv.getUint16(e, le)] = readValue(dv, tiff, le, e);
+  }
+}
+
+function parseExif(buffer){
+  const dv = new DataView(buffer);
+  if(dv.getUint16(0) !== 0xFFD8) return null;
+  let off = 2, tiff = -1;
+  while(off < dv.byteLength - 3){
+    if(dv.getUint8(off) !== 0xFF) break;
+    const marker = dv.getUint16(off);
+    if(marker === 0xFFDA) break;
+    const size = dv.getUint16(off+2);
+    if(marker === 0xFFE1 && dv.getUint32(off+4) === 0x45786966){ tiff = off + 10; break; }
+    off += 2 + size;
+  }
+  if(tiff < 0) return null;
+
+  const bo = dv.getUint16(tiff);
+  if(bo !== 0x4949 && bo !== 0x4D4D) return null;
+  const le = bo === 0x4949;
+
+  const base = {}, exif = {}, gps = {};
+  readIfd(dv, tiff, le, tiff + dv.getUint32(tiff+4, le), base);
+  if(base[0x8769]) readIfd(dv, tiff, le, tiff + base[0x8769], exif);
+  if(base[0x8825]) readIfd(dv, tiff, le, tiff + base[0x8825], gps);
+  return {base, exif, gps};
+}
+
+function toDegrees(dms, ref){
+  if(!Array.isArray(dms) || dms.length < 3) return null;
+  const d = dms[0] + dms[1]/60 + dms[2]/3600;
+  return (ref === 'S' || ref === 'W') ? -d : d;
+}
+
+function describe(e, fallbackDate){
+  if(!e) return {date:fallbackDate, cam:'', lens:'', exp:'', lat:'', lng:'', refYok:false};
+  const {base, exif, gps} = e;
+  const marka = (base[0x010F] || '').trim();
+  const model = (base[0x0110] || '').trim();
+  // Canon gibi bazı makineler modelin başına markayı zaten yazıyor
+  // Canon, Ricoh gibi bazı makineler modelin başına markayı zaten yazıyor
+  const markaBas = marka.split(/[\s,]+/)[0].toLowerCase();
+  const cam = (model && markaBas && model.toLowerCase().startsWith(markaBas))
+    ? model
+    : [marka, model].filter(Boolean).join(' ').trim();
+  let lens = exif[0xA434] || '';
+  if(!lens && exif[0x920A]) lens = Math.round(exif[0x920A]) + 'mm';
+
+  const parts = [];
+  const t = exif[0x829A];
+  if(t) parts.push(t < 1 ? '1/' + Math.round(1/t) : (+t.toFixed(1)) + 's');
+  if(exif[0x829D]) parts.push('f/' + (+exif[0x829D].toFixed(1)));
+  const iso = Array.isArray(exif[0x8827]) ? exif[0x8827][0] : exif[0x8827];
+  if(iso) parts.push('ISO ' + iso);
+
+  const raw = exif[0x9003] || base[0x0132] || '';
+  const date = /^\d{4}:\d{2}:\d{2}/.test(raw) ? raw.slice(0,10).replace(/:/g,'-') : fallbackDate;
+
+  const lat = toDegrees(gps[2], gps[1]);
+  const lng = toDegrees(gps[4], gps[3]);
+  const refYok = (lat !== null || lng !== null) && (!gps[1] || !gps[3]);
+  return {
+    date, cam, lens,
+    exp: parts.join(' · '),
+    lat: lat === null ? '' : +lat.toFixed(6),
+    lng: lng === null ? '' : +lng.toFixed(6),
+    refYok
+  };
+}
+
+/* ---------------- dosya adı ---------------- */
+const TR = {'ğ':'g','ü':'u','ş':'s','ı':'i','ö':'o','ç':'c','Ğ':'g','Ü':'u','Ş':'s','İ':'i','Ö':'o','Ç':'c'};
+function slug(name){
+  const dot = name.lastIndexOf('.');
+  const stem = dot > 0 ? name.slice(0, dot) : name;
+  return stem.replace(/[ğüşıöçĞÜŞİÖÇ]/g, c => TR[c])
+             .toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'kare';
+}
+const titleFrom = n => slug(n).replace(/-/g,' ').replace(/^\w/, c => c.toUpperCase());
+
+/* ---------------- küçültme ---------------- */
+async function shrink(file, max){
+  let bmp;
+  try { bmp = await createImageBitmap(file, {imageOrientation:'from-image'}); }
+  catch { bmp = await createImageBitmap(file); }
+  const scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
+  const c = document.createElement('canvas');
+  c.width = Math.round(bmp.width * scale);
+  c.height = Math.round(bmp.height * scale);
+  c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+  bmp.close?.();
+  return new Promise(r => c.toBlob(r, 'image/jpeg', 0.86));
+}
+
+/* ---------------- durum ---------------- */
+const items = [];
+const cardsEl = document.getElementById('cards');
+const outEl = document.getElementById('out');
+const barEl = document.getElementById('bar');
+const statusEl = document.getElementById('status');
+
+async function add(file){
+  const buf = await file.arrayBuffer();
+  let meta;
+  try { meta = describe(parseExif(buf), new Date(file.lastModified).toISOString().slice(0,10)); }
+  catch { meta = describe(null, new Date(file.lastModified).toISOString().slice(0,10)); }
+
+  const item = {
+    file,
+    name: slug(file.name) + '.jpg',
+    title: titleFrom(file.name),
+    place: '',
+    ...meta,
+    teknik: true,
+    preview: URL.createObjectURL(await shrink(file, 420))
+  };
+  items.push(item);
+  draw();
+}
+
+/* Kartlar iki listeden gelir:
+     items    — yeni sürüklenenler (dosyası var, küçültülüp yazılacak)
+     kayitli  — sitede zaten duranlar (sadece bilgileri düzenlenir)   */
+const kayitli = [];
+const kayitliEl = document.getElementById('kayitli-cards');
+const kayitliBaslik = document.getElementById('kayitli-baslik');
+let degisti = false;
+
+function liste(tur){ return tur === 'yeni' ? items : kayitli; }
+
+function kartHtml(it, i, tur){
+  const dosyaAdi = tur === 'yeni' ? ('fotograflar/web/' + it.name) : it.src;
+  return `
+    <img src="${it.preview || ''}" alt="" onerror="this.style.opacity=.25">
+    <div class="fields">
+      <div class="row"><label>Başlık</label><input data-t="${tur}" data-i="${i}" data-k="title" value="${(it.title||'').replace(/"/g,'&quot;')}"></div>
+      <div class="row"><label>Yer</label><input data-t="${tur}" data-i="${i}" data-k="place" value="${(it.place||'').replace(/"/g,'&quot;')}" placeholder="Kaş, Antalya"></div>
+      <div class="row"><label>Koordinat</label>
+        <div class="pair">
+          <input data-t="${tur}" data-i="${i}" data-k="lat" value="${it.lat ?? ''}" placeholder="enlem — boş">
+          <input data-t="${tur}" data-i="${i}" data-k="lng" value="${it.lng ?? ''}" placeholder="boylam — boş">
+        </div>
+      </div>
+      <div class="row"><label></label><p class="hint" style="margin:0">Google Haritalar'da yere sağ tıklayıp kopyaladığın <code style="color:var(--hydro)">36.1980, 29.6390</code> ikilisini sol kutuya yapıştırabilirsin.</p></div>
+      <div class="row"><label>Tarih</label><input data-t="${tur}" data-i="${i}" data-k="date" value="${it.date||''}"></div>
+      <details>
+        <summary class="mono" style="cursor:pointer;padding:4px 0">Teknik bilgi ${it.teknik === false ? '— gizli' : ''}</summary>
+        <div class="fields" style="padding:10px 0 4px">
+          <div class="row"><label>Makine</label><input data-t="${tur}" data-i="${i}" data-k="cam" value="${(it.cam||'').replace(/"/g,'&quot;')}" placeholder="boş bırakabilirsin"></div>
+          <div class="row"><label>Objektif</label><input data-t="${tur}" data-i="${i}" data-k="lens" value="${(it.lens||'').replace(/"/g,'&quot;')}" placeholder="boş bırakabilirsin"></div>
+          <div class="row"><label>Poz</label><input data-t="${tur}" data-i="${i}" data-k="exp" value="${(it.exp||'').replace(/"/g,'&quot;')}" placeholder="1/500 · f/5.6 · ISO 200"></div>
+          <label style="display:flex;gap:9px;align-items:center;text-transform:none;letter-spacing:0;font-size:13px;color:#BECAC6;cursor:pointer">
+            <input type="checkbox" data-t="${tur}" data-i="${i}" data-k="teknik" ${it.teknik === false ? '' : 'checked'} style="width:auto;margin:0">
+            Bu bilgiler sitede görünsün
+          </label>
+        </div>
+      </details>
+      <div class="mono readonly">
+        ${dosyaAdi}
+        <br><span class="warn" data-nogeo style="display:${(it.lat === '' || it.lat === null || it.lat === undefined) ? 'inline' : 'none'}">konum yok — haritadan seç ya da elle gir</span>
+        ${it.refYok ? '<br><span class="warn">yarım küre bilgisi eksik — haritada kontrol et</span>' : ''}
+      </div>
+      <div>
+        <a class="btn tiny" data-verify style="display:${(it.lat === '' || it.lat == null) ? 'none' : 'inline-block'}" target="_blank" rel="noopener"
+           href="${(it.lat === '' || it.lat == null) ? '#' : `https://www.openstreetmap.org/?mlat=${it.lat}&mlon=${it.lng}#map=14/${it.lat}/${it.lng}`}">Haritada kontrol et</a>
+        <button class="btn tiny" data-t="${tur}" data-pick="${i}">Haritadan seç</button>
+        <button class="btn tiny" data-t="${tur}" data-fuzz="${i}">Yaklaşıklaştır</button>
+        <button class="btn tiny" data-t="${tur}" data-del="${i}">${tur === 'yeni' ? 'Çıkar' : 'Siteden kaldır'}</button>
+      </div>
+    </div>`;
+}
+
+function bagla(el, tur){
+  el.querySelectorAll('input[type=checkbox]').forEach(box => {
+    box.addEventListener('change', e => {
+      liste(tur)[+e.target.dataset.i].teknik = e.target.checked;
+      degisti = true; code();
+    });
+  });
+  el.querySelectorAll('input:not([type=checkbox])').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = +e.target.dataset.i, k = e.target.dataset.k;
+      const it = liste(tur)[i];
+      degisti = true;
+      if(k === 'lat' || k === 'lng'){
+        const cift = ikiSayi(e.target.value);
+        if(cift){ it.lat = cift[0]; it.lng = cift[1]; ciz(); return; }
+      }
+      it[k] = e.target.value;
+      if(k === 'lat' || k === 'lng') tazele(i, tur);
+      code();
+    });
+  });
+  el.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => secici(+b.dataset.pick, b.dataset.t));
+  el.querySelectorAll('[data-fuzz]').forEach(b => b.onclick = () => {
+    const it = liste(b.dataset.t)[+b.dataset.fuzz];
+    if(it.lat !== '' && it.lat != null) it.lat = +(+it.lat).toFixed(2);
+    if(it.lng !== '' && it.lng != null) it.lng = +(+it.lng).toFixed(2);
+    degisti = true; ciz();
+  });
+  el.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+    const tur2 = b.dataset.t, i = +b.dataset.del;
+    if(tur2 === 'kayitli' && !confirm('Bu kare listeden kaldırılsın mı? Fotoğraf dosyası klasörde kalır.')) return;
+    liste(tur2).splice(i, 1);
+    degisti = true; ciz();
+  });
+}
+
+function ciz(){
+  cardsEl.innerHTML = items.map((it,i) => `<div class="card">${kartHtml(it,i,'yeni')}</div>`).join('');
+  bagla(cardsEl, 'yeni');
+
+  kayitliEl.innerHTML = kayitli.map((it,i) => `<div class="card">${kartHtml(it,i,'kayitli')}</div>`).join('');
+  bagla(kayitliEl, 'kayitli');
+  kayitliBaslik.classList.toggle('hidden', !kayitli.length);
+
+  barEl.classList.toggle('hidden', !items.length && !kayitli.length);
+  outEl.classList.toggle('hidden', !items.length);
+  code();
+}
+const draw = ciz;
+
+/* "36.19, 29.63" ya da Google Haritalar bağlantısı -> [lat, lng] */
+function ikiSayi(metin){
+  const t = String(metin).trim();
+  const url = t.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if(url) return [+url[1], +url[2]];
+  const m = t.match(/^(-?\d{1,3}(?:[.,]\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:[.,]\d+)?)$/);
+  if(!m) return null;
+  const a = +m[1].replace(',', '.'), b = +m[2].replace(',', '.');
+  if(!isFinite(a) || !isFinite(b) || Math.abs(a) > 90 || Math.abs(b) > 180) return null;
+  return [+a.toFixed(6), +b.toFixed(6)];
+}
+
+/* koordinat elle değişince kartın bağlantısını ve uyarısını güncelle */
+function tazele(i, tur){
+  const it = liste(tur)[i];
+  const card = (tur === 'yeni' ? cardsEl : kayitliEl).children[i];
+  if(!card) return;
+  const link = card.querySelector('[data-verify]');
+  const ok = it.lat !== '' && it.lng !== '' && isFinite(+it.lat) && isFinite(+it.lng);
+  if(link){
+    link.style.display = ok ? 'inline-block' : 'none';
+    if(ok) link.href = `https://www.openstreetmap.org/?mlat=${it.lat}&mlon=${it.lng}#map=14/${it.lat}/${it.lng}`;
+  }
+  const uyari = card.querySelector('[data-nogeo]');
+  if(uyari) uyari.style.display = ok ? 'none' : 'inline';
+}
+
+const q = s => String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"');
+function blok(o){
+  const lat = (o.lat === '' || o.lat === undefined || o.lat === null) ? 'null' : o.lat;
+  const lng = (o.lng === '' || o.lng === undefined || o.lng === null) ? 'null' : o.lng;
+  return `  {
+    title: "${q(o.title || '')}",
+    place: "${q(o.place || '')}",
+    lat: ${lat}, lng: ${lng},
+    date: "${q(o.date || '')}",
+    cam: "${q(o.cam || '')}", lens: "${q(o.lens || '')}", exp: "${q(o.exp || '')}",${o.teknik === false ? '\n    teknik: false,' : ''}
+    src: "${q(o.src)}",
+    tone: ${JSON.stringify(o.tone || ["#15272B", "#5E8F86"])}
+  }`;
+}
+const olarakKayit = it => ({...it, src: 'fotograflar/web/' + it.name});
+
+function code(){
+  outEl.value = items.map(it => blok(olarakKayit(it)) + ',').join('\n\n');
+}
+
+const BASLIK = `/* ============================================================
+   FOTOĞRAF LİSTESİ
+
+   Bu dosyayı ekleyici yazdı, elle de düzenleyebilirsin.
+   index.html'e dokunma.
+
+   ALANLAR
+     title  Fotoğrafın adı
+     place  "Semt, Şehir" — filtre son kelimeyi kullanır
+     lat    Enlem (kuzey artı) · null ise haritada pin çıkmaz
+     lng    Boylam (doğu artı)
+     date   "2025-06-14" biçiminde
+     cam    Makine · lens Objektif · exp Poz
+     teknik "teknik: false," eklersen bu üçü sitede gizlenir
+     src    "fotograflar/web/dosyaadi.jpg"
+     tone   src boşken gösterilen iki renk
+   ============================================================ */
+
+`;
+const dosyaGovde = list => BASLIK + 'const frames = [\n\n' + list.map(blok).join(',\n\n') + '\n\n];\n';
+
+/* ---------------- olaylar ---------------- */
+const drop = document.getElementById('drop'), picker = document.getElementById('file');
+drop.onclick = () => picker.click();
+drop.onkeydown = e => { if(e.key === 'Enter' || e.key === ' ') picker.click(); };
+picker.onchange = e => intake([...e.target.files]);
+['dragenter','dragover'].forEach(k => drop.addEventListener(k, e => { e.preventDefault(); drop.classList.add('hot'); }));
+['dragleave','drop'].forEach(k => drop.addEventListener(k, e => { e.preventDefault(); drop.classList.remove('hot'); }));
+drop.addEventListener('drop', e => intake([...e.dataTransfer.files]));
+
+async function intake(files){
+  const jpgs = files.filter(f => /jpe?g$/i.test(f.name));
+  if(!jpgs.length){ statusEl.textContent = 'Sadece jpg dosyaları okunuyor'; return; }
+  statusEl.textContent = 'okunuyor…';
+  for(const f of jpgs) await add(f);
+  statusEl.textContent = items.length + ' kare hazır';
+}
+
+
+/* ---------------- site klasörü ---------------- */
+let kok = null;
+const bagEl = document.getElementById('bag');
+const bagDurum = document.getElementById('bag-durum');
+const bagNot = document.getElementById('bag-not');
+const saveBtn = document.getElementById('save');
+const destek = 'showDirectoryPicker' in window;
+
+if(!destek){
+  saveBtn.style.display = 'none';
+  document.getElementById('bag-btn').style.display = 'none';
+  bagDurum.textContent = 'bu tarayıcıda yok';
+  bagNot.textContent = 'Klasöre doğrudan yazma Chrome ve Edge\u2019de çalışıyor. Bu tarayıcıda kodu kopyalayıp fotoğrafları elle taşıman gerekiyor — alttaki iki düğme onun için.';
+}
+
+document.getElementById('bag-btn').onclick = async () => {
+  try{
+    const secilen = await window.showDirectoryPicker({mode:'readwrite'});
+    try{ await secilen.getFileHandle('fotograflar.js'); }
+    catch{
+      bagDurum.textContent = 'yanlış klasör';
+      bagNot.textContent = 'Bu klasörde fotograflar.js yok. Sitenin atlas klasörünü seç \u2014 içinde index.html ve fotograflar.js olan.';
+      return;
+    }
+    kok = secilen;
+    bagEl.classList.add('ok');
+    bagDurum.textContent = secilen.name + ' bağlandı';
+    bagNot.textContent = 'Artık Siteye kaydet düğmesi fotoğrafları fotograflar/web klasörüne yazıp listeyi günceller.';
+    await kayitliYukle();
+  }catch{ /* kullanıcı vazgeçti */ }
+};
+
+let onsoz = null;   // frames'ten önceki her şey (ayarlar bloğu dahil) korunur
+
+async function mevcutKareler(){
+  try{
+    const fh = await kok.getFileHandle('fotograflar.js');
+    const metin = await (await fh.getFile()).text();
+    const kes = metin.search(/const\s+frames\s*=/);
+    onsoz = kes > 0 ? metin.slice(0, kes) : null;
+    const list = new Function(metin + '; return frames;')();
+    return Array.isArray(list) ? list : [];
+  }catch{ return []; }
+}
+
+async function kayitliYukle(){
+  kayitli.length = 0;
+  const eski = await mevcutKareler();
+  for(const o of eski){
+    const kayit = {...o, preview: ''};
+    try{
+      const parcalar = String(o.src || '').split('/').filter(Boolean);
+      let d = kok;
+      for(const p of parcalar.slice(0, -1)) d = await d.getDirectoryHandle(p);
+      const fh = await d.getFileHandle(parcalar[parcalar.length - 1]);
+      kayit.preview = URL.createObjectURL(await fh.getFile());
+    }catch{ /* dosya bulunamadı - kart yine görünsün */ }
+    kayitli.push(kayit);
+  }
+  degisti = false;
+  ciz();
+  if(kayitli.length) statusEl.textContent = 'sitede ' + kayitli.length + ' kare var, düzenleyebilirsin';
+}
+
+saveBtn.onclick = async () => {
+  if(!kok){ statusEl.textContent = 'önce klasörü bağla'; return; }
+  if(!items.length && !degisti) { statusEl.textContent = 'değişiklik yok'; return; }
+  saveBtn.disabled = true;
+  try{
+    statusEl.textContent = 'fotoğraflar yazılıyor…';
+    const fdir = await kok.getDirectoryHandle('fotograflar', {create:true});
+    const wdir = await fdir.getDirectoryHandle('web', {create:true});
+    for(const it of items){
+      const blob = await shrink(it.file, 1800);
+      const fh = await wdir.getFileHandle(it.name, {create:true});
+      const w = await fh.createWritable();
+      await w.write(blob);
+      await w.close();
+    }
+
+    statusEl.textContent = 'liste güncelleniyor…';
+    if(onsoz === null) await mevcutKareler();      // önsözü bir kez oku
+    const yeni = items.map(olarakKayit);
+    const adresler = new Set(yeni.map(o => o.src));
+    const birlesik = [...kayitli.map(({preview, refYok, file, name, ...temiz}) => temiz)
+                              .filter(o => !adresler.has(o.src)), ...yeni];
+
+    const fh = await kok.getFileHandle('fotograflar.js', {create:true});
+    const w = await fh.createWritable();
+    await w.write((onsoz === null ? BASLIK : onsoz) + 'const frames = [\n\n' + birlesik.map(blok).join(',\n\n') + '\n\n];\n');
+    await w.close();
+
+    const eklenen = items.length;
+    items.length = 0;
+    await kayitliYukle();
+    statusEl.textContent = (eklenen ? eklenen + ' kare eklendi — ' : 'değişiklikler kaydedildi — ')
+      + 'sitede toplam ' + birlesik.length + '. Atlas sayfasını yenile.';
+  }catch(err){
+    statusEl.textContent = 'kaydedilemedi: ' + (err && err.message ? err.message : 'bilinmeyen hata');
+  }finally{
+    saveBtn.disabled = false;
+  }
+};
+
+document.getElementById('copy').onclick = async () => {
+  try { await navigator.clipboard.writeText(outEl.value); statusEl.textContent = 'kod kopyalandı'; }
+  catch { outEl.removeAttribute('readonly'); outEl.select(); statusEl.textContent = 'ctrl+c ile kopyala'; }
+};
+
+document.getElementById('dl').onclick = async () => {
+  statusEl.textContent = 'küçültülüyor…';
+  for(const it of items){
+    const blob = await shrink(it.file, 1800);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = it.name;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    await new Promise(r => setTimeout(r, 350));
+  }
+  statusEl.textContent = 'indirildi — fotograflar/web/ klasörüne koy';
+};
+
+
+/* ---------------- konum seçici ---------------- */
+let pMap = null, pMark = null, pIndex = null, pTur = 'yeni';
+const modal = document.getElementById('modal');
+const mCoords = document.getElementById('m-coords');
+
+function noktaKoy(lat, lng){
+  const ll = [+(+lat).toFixed(6), +(+lng).toFixed(6)];
+  if(pMark) pMark.setLatLng(ll);
+  else{
+    pMark = L.marker(ll, {draggable:true, icon:L.divIcon({html:'<div class="dot"></div>', className:'', iconSize:[16,16], iconAnchor:[8,8]})}).addTo(pMap);
+    pMark.on('drag', e => okuma(e.target.getLatLng()));
+  }
+  okuma({lat:ll[0], lng:ll[1]});
+}
+function okuma(ll){
+  mCoords.textContent = `${(+ll.lat).toFixed(6)}, ${(+ll.lng).toFixed(6)}`;
+}
+
+function secici(i, tur){
+  pIndex = i; pTur = tur || 'yeni';
+  const it = liste(pTur)[i];
+  document.getElementById('m-title').textContent = it.title || it.name;
+  modal.classList.add('open');
+
+  if(!pMap){
+    pMap = L.map('m-map').setView([39.0, 33.0], 5);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {attribution:'&copy; OpenStreetMap katkıcıları', maxZoom:19}).addTo(pMap);
+    pMap.on('click', e => noktaKoy(e.latlng.lat, e.latlng.lng));
+  }
+  setTimeout(() => {
+    pMap.invalidateSize();
+    if(it.lat !== '' && it.lng !== '' && isFinite(+it.lat)){
+      pMap.setView([+it.lat, +it.lng], 14);
+      noktaKoy(it.lat, it.lng);
+    }else{
+      pMap.setView([39.0, 33.0], 5);
+      if(pMark){ pMap.removeLayer(pMark); pMark = null; }
+      mCoords.textContent = 'haritaya tıkla';
+    }
+  }, 60);
+}
+
+function kapat(){ modal.classList.remove('open'); }
+document.getElementById('m-close').onclick = kapat;
+modal.addEventListener('click', e => { if(e.target === modal) kapat(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.classList.contains('open')) kapat(); });
+
+document.getElementById('m-use').onclick = () => {
+  if(!pMark){ mCoords.textContent = 'önce bir nokta seç'; return; }
+  const ll = pMark.getLatLng();
+  const hedef = liste(pTur)[pIndex];
+  hedef.lat = +ll.lat.toFixed(6);
+  hedef.lng = +ll.lng.toFixed(6);
+  degisti = true;
+  kapat();
+  ciz();
+  statusEl.textContent = 'konum güncellendi';
+};
+
+async function ara(){
+  const q = document.getElementById('m-q').value.trim();
+  if(!q) return;
+  mCoords.textContent = 'aranıyor…';
+  try{
+    const r = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(q));
+    const d = await r.json();
+    if(!d.length){ mCoords.textContent = 'bulunamadı — haritadan seç'; return; }
+    pMap.setView([+d[0].lat, +d[0].lon], 14);
+    noktaKoy(d[0].lat, d[0].lon);
+  }catch{ mCoords.textContent = 'arama çalışmadı — haritadan seç'; }
+}
+document.getElementById('m-go').onclick = ara;
+document.getElementById('m-q').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); ara(); } });
+
+document.getElementById('clear').onclick = () => { items.length = 0; statusEl.textContent = ''; draw(); };
+</script>
+</body>
+</html>
