@@ -158,6 +158,7 @@ code{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--hydro)}
     <button class="btn filled" id="save">Siteye kaydet</button>
     <button class="btn" id="copy">Kodu kopyala</button>
     <button class="btn" id="dl">Küçültülmüş fotoğrafları indir</button>
+    <button class="btn" id="yerdoldur">Eksik ülke/şehri bul</button>
     <button class="btn" id="clear">Listeyi temizle</button>
     <span class="mono" id="status"></span>
   </div>
@@ -319,6 +320,21 @@ function describe(e, fallbackDate){
   };
 }
 
+/* ---------------- koordinattan ülke ve şehir ---------------- */
+async function tersCoz(lat, lng){
+  if(lat === '' || lat == null || !isFinite(+lat)) return null;
+  try{
+    const r = await fetch('https://nominatim.openstreetmap.org/reverse?format=json&zoom=10&accept-language=tr'
+      + '&lat=' + (+lat) + '&lon=' + (+lng));
+    if(!r.ok) return null;
+    const a = (await r.json()).address || {};
+    return {
+      ulke: a.country || '',
+      sehir: a.city || a.town || a.village || a.municipality || a.county || a.state || ''
+    };
+  }catch{ return null; }
+}
+
 /* ---------------- dosya adı ---------------- */
 const TR = {'ğ':'g','ü':'u','ş':'s','ı':'i','ö':'o','ç':'c','Ğ':'g','Ü':'u','Ş':'s','İ':'i','Ö':'o','Ç':'c'};
 function slug(name){
@@ -357,6 +373,22 @@ const outEl = document.getElementById('out');
 const barEl = document.getElementById('bar');
 const statusEl = document.getElementById('status');
 
+/* sitedeki bir kaydın bilgilerini yeni sürüklenen dosyaya aktar */
+function devral(item, eski){
+  item.mevcut = true;
+  item.name = String(eski.src).split('/').pop();   // dosya adı sitedekiyle aynı olsun
+  if(eski.title) item.title = eski.title;
+  if(eski.place) item.place = eski.place;
+  if(eski.lat !== '' && eski.lat != null){ item.lat = eski.lat; item.lng = eski.lng; }
+  if(eski.date) item.date = eski.date;
+  if(eski.cam)  item.cam  = eski.cam;
+  if(eski.lens) item.lens = eski.lens;
+  if(eski.exp)  item.exp  = eski.exp;
+  if(eski.ulke) item.ulke = eski.ulke;
+  if(eski.sehir) item.sehir = eski.sehir;
+  item.teknik = eski.teknik !== false;
+}
+
 async function add(file){
   const buf = await file.arrayBuffer();
   let meta;
@@ -374,20 +406,19 @@ async function add(file){
   };
   // Bu dosya sitede zaten varsa yazdıklarını koru, sıfırdan sorma
   const eski = kayitli.find(k => k.src === 'fotograflar/web/' + item.name);
-  if(eski){
-    item.mevcut = true;
-    if(eski.title) item.title = eski.title;
-    if(eski.place) item.place = eski.place;
-    if(eski.lat !== '' && eski.lat != null){ item.lat = eski.lat; item.lng = eski.lng; }
-    if(eski.date) item.date = eski.date;
-    if(eski.cam)  item.cam  = eski.cam;
-    if(eski.lens) item.lens = eski.lens;
-    if(eski.exp)  item.exp  = eski.exp;
-    item.teknik = eski.teknik !== false;
-  }
+  if(eski) devral(item, eski);
 
   items.push(item);
   draw();
+
+  if(!item.ulke && item.lat !== '' && item.lat != null){
+    const yer = await tersCoz(item.lat, item.lng);
+    if(yer){
+      item.ulke = item.ulke || yer.ulke;
+      item.sehir = item.sehir || yer.sehir;
+      ciz();
+    }
+  }
 }
 
 /* Kartlar iki listeden gelir:
@@ -415,7 +446,20 @@ function kartHtml(it, i, tur){
         </div>
       </div>
       <div class="row"><label></label><p class="hint" style="margin:0">Google Haritalar'da yere sağ tıklayıp kopyaladığın <code style="color:var(--hydro)">36.1980, 29.6390</code> ikilisini sol kutuya yapıştırabilirsin.</p></div>
+      <div class="row"><label>Ülke · Şehir</label>
+        <div class="pair">
+          <input data-t="${tur}" data-i="${i}" data-k="ulke" value="${(it.ulke||'').replace(/"/g,'&quot;')}" placeholder="sayaç bunu kullanır">
+          <input data-t="${tur}" data-i="${i}" data-k="sehir" value="${(it.sehir||'').replace(/"/g,'&quot;')}" placeholder="şehir">
+        </div>
+      </div>
       <div class="row"><label>Tarih</label><input data-t="${tur}" data-i="${i}" data-k="date" value="${it.date||''}"></div>
+      ${tur === 'yeni' && kayitli.length ? `
+      <div class="row"><label>Bağla</label>
+        <select data-bagla="${i}" style="background:var(--ground);border:1px solid var(--line);color:var(--paper);border-radius:3px;padding:8px 11px;font:inherit;font-size:14px;width:100%">
+          <option value="">yeni kare olarak ekle</option>
+          ${kayitli.map((k, j) => `<option value="${j}" ${it.mevcut && ('fotograflar/web/' + it.name) === k.src ? 'selected' : ''}>${(k.title || k.src).replace(/</g,'&lt;')}</option>`).join('')}
+        </select>
+      </div>` : ''}
       <details>
         <summary class="mono" style="cursor:pointer;padding:4px 0">Teknik bilgi ${it.teknik === false ? '— gizli' : ''}</summary>
         <div class="fields" style="padding:10px 0 4px">
@@ -464,6 +508,20 @@ function bagla(el, tur){
       it[k] = e.target.value;
       if(k === 'lat' || k === 'lng') tazele(i, tur);
       code();
+    });
+  });
+  el.querySelectorAll('[data-bagla]').forEach(sec => {
+    sec.addEventListener('change', e => {
+      const it = items[+e.target.dataset.bagla];
+      const v = e.target.value;
+      if(v === ''){
+        it.mevcut = false;
+        it.name = slug(it.file.name) + '.jpg';
+      }else{
+        devral(it, kayitli[+v]);
+      }
+      degisti = true;
+      ciz();
     });
   });
   el.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => secici(+b.dataset.pick, b.dataset.t));
@@ -531,6 +589,7 @@ function blok(o){
     place: "${q(o.place || '')}",
     lat: ${lat}, lng: ${lng},
     date: "${q(o.date || '')}",
+    ulke: "${q(o.ulke || '')}", sehir: "${q(o.sehir || '')}",
     cam: "${q(o.cam || '')}", lens: "${q(o.lens || '')}", exp: "${q(o.exp || '')}",${o.teknik === false ? '\n    teknik: false,' : ''}
     src: "${q(o.src)}",
     tone: ${JSON.stringify(o.tone || ["#15272B", "#5E8F86"])}
@@ -577,7 +636,9 @@ async function intake(files){
   if(!jpgs.length){ statusEl.textContent = 'Sadece jpg dosyaları okunuyor'; return; }
   statusEl.textContent = 'okunuyor…';
   for(const f of jpgs) await add(f);
-  statusEl.textContent = items.length + ' kare hazır';
+  const eslesen = items.filter(i => i.mevcut).length;
+  statusEl.textContent = items.length + ' kare hazır'
+    + (eslesen ? ' — ' + eslesen + ' tanesi sitedeki kayıtla eşleşti' : '');
 }
 
 
@@ -979,6 +1040,29 @@ async function ara(){
 }
 document.getElementById('m-go').onclick = ara;
 document.getElementById('m-q').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); ara(); } });
+
+document.getElementById('yerdoldur').onclick = async () => {
+  const hedef = [...items, ...kayitli].filter(o =>
+    (!o.ulke || !o.sehir) && o.lat !== '' && o.lat != null);
+  if(!hedef.length){ statusEl.textContent = 'eksik ülke/şehir yok'; return; }
+  const dugme = document.getElementById('yerdoldur');
+  dugme.disabled = true;
+  let n = 0;
+  for(const o of hedef){
+    n++;
+    statusEl.textContent = `konum çözülüyor ${n}/${hedef.length}…`;
+    const yer = await tersCoz(o.lat, o.lng);
+    if(yer){
+      o.ulke = o.ulke || yer.ulke;
+      o.sehir = o.sehir || yer.sehir;
+      degisti = true;
+    }
+    await new Promise(r => setTimeout(r, 1100));   // OpenStreetMap saniyede bir istek istiyor
+  }
+  dugme.disabled = false;
+  ciz();
+  statusEl.textContent = hedef.length + ' kare için bakıldı — Siteye kaydet\u2019e basmayı unutma';
+};
 
 document.getElementById('clear').onclick = () => { items.length = 0; statusEl.textContent = ''; draw(); };
 </script>

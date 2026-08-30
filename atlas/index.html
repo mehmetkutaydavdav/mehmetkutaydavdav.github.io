@@ -120,7 +120,7 @@ h1 em{font-style:italic;color:var(--hydro)}
   </div>
 
   <div class="column">
-    <p class="eyebrow mono">Fotoğraf arşivi · <span id="count">0</span> kare</p>
+    <p class="eyebrow mono" id="sayac">Fotoğraf arşivi</p>
     <h1 id="baslik">Atlas</h1>
     <p class="lede" id="giris"></p>
 
@@ -218,6 +218,24 @@ const art = f => f.src
   : `background-image:linear-gradient(148deg, ${f.tone[0]} 0%, ${f.tone[1]} 100%)`;
 const dms = (v,pos,neg) => `${Math.abs(v).toFixed(4)}° ${v>=0?pos:neg}`;
 const geo = f => typeof f.lat === 'number' && typeof f.lng === 'number' && !(f.lat===0 && f.lng===0);
+/* "İstanbul" ile "Istanbul" aynı şehir sayılsın diye aksanları düşürüp karşılaştır */
+const sadelestir = t => String(t || '').trim()
+  .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ç/g,'c')
+  .toLowerCase();
+const benzersiz = (list, alan) =>
+  new Set(list.map(f => sadelestir(f[alan])).filter(Boolean)).size;
+
+function sayacYaz(){
+  const k = frames.length;
+  const sehir = benzersiz(frames, 'sehir');
+  const ulke = benzersiz(frames, 'ulke');
+  document.getElementById('sayac').textContent =
+    ['Fotoğraf arşivi', k + ' kare',
+     sehir ? sehir + ' şehir' : '',
+     ulke ? ulke + ' ülke' : ''].filter(Boolean).join(' · ');
+}
+
 const teknik = f => f.teknik === false ? [] : [f.cam, f.lens, f.exp].filter(Boolean);
 const konum = f => geo(f) ? `${dms(f.lat,'K','G')} ${dms(f.lng,'D','B')}` : 'konum yok';
 const trDate = d => new Date(d).toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
@@ -253,7 +271,7 @@ function render(){
         <span>
           <h3>${f.title}</h3>
           <span class="meta">
-            <span class="mono">${f.place}</span>
+            <span class="mono">${f.place || [f.sehir, f.ulke].filter(Boolean).join(', ')}</span>
             <span class="mono">${trDate(f.date)}</span>
             ${f.teknik !== false && f.cam ? `<span class="mono">${f.cam}</span>` : ''}
             <span class="mono" style="color:${geo(f)?'var(--hydro)':'var(--muted)'}">${konum(f)}</span>
@@ -262,7 +280,7 @@ function render(){
       </button>`;
     listEl.appendChild(li);
   });
-  document.getElementById('count').textContent = visible.length;
+  sayacYaz();
   if(!frames.length){
     listEl.innerHTML = '<li style="padding:30px 0;color:var(--muted);line-height:1.7">'
       + 'Henüz fotoğraf yok.<br><a href="../araclar/ekleyici.html" style="color:var(--hydro)">Fotoğraf ekleyiciyi aç</a>'
@@ -286,14 +304,15 @@ function focus(i,fly){
 }
 
 /* ---------- filtreler ---------- */
-const places = [...new Set(frames.map(f=>f.place.split(',').pop().trim()))].sort();
+const etiket = f => (f.ulke || '').trim() || String(f.place||'').split(',').pop().trim();
+const places = [...new Set(frames.map(etiket).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'tr'));
 ['Tümü',...places].forEach((p,k)=>{
   const b = document.createElement('button');
   b.className='chip'; b.textContent=p; b.setAttribute('aria-pressed', k===0);
   b.addEventListener('click',()=>{
     filterEl.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed','false'));
     b.setAttribute('aria-pressed','true');
-    visible = frames.map((f,i)=>i).filter(i=> p==='Tümü' || frames[i].place.endsWith(p));
+    visible = frames.map((f,i)=>i).filter(i=> p==='Tümü' || etiket(frames[i]) === p);
     render();
     const pts = visible.filter(i=>geo(frames[i])).map(i=>[frames[i].lat,frames[i].lng]);
     if(pts.length) map.flyToBounds(L.latLngBounds(pts),{padding:[70,70],maxZoom:9,duration:.9});
