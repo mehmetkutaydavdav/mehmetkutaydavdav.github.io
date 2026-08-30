@@ -51,6 +51,16 @@ const frames = [
     cam: "Canon Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/10 · f/4.5 · ISO 6400",
     src: "fotograflar/web/img-4926.jpg",
     tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Topkapı'nın Çinileri",
+    place: "Topkapı Palace, Istanbul",
+    lat: 41.012705, lng: 28.9833,
+    date: "2025-11-03",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/4.5 · ISO 2500",
+    src: "fotograflar/web/img-6696.jpg",
+    tone: ["#15272B","#5E8F86"]
   }
 
 ];
