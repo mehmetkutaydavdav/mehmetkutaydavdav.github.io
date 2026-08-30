@@ -3,160 +3,63 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Atlas</title>
+<title>Kutay</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="../ortak/tema.css">
+<link rel="stylesheet" href="ortak/tema.css">
 <style>
-#kareler{scroll-margin-top:var(--nav-h)}
-
-
-/* ---------- nav ---------- */
-
-/* ---------- atlas ---------- */
-.atlas{display:grid;grid-template-columns:1.1fr .9fr}
-.mapwrap{position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));border-right:1px solid var(--line)}
-#map{position:absolute;inset:0;background:var(--ground)}
-.readout{
-  position:absolute;left:0;bottom:0;z-index:500;
-  padding:10px 16px;background:rgba(7,16,15,.9);
-  border-top:1px solid var(--line);border-right:1px solid var(--line);
-  display:flex;gap:18px;align-items:baseline;pointer-events:none;
-}
-.readout b{font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:12px;color:var(--gold);letter-spacing:.06em}
-
-.column{padding:64px 44px 90px;max-width:640px}
-.eyebrow{margin:0 0 20px}
-h1{
+.hero{padding:96px 22px 74px;max-width:1080px;margin:0 auto}
+.hero h1{
   font-family:"Instrument Serif",serif;font-weight:400;
-  font-size:clamp(38px,5vw,58px);line-height:1.02;margin:0 0 18px;
+  font-size:clamp(44px,7vw,84px);line-height:.98;margin:18px 0 26px;letter-spacing:-.01em;
 }
-h1 em{font-style:italic;color:var(--hydro)}
-.lede{font-size:16px;line-height:1.65;color:#C4CFCB;margin:0 0 34px;max-width:46ch}
-
-.filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px;padding:0 0 26px;border-bottom:1px solid var(--line)}
-.chip{
-  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.07em;text-transform:uppercase;
-  background:none;color:var(--muted);border:1px solid var(--line);border-radius:999px;
-  padding:6px 13px;cursor:pointer;transition:.18s;
+.hero h1 em{font-style:normal;color:var(--hydro)}
+.hero p{font-size:17px;line-height:1.65;color:#C4CFCB;max-width:44ch;margin:0}
+.band{max-width:1080px;margin:0 auto;padding:0 22px 78px}
+.band h2{
+  font-family:"Instrument Serif",serif;font-weight:400;font-size:29px;
+  margin:0 0 6px;padding-top:46px;border-top:1px solid var(--line);
 }
-.chip:hover{color:var(--paper);border-color:var(--muted)}
-.chip[aria-pressed="true"]{background:var(--hydro);border-color:var(--hydro);color:var(--void)}
-
-.frames{list-style:none;margin:0;padding:0}
-.frame{
-  display:grid;grid-template-columns:96px 1fr;gap:18px;align-items:center;
-  padding:18px 10px 18px 4px;border-bottom:1px solid var(--line);
-  cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;
-  width:100%;text-align:left;color:inherit;font:inherit;
-  transition:background .18s,padding-left .18s;
-}
-.frame:hover,.frame.is-active{background:rgba(107,192,180,.07);padding-left:12px}
-.thumb{aspect-ratio:4/3;border-radius:2px;position:relative;overflow:hidden}
-.thumb::after{content:"";position:absolute;inset:0;background-image:var(--grain);mix-blend-mode:overlay;opacity:.5}
-.frame h3{font-family:"Instrument Serif",serif;font-weight:400;font-size:21px;margin:0 0 5px;line-height:1.2}
-.meta{display:flex;flex-wrap:wrap;gap:6px 14px}
-
-/* ---------- pins ---------- */
-.pin{
-  width:34px;height:26px;border-radius:2px;border:1.5px solid rgba(236,231,218,.55);
-  box-shadow:0 3px 12px rgba(0,0,0,.6);transition:transform .2s,border-color .2s;
-}
-.pin.is-active{border-color:var(--gold);transform:scale(1.5);z-index:400}
-
-/* ---------- lightbox ---------- */
-.viewer{
-  position:fixed;inset:0;z-index:900;background:rgba(4,9,8,.96);
-  display:none;place-items:center;padding:34px;
-}
-.viewer.open{display:grid}
-.plate{width:min(940px,100%)}
-.plate .art{border-radius:3px;position:relative;overflow:hidden;display:flex;justify-content:center;align-items:center;background:var(--ground)}
-.plate .art.bos{aspect-ratio:3/2}
-.plate .art img{max-width:100%;max-height:72vh;display:block;object-fit:contain}
-.plate .art::after{content:"";position:absolute;inset:0;background-image:var(--grain);mix-blend-mode:overlay;opacity:.45}
-.plate h3{font-family:"Instrument Serif",serif;font-weight:400;font-size:27px;margin:20px 0 8px}
-.exif{display:flex;flex-wrap:wrap;gap:8px 22px;padding-top:14px;border-top:1px solid var(--line);margin-top:14px}
-.controls{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:22px}
-.ghost{
-  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-  background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:9px 16px;cursor:pointer;transition:.18s;
-}
-.ghost:hover{color:var(--void);background:var(--paper);border-color:var(--paper)}
-
-@media (max-width:900px){
-  .atlas{grid-template-columns:1fr}
-  .mapwrap{height:56vh;border-right:0;border-bottom:1px solid var(--line)}
-  .column{padding:40px 22px 70px}
-  footer{padding-left:22px;padding-right:22px}
-    .topbar nav a:nth-child(3){display:none}
-}
+.band > p{color:var(--muted);margin:0 0 26px;line-height:1.6;max-width:52ch;font-size:14px}
+footer{max-width:1080px;margin:0 auto}
+#bolum-grid,#arac-grid{margin:0}
 </style>
 </head>
 <body>
 
 <header class="topbar">
-  <span class="marka">
-    <a class="wordmark" href="../index.html" id="wordmark">Atlas</a>
-    <span class="sep">/</span>
-    <span class="sayfa">Fotoğraf atlası</span>
-  </span>
+  <a class="wordmark" href="index.html" id="wordmark">Atlas</a>
   <nav class="mono">
-    <a href="../index.html">← Ana sayfa</a>
-    <a href="../araclar/ekleyici.html">Ekleyici</a>
+    <a href="#bolumler">Bölümler</a>
+    <a href="#araclar">Araçlar</a>
   </nav>
 </header>
 
-<main class="atlas" id="kareler">
-  <div class="mapwrap">
-    <div id="map"></div>
-    <div class="readout">
-      <span class="mono">Konum</span>
-      <b id="coords">—</b>
-      <b id="placename" style="color:var(--paper)"></b>
-    </div>
-  </div>
+<section class="hero">
+  <p class="mono" id="etiket">Kişisel site</p>
+  <h1 id="baslik">—</h1>
+  <p id="tanim"></p>
+</section>
 
-  <div class="column">
-    <p class="eyebrow mono">Fotoğraf arşivi · <span id="count">0</span> kare</p>
-    <h1 id="baslik">Atlas</h1>
-    <p class="lede" id="giris"></p>
+<section class="band" id="bolumler">
+  <h2>Bölümler</h2>
+  <p>Hobilerimden çıkan şeyler.</p>
+  <div class="grid" id="bolum-grid"></div>
+</section>
 
-    <div class="filters" id="filters"></div>
-    <ul class="frames" id="frames"></ul>
-    <p style="margin:26px 0 0">
-      <a class="btn" href="../araclar/ekleyici.html">+ Fotoğraf ekle</a>
-    </p>
-  </div>
-</main>
+<section class="band" id="araclar">
+  <h2>Araçlar</h2>
+  <p>Kendim için yazdım ama kimseye ait değiller — aç, kendi işin için kullan. Hepsi tarayıcıda çalışıyor, kaydolmak gerekmiyor, dosyaların bilgisayarından çıkmıyor.</p>
+  <div class="grid" id="arac-grid"></div>
+</section>
 
-
-<footer id="hakkinda">
+<footer>
   <span class="mono" id="altyazi"></span>
-  <a class="mono" href="../index.html" style="text-decoration:none">← Ana sayfa</a>
+  <span class="mono">Harita verileri: OpenStreetMap</span>
 </footer>
 
-<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Fotoğraf">
-  <div class="plate">
-    <div class="art" id="v-art"></div>
-    <h3 id="v-title"></h3>
-    <p class="mono" id="v-place"></p>
-    <div class="exif" id="v-exif"></div>
-    <div class="controls">
-      <div style="display:flex;gap:10px">
-        <button class="ghost" id="prev">← Önceki</button>
-        <button class="ghost" id="next">Sonraki →</button>
-      </div>
-      <button class="ghost" id="close">Kapat (Esc)</button>
-    </div>
-  </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-/* Veri dosyalarını her seferinde taze çek — tarayıcı eski kopyayı tutmasın */
 function yukle(src){
   return new Promise(bitti => {
     const el = document.createElement('script');
@@ -164,20 +67,9 @@ function yukle(src){
     document.head.appendChild(el);
   });
 }
-(async () => {
-  const t = Date.now();
-  await yukle('../ortak/ayarlar.js?t=' + t);
-  await yukle('fotograflar.js?t=' + t);
-  baslat();
-})();
+yukle('ortak/ayarlar.js?t=' + Date.now()).then(baslat);
 
 function baslat(){
-if(typeof frames === "undefined"){
-  document.getElementById("frames").innerHTML='<li style="padding:26px 0;color:var(--muted);line-height:1.6">Fotoğraf listesi bulunamadı. <b style="color:var(--paper)">fotograflar.js</b> dosyasının bu sayfayla aynı klasörde olduğundan emin ol.</li>';
-  throw new Error("frames yok");
-}
-
-/* ---------- ayarlar ---------- */
 
 /* ---------- eksik dosya uyarısı ---------- */
 (function(){
@@ -186,8 +78,8 @@ if(typeof frames === "undefined"){
   if(temaVar && ayarVar) return;
 
   const eksik = [];
-  if(!temaVar) eksik.push('..//ortak/tema.css');
-  if(!ayarVar) eksik.push('..//ortak/ayarlar.js');
+  if(!temaVar) eksik.push('/ortak/tema.css');
+  if(!ayarVar) eksik.push('/ortak/ayarlar.js');
 
   const kutu = document.createElement('div');
   kutu.setAttribute('style',
@@ -202,143 +94,28 @@ if(typeof frames === "undefined"){
   document.body.style.paddingTop = '96px';
 })();
 
-const S = typeof site === 'undefined' ? {} : site;
-const A = Object.assign({baslik:"Nerede durduğumun|haritası.", giris:"", altYazi:S.altYazi||""},
-  typeof ayarlar === 'undefined' ? {} : ayarlar);
-const tamAd = [S.ad, S.ikinciAd].filter(Boolean).join(' ') || 'Atlas';
-document.title = tamAd + ' — fotoğraf atlası';
-document.getElementById('wordmark').innerHTML = (S.ad||'Atlas') + (S.ikinciAd ? ' <em>'+S.ikinciAd+'</em>' : '');
-document.getElementById('baslik').innerHTML = A.baslik.split('|').map((p,i)=> i===1 ? '<em>'+p+'</em>' : p).join('<br>');
-if(A.giris) document.getElementById('giris').textContent = A.giris;
-document.getElementById('altyazi').textContent = [tamAd, new Date().getFullYear(), A.altYazi].filter(Boolean).join(' · ');
+const S = typeof site === 'undefined' ? {ad:'Atlas'} : site;
+const tamAd = [S.ad, S.ikinciAd].filter(Boolean).join(' ');
+document.title = tamAd;
+document.getElementById('wordmark').innerHTML = S.ad + (S.ikinciAd ? ' <em>' + S.ikinciAd + '</em>' : '');
+document.getElementById('baslik').innerHTML = S.ad + (S.ikinciAd ? '<br><em>' + S.ikinciAd + '</em>' : '');
+document.getElementById('tanim').textContent = S.tanim || '';
+document.getElementById('altyazi').textContent = [tamAd, new Date().getFullYear(), S.altYazi].filter(Boolean).join(' · ');
 
-/* ---------- yardımcılar ---------- */
-const art = f => f.src
-  ? `background-image:url('${f.src}');background-size:cover;background-position:center`
-  : `background-image:linear-gradient(148deg, ${f.tone[0]} 0%, ${f.tone[1]} 100%)`;
-const dms = (v,pos,neg) => `${Math.abs(v).toFixed(4)}° ${v>=0?pos:neg}`;
-const geo = f => typeof f.lat === 'number' && typeof f.lng === 'number' && !(f.lat===0 && f.lng===0);
-const teknik = f => f.teknik === false ? [] : [f.cam, f.lens, f.exp].filter(Boolean);
-const konum = f => geo(f) ? `${dms(f.lat,'K','G')} ${dms(f.lng,'D','B')}` : 'konum yok';
-const trDate = d => new Date(d).toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
-
-const listEl = document.getElementById('frames');
-const filterEl = document.getElementById('filters');
-let markers = [], visible = [...frames.keys()], activeIdx = null;
-
-/* ---------- harita ---------- */
-const map = L.map('map',{zoomControl:true,scrollWheelZoom:false}).setView([45,22],4);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
-  attribution:'&copy; OpenStreetMap katkıcıları', maxZoom:19
-}).addTo(map);
-map.on('click',()=>map.scrollWheelZoom.enable());
-
-frames.forEach((f,i)=>{
-  if(!geo(f)){ markers.push(null); return; }
-  const icon = L.divIcon({html:`<div class="pin" style="${art(f)}"></div>`,className:'',iconSize:[34,26],iconAnchor:[17,13]});
-  const m = L.marker([f.lat,f.lng],{icon,keyboard:true,title:f.title}).addTo(map);
-  m.on('click',()=>{focus(i,true);openViewer(i)});
-  m.on('mouseover',()=>focus(i,false));
-  markers.push(m);
-});
-
-/* ---------- liste ---------- */
-function render(){
-  listEl.innerHTML = '';
-  visible.forEach(i=>{
-    const f = frames[i];
-    const li = document.createElement('li');
-    li.innerHTML = `<button class="frame" data-i="${i}">
-        <span class="thumb" style="${art(f)}"></span>
-        <span>
-          <h3>${f.title}</h3>
-          <span class="meta">
-            <span class="mono">${f.place}</span>
-            <span class="mono">${trDate(f.date)}</span>
-            ${f.teknik !== false && f.cam ? `<span class="mono">${f.cam}</span>` : ''}
-            <span class="mono" style="color:${geo(f)?'var(--hydro)':'var(--muted)'}">${konum(f)}</span>
-          </span>
-        </span>
-      </button>`;
-    listEl.appendChild(li);
-  });
-  document.getElementById('count').textContent = visible.length;
-  if(!frames.length){
-    listEl.innerHTML = '<li style="padding:30px 0;color:var(--muted);line-height:1.7">'
-      + 'Henüz fotoğraf yok.<br><a href="../araclar/ekleyici.html" style="color:var(--hydro)">Fotoğraf ekleyiciyi aç</a>'
-      + ' — fotoğrafları sürükle, gerisini o halleder.</li>';
-  }
-  listEl.querySelectorAll('.frame').forEach(b=>{
-    const i = +b.dataset.i;
-    b.addEventListener('mouseenter',()=>focus(i,false));
-    b.addEventListener('focus',()=>focus(i,false));
-    b.addEventListener('click',()=>{focus(i,true);openViewer(i)});
-  });
+function kartlar(liste, hedef){
+  const el = document.getElementById(hedef);
+  el.innerHTML = (liste || []).map(k => {
+    const govde = `
+      <p class="mono tag">${k.etiket || ''}</p>
+      <h3>${k.ad}${k.yol ? ' <span class="arrow">→</span>' : ''}</h3>
+      <p>${k.not || ''}</p>`;
+    return k.yol
+      ? `<a class="cell" href="${k.yol}">${govde}</a>`
+      : `<article class="cell is-soon">${govde}</article>`;
+  }).join('');
 }
-
-function focus(i,fly){
-  activeIdx = i;
-  markers.forEach((m,j)=>m?.getElement()?.querySelector('.pin')?.classList.toggle('is-active',i===j));
-  listEl.querySelectorAll('.frame').forEach(b=>b.classList.toggle('is-active',+b.dataset.i===i));
-  document.getElementById('coords').textContent = konum(frames[i]);
-  document.getElementById('placename').textContent = frames[i].place;
-  if(fly && geo(frames[i])) map.flyTo([frames[i].lat,frames[i].lng],9,{duration:.9});
-}
-
-/* ---------- filtreler ---------- */
-const places = [...new Set(frames.map(f=>f.place.split(',').pop().trim()))].sort();
-['Tümü',...places].forEach((p,k)=>{
-  const b = document.createElement('button');
-  b.className='chip'; b.textContent=p; b.setAttribute('aria-pressed', k===0);
-  b.addEventListener('click',()=>{
-    filterEl.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed','false'));
-    b.setAttribute('aria-pressed','true');
-    visible = frames.map((f,i)=>i).filter(i=> p==='Tümü' || frames[i].place.endsWith(p));
-    render();
-    const pts = visible.filter(i=>geo(frames[i])).map(i=>[frames[i].lat,frames[i].lng]);
-    if(pts.length) map.flyToBounds(L.latLngBounds(pts),{padding:[70,70],maxZoom:9,duration:.9});
-  });
-  filterEl.appendChild(b);
-});
-
-/* ---------- görüntüleyici ---------- */
-const viewer = document.getElementById('viewer');
-function openViewer(i){
-  const f = frames[i]; activeIdx = i;
-  const sahne = document.getElementById('v-art');
-  if(f.src){
-    sahne.className = 'art';
-    sahne.style.cssText = '';
-    sahne.innerHTML = `<img src="${f.src}" alt="${(f.title||'').replace(/"/g,'&quot;')}">`;
-  }else{
-    sahne.className = 'art bos';
-    sahne.innerHTML = '';
-    sahne.style.cssText = art(f);
-  }
-  document.getElementById('v-title').textContent = f.title;
-  document.getElementById('v-place').textContent = `${f.place} — ${trDate(f.date)}`;
-  document.getElementById('v-exif').innerHTML =
-    [...teknik(f), konum(f)]
-    .map(x=>`<span class="mono">${x}</span>`).join('');
-  viewer.classList.add('open');
-  document.getElementById('close').focus();
-}
-const step = d => { const p = visible.indexOf(activeIdx); const n = visible[(p+d+visible.length)%visible.length]; focus(n,true); openViewer(n); };
-document.getElementById('next').onclick = ()=>step(1);
-document.getElementById('prev').onclick = ()=>step(-1);
-document.getElementById('close').onclick = ()=>viewer.classList.remove('open');
-viewer.addEventListener('click',e=>{if(e.target===viewer)viewer.classList.remove('open')});
-document.addEventListener('keydown',e=>{
-  if(!viewer.classList.contains('open')) return;
-  if(e.key==='Escape') viewer.classList.remove('open');
-  if(e.key==='ArrowRight') step(1);
-  if(e.key==='ArrowLeft') step(-1);
-});
-
-/* ---------- başlat ---------- */
-render();
-const tumPts = frames.filter(geo).map(f=>[f.lat,f.lng]);
-if(tumPts.length) map.fitBounds(L.latLngBounds(tumPts),{padding:[60,60]});
+kartlar(typeof bolumler === 'undefined' ? [] : bolumler, 'bolum-grid');
+kartlar(typeof araclar === 'undefined' ? [] : araclar, 'arac-grid');
 }
 </script>
 </body>

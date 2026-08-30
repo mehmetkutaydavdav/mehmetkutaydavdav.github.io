@@ -58,6 +58,17 @@ ayarlar bloğuna dokunmaz.
 Firefox ve Safari'de klasör bağlama yok; orada indirip elle
 taşırsın, sayfa anlatıyor.
 
+## Güncelleme yaparken
+
+Yeni dosya sürümü aldığında **şu ikisine dokunma**:
+
+    atlas/fotograflar.js      Ayarların ve kare listen
+    atlas/fotograflar/        Fotoğraflarının kendisi
+
+Bu ikisi sana ait, verdiğim paketlerde yer almaz. `atlas`
+klasörünü olduğu gibi değiştirirsen fotoğrafların silinir —
+sadece `atlas/index.html` dosyasını değiştir.
+
 ## Yayınlamak
 
 GitHub'da `kullaniciadin.github.io` adıyla herkese açık bir depo

@@ -372,6 +372,20 @@ async function add(file){
     teknik: true,
     preview: URL.createObjectURL(await shrink(file, 420))
   };
+  // Bu dosya sitede zaten varsa yazdıklarını koru, sıfırdan sorma
+  const eski = kayitli.find(k => k.src === 'fotograflar/web/' + item.name);
+  if(eski){
+    item.mevcut = true;
+    if(eski.title) item.title = eski.title;
+    if(eski.place) item.place = eski.place;
+    if(eski.lat !== '' && eski.lat != null){ item.lat = eski.lat; item.lng = eski.lng; }
+    if(eski.date) item.date = eski.date;
+    if(eski.cam)  item.cam  = eski.cam;
+    if(eski.lens) item.lens = eski.lens;
+    if(eski.exp)  item.exp  = eski.exp;
+    item.teknik = eski.teknik !== false;
+  }
+
   items.push(item);
   draw();
 }
@@ -389,8 +403,8 @@ function liste(tur){ return tur === 'yeni' ? items : kayitli; }
 function kartHtml(it, i, tur){
   const dosyaAdi = tur === 'yeni' ? ('fotograflar/web/' + it.name) : it.src;
   return `
-    <img src="${it.preview || ''}" alt="" data-yedek="${it.yedek || ''}"
-         onerror="if(this.dataset.yedek && this.src!==this.dataset.yedek){this.src=this.dataset.yedek;}else{this.style.opacity=.2;this.title='fotoğraf bulunamadı';}">
+    <img src="${it.preview || ''}" alt="" data-yedek="${it.yedek || ''}" data-kart="${tur}-${i}"
+         onerror="if(this.dataset.yedek && this.src!==this.dataset.yedek){this.src=this.dataset.yedek;}else{this.style.opacity=.15;const u=document.querySelector('[data-eksik=\'' + this.dataset.kart + '\']'); if(u) u.style.display='inline';}">
     <div class="fields">
       <div class="row"><label>Başlık</label><input data-t="${tur}" data-i="${i}" data-k="title" value="${(it.title||'').replace(/"/g,'&quot;')}"></div>
       <div class="row"><label>Yer</label><input data-t="${tur}" data-i="${i}" data-k="place" value="${(it.place||'').replace(/"/g,'&quot;')}" placeholder="Kaş, Antalya"></div>
@@ -416,6 +430,8 @@ function kartHtml(it, i, tur){
       </details>
       <div class="mono readonly">
         ${dosyaAdi}
+        ${it.mevcut ? '<br><span style="color:var(--hydro)">sitede zaten var — yazdıkların korundu, kaydedince fotoğraf yenilenir</span>' : ''}
+        <br><span class="warn" data-eksik="${tur}-${i}" style="display:none">bu dosya depoda yok — asıl fotoğrafı tekrar sürükleyip kaydet</span>
         <br><span class="warn" data-nogeo style="display:${(it.lat === '' || it.lat === null || it.lat === undefined) ? 'inline' : 'none'}">konum yok — haritadan seç ya da elle gir</span>
         ${it.refYok ? '<br><span class="warn">yarım küre bilgisi eksik — haritada kontrol et</span>' : ''}
       </div>
@@ -520,7 +536,7 @@ function blok(o){
     tone: ${JSON.stringify(o.tone || ["#15272B", "#5E8F86"])}
   }`;
 }
-const olarakKayit = it => ({...it, src: 'fotograflar/web/' + it.name});
+const olarakKayit = ({preview, yedek, refYok, file, name, mevcut, ...t}) => ({...t, src: 'fotograflar/web/' + name});
 
 function code(){
   outEl.value = items.map(it => blok(olarakKayit(it)) + ',').join('\n\n');
