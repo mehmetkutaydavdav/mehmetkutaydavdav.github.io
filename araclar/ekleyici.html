@@ -391,6 +391,7 @@ function devral(item, eski){
   if(eski.exp)  item.exp  = eski.exp;
   if(eski.ulke) item.ulke = eski.ulke;
   if(eski.sehir) item.sehir = eski.sehir;
+  if(eski.gizli) item.gizli = true;
   item.teknik = eski.teknik !== false;
 }
 
@@ -477,6 +478,10 @@ function kartHtml(it, i, tur){
           </label>
         </div>
       </details>
+      <label style="display:flex;gap:9px;align-items:center;text-transform:none;letter-spacing:0;font-size:13px;color:${it.gizli ? 'var(--gold)' : '#BECAC6'};cursor:pointer;margin-top:2px">
+        <input type="checkbox" data-t="${tur}" data-i="${i}" data-k="gizli" ${it.gizli ? 'checked' : ''} style="width:auto;margin:0">
+        Taslak — sitede görünmesin
+      </label>
       <div class="mono readonly">
         ${dosyaAdi}
         ${it.mevcut ? '<br><span style="color:var(--hydro)">sitede zaten var — yazdıkların korundu, kaydedince fotoğraf yenilenir</span>' : ''}
@@ -488,6 +493,7 @@ function kartHtml(it, i, tur){
         <a class="btn tiny" data-verify style="display:${(it.lat === '' || it.lat == null) ? 'none' : 'inline-block'}" target="_blank" rel="noopener"
            href="${(it.lat === '' || it.lat == null) ? '#' : `https://www.openstreetmap.org/?mlat=${it.lat}&mlon=${it.lng}#map=14/${it.lat}/${it.lng}`}">Haritada kontrol et</a>
         <button class="btn tiny" data-t="${tur}" data-pick="${i}">Haritadan seç</button>
+        ${i > 0 ? `<button class="btn tiny" data-t="${tur}" data-onceki="${i}">Önceki karenin konumu</button>` : ''}
         <button class="btn tiny" data-t="${tur}" data-fuzz="${i}">Yaklaşıklaştır</button>
         <button class="btn tiny" data-t="${tur}" data-del="${i}">${tur === 'yeni' ? 'Çıkar' : 'Siteden kaldır'}</button>
       </div>
@@ -497,9 +503,22 @@ function kartHtml(it, i, tur){
 function bagla(el, tur){
   el.querySelectorAll('input[type=checkbox]').forEach(box => {
     box.addEventListener('change', e => {
-      liste(tur)[+e.target.dataset.i].teknik = e.target.checked;
-      degisti = true; code();
+      const it = liste(tur)[+e.target.dataset.i];
+      const k = e.target.dataset.k;
+      if(k === 'gizli') it.gizli = e.target.checked || undefined;
+      else it.teknik = e.target.checked;
+      degisti = true;
+      if(k === 'gizli') ciz(); else code();
     });
+  });
+  el.querySelectorAll('[data-onceki]').forEach(b => b.onclick = () => {
+    const l = liste(b.dataset.t), i = +b.dataset.onceki, o = l[i - 1];
+    if(!o) return;
+    l[i].lat = o.lat; l[i].lng = o.lng;
+    if(o.place) l[i].place = o.place;
+    if(o.ulke) l[i].ulke = o.ulke;
+    if(o.sehir) l[i].sehir = o.sehir;
+    degisti = true; ciz();
   });
   el.querySelectorAll('input:not([type=checkbox])').forEach(inp => {
     inp.addEventListener('input', e => {
@@ -600,7 +619,7 @@ function blok(o){
     lat: ${lat}, lng: ${lng},
     date: "${q(o.date || '')}",
     ulke: "${q(o.ulke || '')}", sehir: "${q(o.sehir || '')}",
-    cam: "${q(o.cam || '')}", lens: "${q(o.lens || '')}", exp: "${q(o.exp || '')}",${o.teknik === false ? '\n    teknik: false,' : ''}
+    cam: "${q(o.cam || '')}", lens: "${q(o.lens || '')}", exp: "${q(o.exp || '')}",${o.teknik === false ? '\n    teknik: false,' : ''}${o.gizli ? '\n    gizli: true,' : ''}
     src: "${q(o.src)}",
     tone: ${JSON.stringify(o.tone || ["#15272B", "#5E8F86"])}
   }`;

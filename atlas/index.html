@@ -177,6 +177,12 @@ if(typeof frames === "undefined"){
   throw new Error("frames yok");
 }
 
+/* Gizli işaretliler sitede görünmez; kalanlar tarihe göre yeniden eskiye sıralanır */
+const kareler = frames
+  .filter(f => f.gizli !== true)
+  .slice()
+  .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+
 /* ---------- ayarlar ---------- */
 
 /* ---------- eksik dosya uyarısı ---------- */
@@ -227,9 +233,9 @@ const benzersiz = (list, alan) =>
   new Set(list.map(f => sadelestir(f[alan])).filter(Boolean)).size;
 
 function sayacYaz(){
-  const k = frames.length;
-  const sehir = benzersiz(frames, 'sehir');
-  const ulke = benzersiz(frames, 'ulke');
+  const k = kareler.length;
+  const sehir = benzersiz(kareler, 'sehir');
+  const ulke = benzersiz(kareler, 'ulke');
   document.getElementById('sayac').textContent =
     ['Fotoğraf arşivi', k + ' kare',
      sehir ? sehir + ' şehir' : '',
@@ -251,7 +257,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
 }).addTo(map);
 map.on('click',()=>map.scrollWheelZoom.enable());
 
-frames.forEach((f,i)=>{
+kareler.forEach((f,i)=>{
   if(!geo(f)){ markers.push(null); return; }
   const icon = L.divIcon({html:`<div class="pin" style="${art(f)}"></div>`,className:'',iconSize:[34,26],iconAnchor:[17,13]});
   const m = L.marker([f.lat,f.lng],{icon,keyboard:true,title:f.title}).addTo(map);
@@ -264,7 +270,7 @@ frames.forEach((f,i)=>{
 function render(){
   listEl.innerHTML = '';
   visible.forEach(i=>{
-    const f = frames[i];
+    const f = kareler[i];
     const li = document.createElement('li');
     li.innerHTML = `<button class="frame" data-i="${i}">
         <span class="thumb" style="${art(f)}"></span>
@@ -281,7 +287,7 @@ function render(){
     listEl.appendChild(li);
   });
   sayacYaz();
-  if(!frames.length){
+  if(!kareler.length){
     listEl.innerHTML = '<li style="padding:30px 0;color:var(--muted);line-height:1.7">'
       + 'Henüz fotoğraf yok.<br><a href="../araclar/ekleyici.html" style="color:var(--hydro)">Fotoğraf ekleyiciyi aç</a>'
       + ' — fotoğrafları sürükle, gerisini o halleder.</li>';
@@ -298,23 +304,23 @@ function focus(i,fly){
   activeIdx = i;
   markers.forEach((m,j)=>m?.getElement()?.querySelector('.pin')?.classList.toggle('is-active',i===j));
   listEl.querySelectorAll('.frame').forEach(b=>b.classList.toggle('is-active',+b.dataset.i===i));
-  document.getElementById('coords').textContent = konum(frames[i]);
-  document.getElementById('placename').textContent = frames[i].place;
-  if(fly && geo(frames[i])) map.flyTo([frames[i].lat,frames[i].lng],9,{duration:.9});
+  document.getElementById('coords').textContent = konum(kareler[i]);
+  document.getElementById('placename').textContent = kareler[i].place;
+  if(fly && geo(kareler[i])) map.flyTo([kareler[i].lat,kareler[i].lng],9,{duration:.9});
 }
 
 /* ---------- filtreler ---------- */
 const etiket = f => (f.ulke || '').trim() || String(f.place||'').split(',').pop().trim();
-const places = [...new Set(frames.map(etiket).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'tr'));
+const places = [...new Set(kareler.map(etiket).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'tr'));
 ['Tümü',...places].forEach((p,k)=>{
   const b = document.createElement('button');
   b.className='chip'; b.textContent=p; b.setAttribute('aria-pressed', k===0);
   b.addEventListener('click',()=>{
     filterEl.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed','false'));
     b.setAttribute('aria-pressed','true');
-    visible = frames.map((f,i)=>i).filter(i=> p==='Tümü' || etiket(frames[i]) === p);
+    visible = kareler.map((f,i)=>i).filter(i=> p==='Tümü' || etiket(kareler[i]) === p);
     render();
-    const pts = visible.filter(i=>geo(frames[i])).map(i=>[frames[i].lat,frames[i].lng]);
+    const pts = visible.filter(i=>geo(kareler[i])).map(i=>[kareler[i].lat,kareler[i].lng]);
     if(pts.length) map.flyToBounds(L.latLngBounds(pts),{padding:[70,70],maxZoom:9,duration:.9});
   });
   filterEl.appendChild(b);
@@ -323,7 +329,7 @@ const places = [...new Set(frames.map(etiket).filter(Boolean))].sort((a,b)=>a.lo
 /* ---------- görüntüleyici ---------- */
 const viewer = document.getElementById('viewer');
 function openViewer(i){
-  const f = frames[i]; activeIdx = i;
+  const f = kareler[i]; activeIdx = i;
   const sahne = document.getElementById('v-art');
   if(f.src){
     sahne.className = 'art';
@@ -356,7 +362,7 @@ document.addEventListener('keydown',e=>{
 
 /* ---------- başlat ---------- */
 render();
-const tumPts = frames.filter(geo).map(f=>[f.lat,f.lng]);
+const tumPts = kareler.filter(geo).map(f=>[f.lat,f.lng]);
 if(tumPts.length) map.fitBounds(L.latLngBounds(tumPts),{padding:[60,60]});
 }
 </script>
