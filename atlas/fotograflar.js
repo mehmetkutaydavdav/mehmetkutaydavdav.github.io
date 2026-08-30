@@ -85,6 +85,17 @@ const frames = [
     cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/10 · ISO 100",
     src: "fotograflar/web/img-4630.jpg",
     tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Pantheon",
+    place: "Jardin du Luxembourg, Paris",
+    lat: 48.84786, lng: 2.338439,
+    date: "2026-06-14",
+    ulke: "Fransa", sehir: "Paris",
+    cam: "Canon Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/10 · f/4.5 · ISO 6400",
+    src: "fotograflar/web/img-8373.jpg",
+    tone: ["#15272B","#5E8F86"]
   }
 
 ];
