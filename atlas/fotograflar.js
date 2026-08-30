@@ -55,7 +55,7 @@ const frames = [
   },
 
   {
-    title: "Aşk bir çocuğun parmaklarının ucundadır",
+    title: "Aşk bir çocuğun parmaklarının ucundadır.",
     place: "Barcelona",
     lat: 41.389211, lng: 2.186407,
     date: "2026-03-07",
@@ -81,7 +81,7 @@ const frames = [
     place: "Mont Saint Michel, Normandy",
     lat: 48.62373, lng: -1.515076,
     date: "2025-05-03",
-    ulke: "Fransa", sehir: "",
+    ulke: "Fransa", sehir: "Pontorson",
     cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/10 · ISO 100",
     src: "fotograflar/web/img-4630.jpg",
     tone: ["#15272B","#5E8F86"]
