@@ -46,7 +46,7 @@ const frames = [
   {
     title: "Institut de France",
     place: "Pont de Arts, Paris",
-    lat: 48.858911, lng: 2.337807,
+    lat: 48.86, lng: 2.34,
     date: "2025-05-19",
     cam: "Canon Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/10 · f/4.5 · ISO 6400",
     src: "fotograflar/web/img-4926.jpg",
@@ -56,10 +56,20 @@ const frames = [
   {
     title: "Topkapı'nın Çinileri",
     place: "Topkapı Palace, Istanbul",
-    lat: 41.012705, lng: 28.9833,
+    lat: 41.01, lng: 28.98,
     date: "2025-11-03",
     cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/4.5 · ISO 2500",
     src: "fotograflar/web/img-6696.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Aşk bir çocuğun parmaklarının ucundadır.",
+    place: "Barcelona",
+    lat: 41.389211, lng: 2.186407,
+    date: "2026-03-07",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/640 · f/5 · ISO 800",
+    src: "fotograflar/web/img-5720.jpg",
     tone: ["#15272B","#5E8F86"]
   }
 
