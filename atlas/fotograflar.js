@@ -136,7 +136,7 @@ const frames = [
     place: "Madrid, Spain",
     lat: 40.414856, lng: -3.707587,
     date: "2024-02-06",
-    ulke: "", sehir: "",
+    ulke: "İspanya", sehir: "Madrid",
     cam: "Canon PowerShot G11", lens: "6mm", exp: "1/400 · f/2.8 · ISO 400",
     src: "fotograflar/web/img-3825.jpg",
     tone: ["#15272B","#5E8F86"]
@@ -147,9 +147,20 @@ const frames = [
     place: "Madrid, Spain",
     lat: 40.414427, lng: -3.707493,
     date: "2024-02-06",
-    ulke: "", sehir: "",
+    ulke: "İspanya", sehir: "Madrid",
     cam: "Canon PowerShot G11", lens: "6mm", exp: "1/320 · f/2.8 · ISO 400",
     src: "fotograflar/web/img-3827.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Ancient City Knidos",
+    place: "Datça, Muğla",
+    lat: 36.686213, lng: 27.374855,
+    date: "2025-08-21",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/1600 · f/5.6 · ISO 100",
+    src: "fotograflar/web/img-6501.jpg",
     tone: ["#15272B","#5E8F86"]
   }
 
