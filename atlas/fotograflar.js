@@ -162,6 +162,17 @@ const frames = [
     cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/1600 · f/5.6 · ISO 100",
     src: "fotograflar/web/img-6501.jpg",
     tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Hedef Bulundu!",
+    place: "Datça, Muğla",
+    lat: 36.720919, lng: 27.686978,
+    date: "2025-08-20",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/100 · f/5.6 · ISO 3200",
+    src: "fotograflar/web/img-6432.jpg",
+    tone: ["#15272B","#5E8F86"]
   }
 
 ];
