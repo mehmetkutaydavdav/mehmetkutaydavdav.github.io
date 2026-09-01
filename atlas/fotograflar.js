@@ -121,8 +121,8 @@ const frames = [
   },
 
   {
-    title: "Clecy",
-    place: "Clecy, Normandy",
+    title: "Clécy",
+    place: "Clécy, Normandy",
     lat: 48.915903, lng: -0.478332,
     date: "2025-05-01",
     ulke: "Fransa", sehir: "Clécy",
