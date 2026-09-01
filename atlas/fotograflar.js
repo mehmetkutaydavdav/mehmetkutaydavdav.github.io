@@ -96,6 +96,17 @@ const frames = [
     cam: "Canon Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/10 · f/4.5 · ISO 6400",
     src: "fotograflar/web/img-8373.jpg",
     tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Hotel de Ville Menton",
+    place: "Menton, France",
+    lat: 43.775388, lng: 7.502978,
+    date: "2025-05-29",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/1000 · f/5.6 · ISO 100",
+    src: "fotograflar/web/img-5207.jpg",
+    tone: ["#15272B","#5E8F86"]
   }
 
 ];
