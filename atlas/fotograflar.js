@@ -107,6 +107,28 @@ const frames = [
     cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/1000 · f/5.6 · ISO 100",
     src: "fotograflar/web/img-5207.jpg",
     tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Forest House",
+    place: "Strasbourg, France",
+    lat: 48.580355, lng: 7.739334,
+    date: "2025-05-18",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/500 · f/7.1 · ISO 100",
+    src: "fotograflar/web/img-4760.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Clecy",
+    place: "Clecy, Normandy",
+    lat: 48.915903, lng: -0.478332,
+    date: "2025-05-01",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/5.6 · ISO 100",
+    src: "fotograflar/web/img-4486.jpg",
+    tone: ["#15272B","#5E8F86"]
   }
 
 ];
