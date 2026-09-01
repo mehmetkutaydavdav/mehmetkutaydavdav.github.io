@@ -169,9 +169,20 @@ const frames = [
     place: "Datça, Muğla",
     lat: 36.720919, lng: 27.686978,
     date: "2025-08-20",
-    ulke: "", sehir: "",
+    ulke: "Türkiye", sehir: "Datça",
     cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/100 · f/5.6 · ISO 3200",
     src: "fotograflar/web/img-6432.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Kılıç Ali Paşa Cami",
+    place: "",
+    lat: null, lng: null,
+    date: "2025-11-27",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/20 · ISO 400",
+    src: "fotograflar/web/img-1510-1-1-1-1-1-1-1.jpg",
     tone: ["#15272B","#5E8F86"]
   }
 
