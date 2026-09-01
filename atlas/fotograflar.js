@@ -110,7 +110,7 @@ const frames = [
   },
 
   {
-    title: "Forest House",
+    title: "L'ami Schutz",
     place: "Strasbourg, France",
     lat: 48.580355, lng: 7.739334,
     date: "2025-05-18",
@@ -158,7 +158,7 @@ const frames = [
     place: "Datça, Muğla",
     lat: 36.686213, lng: 27.374855,
     date: "2025-08-21",
-    ulke: "", sehir: "",
+    ulke: "Türkiye", sehir: "Muğla",
     cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/1600 · f/5.6 · ISO 100",
     src: "fotograflar/web/img-6501.jpg",
     tone: ["#15272B","#5E8F86"]
