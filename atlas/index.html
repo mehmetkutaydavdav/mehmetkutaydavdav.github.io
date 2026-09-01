@@ -125,6 +125,9 @@ h1 em{font-style:italic;color:var(--hydro)}
     <p class="lede" id="giris"></p>
 
     <div class="filters" id="filters"></div>
+    <div style="display:flex;justify-content:flex-end;margin:-14px 0 4px">
+      <button class="chip" id="sira" title="Sıralamayı değiştir">↓ Yeniden eskiye</button>
+    </div>
     <ul class="frames" id="frames"></ul>
     <p style="margin:26px 0 0">
       <a class="btn" href="../araclar/ekleyici.html">+ Fotoğraf ekle</a>
@@ -178,10 +181,14 @@ if(typeof frames === "undefined"){
 }
 
 /* Gizli işaretliler sitede görünmez; kalanlar tarihe göre yeniden eskiye sıralanır */
-const kareler = frames
-  .filter(f => f.gizli !== true)
-  .slice()
-  .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+const kareler = frames.filter(f => f.gizli !== true);
+let yeniden = true;   // true: yeniden eskiye, false: eskiden yeniye
+
+/* Görünüm sırasını değiştirir; pinlerin dizini sabit kaldığı için harita bozulmaz */
+const sirala = dizinler => dizinler.slice().sort((a, b) => {
+  const x = String(kareler[a].date || ''), y = String(kareler[b].date || '');
+  return yeniden ? y.localeCompare(x) : x.localeCompare(y);
+});
 
 /* ---------- ayarlar ---------- */
 
@@ -318,7 +325,8 @@ const places = [...new Set(kareler.map(etiket).filter(Boolean))].sort((a,b)=>a.l
   b.addEventListener('click',()=>{
     filterEl.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed','false'));
     b.setAttribute('aria-pressed','true');
-    visible = kareler.map((f,i)=>i).filter(i=> p==='Tümü' || etiket(kareler[i]) === p);
+    aktifFiltre = p;
+    visible = sirala(kareler.map((f,i)=>i).filter(i=> p==='Tümü' || etiket(kareler[i]) === p));
     render();
     const pts = visible.filter(i=>geo(kareler[i])).map(i=>[kareler[i].lat,kareler[i].lng]);
     if(pts.length) map.flyToBounds(L.latLngBounds(pts),{padding:[70,70],maxZoom:9,duration:.9});
@@ -360,7 +368,17 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowLeft') step(-1);
 });
 
+let aktifFiltre = 'Tümü';
+
+document.getElementById('sira').onclick = () => {
+  yeniden = !yeniden;
+  document.getElementById('sira').textContent = yeniden ? '↓ Yeniden eskiye' : '↑ Eskiden yeniye';
+  visible = sirala(visible);
+  render();
+};
+
 /* ---------- başlat ---------- */
+visible = sirala([...kareler.keys()]);
 render();
 const tumPts = kareler.filter(geo).map(f=>[f.lat,f.lng]);
 if(tumPts.length) map.fitBounds(L.latLngBounds(tumPts),{padding:[60,60]});

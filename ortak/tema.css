@@ -13,6 +13,7 @@
   --muted:#8AA09C;
   --hydro:#6BC0B4;
   --gold:#C9A227;
+  --yesil:#5FBF6A;
   --nav-h:58px;
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
 }
