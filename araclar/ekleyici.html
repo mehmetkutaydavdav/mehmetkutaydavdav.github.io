@@ -34,8 +34,8 @@ h1 em{font-style:italic;color:var(--hydro)}
 .bag{display:flex;align-items:flex-start;gap:18px;justify-content:space-between;align-items:center;flex-wrap:wrap;
   background:var(--ground);border:1px solid var(--line);border-radius:4px;padding:18px 20px;margin-bottom:16px}
 .bag strong{font-family:"Instrument Serif",serif;font-weight:400;font-size:20px}
-.bag.ok{border-color:var(--yesil)}
-.bag.ok strong{color:var(--yesil)}
+.bag.ok{border-color:var(--yesil,#5FBF6A)}
+.bag.ok strong{color:var(--yesil,#5FBF6A)}
 .drop{
   border:1px dashed var(--line);border-radius:4px;padding:52px 24px;text-align:center;
   cursor:pointer;transition:.2s;background:var(--ground);
@@ -708,6 +708,42 @@ const GH = {
     return r.json();
   },
   async sha(yol){ const d = await this.oku(yol); return d ? d.sha : null; },
+
+  /* Bütün dosyaları TEK kayıtta gönderir — böylece site bir kez yayınlanır.
+     dosyalar: [{yol, base64}]  */
+  async topluYaz(dosyalar, mesaj){
+    const kok = `https://api.github.com/repos/${this.sahip}/${this.depo}/git`;
+    const iste = async (yol, secenek) => {
+      const r = await fetch(kok + yol, {
+        headers: {...this.bas(), 'Content-Type':'application/json'}, ...secenek
+      });
+      if(!r.ok) throw new Error(this.hata(r.status));
+      return r.json();
+    };
+
+    const ref = await iste('/ref/heads/' + this.dal);
+    const sonKayit = ref.object.sha;
+    const sonAgac = (await iste('/commits/' + sonKayit)).tree.sha;
+
+    const yapraklar = [];
+    for(const d of dosyalar){
+      const blob = await iste('/blobs', {
+        method:'POST', body: JSON.stringify({content: d.base64, encoding:'base64'})
+      });
+      yapraklar.push({path: d.yol, mode:'100644', type:'blob', sha: blob.sha});
+    }
+
+    const agac = await iste('/trees', {
+      method:'POST', body: JSON.stringify({base_tree: sonAgac, tree: yapraklar})
+    });
+    const kayit = await iste('/commits', {
+      method:'POST', body: JSON.stringify({message: mesaj, tree: agac.sha, parents:[sonKayit]})
+    });
+    await iste('/refs/heads/' + this.dal, {
+      method:'PATCH', body: JSON.stringify({sha: kayit.sha})
+    });
+    return kayit.sha;
+  },
   hamAdres(yol){ return `https://raw.githubusercontent.com/${this.sahip}/${this.depo}/${this.dal}/${yol}`; },
   hata(kod){
     if(kod === 401) return 'anahtar geçersiz ya da süresi dolmuş';
@@ -920,13 +956,13 @@ saveBtn.onclick = async () => {
   saveBtn.disabled = true;
   try{
     let n = 0;
+    const paket = [];        // github: hepsi tek kayıtta gidecek
     if(kaynak === 'github'){
       for(const it of items){
         n++;
-        statusEl.textContent = `fotoğraf yükleniyor ${n}/${items.length}…`;
+        statusEl.textContent = `fotoğraf hazırlanıyor ${n}/${items.length}…`;
         const blob = await shrink(it.file, secilenBoyut());
-        const yol = ATLAS + '/fotograflar/web/' + it.name;
-        await GH.yaz(yol, await b64Yap(blob), 'fotoğraf: ' + it.name, await GH.sha(yol));
+        paket.push({yol: ATLAS + '/fotograflar/web/' + it.name, base64: await b64Yap(blob)});
       }
     }else{
       statusEl.textContent = 'fotoğraflar yazılıyor…';
@@ -952,9 +988,15 @@ saveBtn.onclick = async () => {
       + 'const frames = [\n\n' + birlesik.map(blok).join(',\n\n') + '\n\n];\n';
 
     if(kaynak === 'github'){
-      const yol = ATLAS + '/fotograflar.js';
-      await GH.yaz(yol, await b64Yap(new Blob([govde], {type:'text/javascript'})),
-                   'liste güncellendi (' + birlesik.length + ' kare)', await GH.sha(yol));
+      paket.push({
+        yol: ATLAS + '/fotograflar.js',
+        base64: await b64Yap(new Blob([govde], {type:'text/javascript'}))
+      });
+      statusEl.textContent = 'depoya gönderiliyor…';
+      const mesaj = items.length
+        ? items.length + ' fotoğraf eklendi (' + birlesik.length + ' kare)'
+        : 'liste güncellendi (' + birlesik.length + ' kare)';
+      await GH.topluYaz(paket, mesaj);
     }else{
       const fh = await kok.getFileHandle('fotograflar.js', {create:true});
       const w = await fh.createWritable();
@@ -967,7 +1009,7 @@ saveBtn.onclick = async () => {
     await kayitliYukle();
     statusEl.textContent = (eklenen ? eklenen + ' kare eklendi — ' : 'değişiklikler kaydedildi — ')
       + 'sitede toplam ' + birlesik.length
-      + (kaynak === 'github' ? '. Site bir dakika içinde güncellenir.' : '. Atlas sayfasını yenile.');
+      + (kaynak === 'github' ? '. Tek kayıtta gönderildi, site ~1 dakika içinde güncellenir.' : '. Atlas sayfasını yenile.');
   }catch(err){
     statusEl.textContent = 'kaydedilemedi: ' + (err && err.message ? err.message : 'bilinmeyen hata');
   }finally{

@@ -28,7 +28,9 @@
 .readout b{font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:12px;color:var(--gold);letter-spacing:.06em}
 
 .column{padding:64px 44px 90px;max-width:640px}
-.eyebrow{margin:0 0 20px}
+.eyebrow{margin:0 0 22px;font-size:12px;color:var(--paper);letter-spacing:.1em}
+.eyebrow b{font-weight:500;color:var(--gold);font-family:"IBM Plex Mono",monospace}
+.eyebrow .soluk{color:var(--muted)}
 h1{
   font-family:"Instrument Serif",serif;font-weight:400;
   font-size:clamp(38px,5vw,58px);line-height:1.02;margin:0 0 18px;
@@ -240,13 +242,14 @@ const benzersiz = (list, alan) =>
   new Set(list.map(f => sadelestir(f[alan])).filter(Boolean)).size;
 
 function sayacYaz(){
-  const k = kareler.length;
+  const parca = (sayi, ad) => `<b>${sayi}</b> ${ad}`;
   const sehir = benzersiz(kareler, 'sehir');
   const ulke = benzersiz(kareler, 'ulke');
-  document.getElementById('sayac').textContent =
-    ['Fotoğraf arşivi', k + ' kare',
-     sehir ? sehir + ' şehir' : '',
-     ulke ? ulke + ' ülke' : ''].filter(Boolean).join(' · ');
+  document.getElementById('sayac').innerHTML =
+    ['<span class="soluk">Fotoğraf arşivi</span>',
+     parca(kareler.length, 'kare'),
+     sehir ? parca(sehir, 'şehir') : '',
+     ulke ? parca(ulke, 'ülke') : ''].filter(Boolean).join('<span class="soluk"> · </span>');
 }
 
 const teknik = f => f.teknik === false ? [] : [f.cam, f.lens, f.exp].filter(Boolean);
