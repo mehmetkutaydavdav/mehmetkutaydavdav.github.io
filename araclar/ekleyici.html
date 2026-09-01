@@ -326,18 +326,38 @@ function describe(e, fallbackDate){
 }
 
 /* ---------------- koordinattan ülke ve şehir ---------------- */
+async function osmCoz(lat, lng){
+  const r = await fetch('https://nominatim.openstreetmap.org/reverse?format=json&zoom=10&accept-language=tr'
+    + '&lat=' + (+lat) + '&lon=' + (+lng));
+  if(!r.ok) throw new Error('osm ' + r.status);
+  const a = (await r.json()).address || {};
+  return {
+    ulke: a.country || '',
+    sehir: a.city || a.town || a.village || a.municipality || a.county || a.state || ''
+  };
+}
+
+async function bdcCoz(lat, lng){
+  const r = await fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?localityLanguage=tr'
+    + '&latitude=' + (+lat) + '&longitude=' + (+lng));
+  if(!r.ok) throw new Error('bdc ' + r.status);
+  const d = await r.json();
+  return {
+    ulke: d.countryName || '',
+    sehir: d.city || d.locality || d.principalSubdivision || ''
+  };
+}
+
+/* Önce OpenStreetMap, tutmazsa ikinci servis. İkisi de olmazsa null. */
 async function tersCoz(lat, lng){
   if(lat === '' || lat == null || !isFinite(+lat)) return null;
-  try{
-    const r = await fetch('https://nominatim.openstreetmap.org/reverse?format=json&zoom=10&accept-language=tr'
-      + '&lat=' + (+lat) + '&lon=' + (+lng));
-    if(!r.ok) return null;
-    const a = (await r.json()).address || {};
-    return {
-      ulke: a.country || '',
-      sehir: a.city || a.town || a.village || a.municipality || a.county || a.state || ''
-    };
-  }catch{ return null; }
+  for(const coz of [osmCoz, bdcCoz]){
+    try{
+      const y = await coz(lat, lng);
+      if(y && (y.ulke || y.sehir)) return y;
+    }catch{ /* sıradakini dene */ }
+  }
+  return null;
 }
 
 /* ---------------- dosya adı ---------------- */
@@ -494,6 +514,7 @@ function kartHtml(it, i, tur){
            href="${(it.lat === '' || it.lat == null) ? '#' : `https://www.openstreetmap.org/?mlat=${it.lat}&mlon=${it.lng}#map=14/${it.lat}/${it.lng}`}">Haritada kontrol et</a>
         <button class="btn tiny" data-t="${tur}" data-pick="${i}">Haritadan seç</button>
         ${i > 0 ? `<button class="btn tiny" data-t="${tur}" data-onceki="${i}">Önceki karenin konumu</button>` : ''}
+        <button class="btn tiny" data-t="${tur}" data-yer="${i}">Ülke/şehri bul</button>
         <button class="btn tiny" data-t="${tur}" data-fuzz="${i}">Yaklaşıklaştır</button>
         <button class="btn tiny" data-t="${tur}" data-del="${i}">${tur === 'yeni' ? 'Çıkar' : 'Siteden kaldır'}</button>
       </div>
@@ -510,6 +531,18 @@ function bagla(el, tur){
       degisti = true;
       if(k === 'gizli') ciz(); else code();
     });
+  });
+  el.querySelectorAll('[data-yer]').forEach(b => b.onclick = async () => {
+    const it = liste(b.dataset.t)[+b.dataset.yer];
+    if(it.lat === '' || it.lat == null){ statusEl.textContent = 'önce koordinat gerekli'; return; }
+    b.disabled = true;
+    statusEl.textContent = 'konum çözülüyor…';
+    const yer = await tersCoz(it.lat, it.lng);
+    b.disabled = false;
+    if(!yer){ statusEl.textContent = 'konum servisleri cevap vermedi — elle yazabilirsin'; return; }
+    it.ulke = yer.ulke; it.sehir = yer.sehir;
+    degisti = true; ciz();
+    statusEl.textContent = [yer.sehir, yer.ulke].filter(Boolean).join(', ') + ' bulundu';
   });
   el.querySelectorAll('[data-onceki]').forEach(b => b.onclick = () => {
     const l = liste(b.dataset.t), i = +b.dataset.onceki, o = l[i - 1];
@@ -948,6 +981,18 @@ async function kayitliYukle(){
   degisti = false;
   ciz();
   if(kayitli.length) statusEl.textContent = 'sitede ' + kayitli.length + ' kare var, düzenleyebilirsin';
+
+  // ülkesi eksik kareleri sessizce tamamlamayı dene
+  const eksik = kayitli.filter(o => (!o.ulke || !o.sehir) && o.lat !== '' && o.lat != null);
+  for(const o of eksik){
+    const yer = await tersCoz(o.lat, o.lng);
+    if(yer){ o.ulke = o.ulke || yer.ulke; o.sehir = o.sehir || yer.sehir; degisti = true; }
+    await new Promise(r => setTimeout(r, 1100));
+  }
+  if(eksik.length && degisti){
+    ciz();
+    statusEl.textContent = 'eksik ülke/şehir bilgileri dolduruldu — Siteye kaydet\u2019e bas';
+  }
 }
 
 saveBtn.onclick = async () => {
@@ -1132,7 +1177,10 @@ document.getElementById('yerdoldur').onclick = async () => {
   }
   dugme.disabled = false;
   ciz();
-  statusEl.textContent = hedef.length + ' kare için bakıldı — Siteye kaydet\u2019e basmayı unutma';
+  const kalan = hedef.filter(o => !o.ulke && !o.sehir).length;
+  statusEl.textContent = (hedef.length - kalan) + '/' + hedef.length + ' kare çözüldü'
+    + (kalan ? ' — ' + kalan + ' tanesi bulunamadı, elle yazabilirsin' : '')
+    + ' · Siteye kaydet\u2019e basmayı unutma';
 };
 
 document.getElementById('clear').onclick = () => { items.length = 0; statusEl.textContent = ''; draw(); };
