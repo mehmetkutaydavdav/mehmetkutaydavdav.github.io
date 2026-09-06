@@ -178,9 +178,9 @@ const frames = [
   {
     title: "Kılıç Ali Paşa Cami",
     place: "Beyoğlu, İstanbul",
-    lat: null, lng: null,
+    lat: 41.028616, lng: 28.979793,
     date: "2025-11-27",
-    ulke: "", sehir: "",
+    ulke: "Türkiye", sehir: "İstanbul",
     cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/20 · ISO 400",
     src: "fotograflar/web/img-1510-1-1-1-1-1-1-1.jpg",
     tone: ["#15272B","#5E8F86"]
