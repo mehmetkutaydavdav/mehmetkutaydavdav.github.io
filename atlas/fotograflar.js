@@ -184,6 +184,17 @@ const frames = [
     cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/20 · ISO 400",
     src: "fotograflar/web/img-1510-1-1-1-1-1-1-1.jpg",
     tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Tophane-i Amire",
+    place: "Beyoğlu, İstanbul",
+    lat: 41.027775, lng: 28.981458,
+    date: "2025-11-27",
+    ulke: "Türkiye", sehir: "İstanbul",
+    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/200 · f/14 · ISO 200",
+    src: "fotograflar/web/img-1418-3.jpg",
+    tone: ["#15272B","#5E8F86"]
   }
 
 ];
