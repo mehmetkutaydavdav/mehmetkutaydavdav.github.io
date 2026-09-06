@@ -163,7 +163,10 @@ code{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--hydro)}
 
   <div class="cards" id="cards"></div>
 
-  <h2 id="kayitli-baslik" class="hidden">Sitedeki kareler</h2>
+  <div id="kayitli-baslik" class="hidden" style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap">
+    <h2 style="margin-bottom:0">Sitedeki kareler</h2>
+    <button class="btn tiny" id="kayitli-sira">↓ Yeniden eskiye</button>
+  </div>
   <div class="cards" id="kayitli-cards"></div>
 
   <textarea id="out" class="hidden" spellcheck="false" readonly></textarea>
@@ -462,6 +465,14 @@ const kayitli = [];
 const kayitliEl = document.getElementById('kayitli-cards');
 const kayitliBaslik = document.getElementById('kayitli-baslik');
 let degisti = false;
+let kayitliYeniden = true;   // true: yeniden eskiye
+
+function kayitliSirala(){
+  kayitli.sort((a, b) => {
+    const x = String(a.date || ''), y = String(b.date || '');
+    return kayitliYeniden ? y.localeCompare(x) : x.localeCompare(y);
+  });
+}
 
 function liste(tur){ return tur === 'yeni' ? items : kayitli; }
 
@@ -604,13 +615,20 @@ function bagla(el, tur){
   });
 }
 
+/* Kaydedilecek bir şey yoksa düğme pasif dursun */
+function kaydetDurumu(){
+  const btn = document.getElementById('save');
+  if(btn) btn.disabled = !(items.length || degisti);
+}
+
 function ciz(){
   cardsEl.innerHTML = items.map((it,i) => `<div class="card">${kartHtml(it,i,'yeni')}</div>`).join('');
   bagla(cardsEl, 'yeni');
 
+  kayitliSirala();
   kayitliEl.innerHTML = kayitli.map((it,i) => `<div class="card">${kartHtml(it,i,'kayitli')}</div>`).join('');
   bagla(kayitliEl, 'kayitli');
-  kayitliBaslik.classList.toggle('hidden', !kayitli.length);
+  kayitliBaslik.style.display = kayitli.length ? 'flex' : 'none';
 
   barEl.classList.toggle('hidden', !items.length && !kayitli.length);
 
@@ -620,6 +638,7 @@ function ciz(){
   document.getElementById('copy').classList.toggle('hidden', !elle);
   document.getElementById('dl').classList.toggle('hidden', !elle);
   code();
+  kaydetDurumu();
 }
 const draw = ciz;
 
@@ -668,6 +687,7 @@ function blok(o){
 const olarakKayit = ({preview, yedek, refYok, file, name, mevcut, ...t}) => ({...t, src: 'fotograflar/web/' + name});
 
 function code(){
+  kaydetDurumu();
   outEl.value = items.map(it => blok(olarakKayit(it)) + ',').join('\n\n');
 }
 
@@ -1164,6 +1184,13 @@ async function ara(){
 }
 document.getElementById('m-go').onclick = ara;
 document.getElementById('m-q').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); ara(); } });
+
+document.getElementById('kayitli-sira').onclick = () => {
+  kayitliYeniden = !kayitliYeniden;
+  document.getElementById('kayitli-sira').textContent =
+    kayitliYeniden ? '↓ Yeniden eskiye' : '↑ Eskiden yeniye';
+  ciz();
+};
 
 document.getElementById('yerdoldur').onclick = async () => {
   const hedef = [...items, ...kayitli].filter(o =>
