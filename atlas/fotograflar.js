@@ -44,13 +44,13 @@ const ayarlar = {
 const frames = [
 
   {
-    title: "Institut de France",
-    place: "Pont de Arts, Paris",
-    lat: 48.86, lng: 2.34,
-    date: "2025-05-19",
+    title: "Pantheon",
+    place: "Jardin du Luxembourg, Paris",
+    lat: 48.84786, lng: 2.338439,
+    date: "2026-06-14",
     ulke: "Fransa", sehir: "Paris",
     cam: "Canon Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/10 · f/4.5 · ISO 6400",
-    src: "fotograflar/web/img-4926.jpg",
+    src: "fotograflar/web/img-8373.jpg",
     tone: ["#15272B","#5E8F86"]
   },
 
@@ -66,6 +66,28 @@ const frames = [
   },
 
   {
+    title: "Kılıç Ali Paşa Cami",
+    place: "Beyoğlu, İstanbul",
+    lat: 41.028616, lng: 28.979793,
+    date: "2025-11-27",
+    ulke: "Türkiye", sehir: "İstanbul",
+    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/20 · ISO 400",
+    src: "fotograflar/web/img-1510-1-1-1-1-1-1-1.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Tophane-i Amire",
+    place: "Beyoğlu, İstanbul",
+    lat: 41.027775, lng: 28.981458,
+    date: "2025-11-27",
+    ulke: "Türkiye", sehir: "İstanbul",
+    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/200 · f/14 · ISO 200",
+    src: "fotograflar/web/img-1418-3.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
     title: "Topkapı'nın Çinileri",
     place: "Topkapı Palace, Istanbul",
     lat: 41.01, lng: 28.98,
@@ -77,24 +99,24 @@ const frames = [
   },
 
   {
-    title: "Saint-Michel",
-    place: "Mont Saint Michel, Normandy",
-    lat: 48.62373, lng: -1.515076,
-    date: "2025-05-03",
-    ulke: "Fransa", sehir: "Pontorson",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/10 · ISO 100",
-    src: "fotograflar/web/img-4630.jpg",
+    title: "Ancient City Knidos",
+    place: "Muğla, Türkiye",
+    lat: 36.686213, lng: 27.374855,
+    date: "2025-08-21",
+    ulke: "Türkiye", sehir: "Datça",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/1600 · f/5.6 · ISO 100",
+    src: "fotograflar/web/img-6501.jpg",
     tone: ["#15272B","#5E8F86"]
   },
 
   {
-    title: "Pantheon",
-    place: "Jardin du Luxembourg, Paris",
-    lat: 48.84786, lng: 2.338439,
-    date: "2026-06-14",
-    ulke: "Fransa", sehir: "Paris",
-    cam: "Canon Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/10 · f/4.5 · ISO 6400",
-    src: "fotograflar/web/img-8373.jpg",
+    title: "Hedef Bulundu!",
+    place: "Datça, Muğla",
+    lat: 36.720919, lng: 27.686978,
+    date: "2025-08-20",
+    ulke: "Türkiye", sehir: "Datça",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/100 · f/5.6 · ISO 3200",
+    src: "fotograflar/web/img-6432.jpg",
     tone: ["#15272B","#5E8F86"]
   },
 
@@ -110,6 +132,17 @@ const frames = [
   },
 
   {
+    title: "Institut de France",
+    place: "Pont de Arts, Paris",
+    lat: 48.86, lng: 2.34,
+    date: "2025-05-19",
+    ulke: "Fransa", sehir: "Paris",
+    cam: "Canon Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/10 · f/4.5 · ISO 6400",
+    src: "fotograflar/web/img-4926.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
     title: "Forest House",
     place: "Strasbourg, France",
     lat: 48.580355, lng: 7.739334,
@@ -117,6 +150,17 @@ const frames = [
     ulke: "Fransa", sehir: "Strazburg",
     cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/500 · f/7.1 · ISO 100",
     src: "fotograflar/web/img-4760.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Saint-Michel",
+    place: "Mont Saint Michel, Normandy",
+    lat: 48.62373, lng: -1.515076,
+    date: "2025-05-03",
+    ulke: "Fransa", sehir: "Pontorson",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/10 · ISO 100",
+    src: "fotograflar/web/img-4630.jpg",
     tone: ["#15272B","#5E8F86"]
   },
 
@@ -154,46 +198,24 @@ const frames = [
   },
 
   {
-    title: "Ancient City Knidos",
-    place: "Muğla, Türkiye",
-    lat: 36.686213, lng: 27.374855,
-    date: "2025-08-21",
-    ulke: "Türkiye", sehir: "Datça",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/1600 · f/5.6 · ISO 100",
-    src: "fotograflar/web/img-6501.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "Hedef Bulundu!",
-    place: "Datça, Muğla",
-    lat: 36.720919, lng: 27.686978,
-    date: "2025-08-20",
-    ulke: "Türkiye", sehir: "Datça",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/100 · f/5.6 · ISO 3200",
-    src: "fotograflar/web/img-6432.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "Kılıç Ali Paşa Cami",
+    title: "Nusretiye Cami",
     place: "Beyoğlu, İstanbul",
-    lat: 41.028616, lng: 28.979793,
+    lat: 41.027574, lng: 28.981765,
     date: "2025-11-27",
     ulke: "Türkiye", sehir: "İstanbul",
-    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/20 · ISO 400",
-    src: "fotograflar/web/img-1510-1-1-1-1-1-1-1.jpg",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/320 · f/18 · ISO 800",
+    src: "fotograflar/web/img-1458.jpg",
     tone: ["#15272B","#5E8F86"]
   },
 
   {
-    title: "Tophane-i Amire",
-    place: "Beyoğlu, İstanbul",
-    lat: 41.027775, lng: 28.981458,
+    title: "Dolmabahçe",
+    place: "Kabataş, istanbul",
+    lat: 41.036003, lng: 28.994755,
     date: "2025-11-27",
     ulke: "Türkiye", sehir: "İstanbul",
-    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/200 · f/14 · ISO 200",
-    src: "fotograflar/web/img-1418-3.jpg",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/320 · f/20 · ISO 400",
+    src: "fotograflar/web/img-1544.jpg",
     tone: ["#15272B","#5E8F86"]
   }
 
