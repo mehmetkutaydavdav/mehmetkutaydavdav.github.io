@@ -331,9 +331,12 @@ async function osmCoz(lat, lng){
     + '&lat=' + (+lat) + '&lon=' + (+lng));
   if(!r.ok) throw new Error('osm ' + r.status);
   const a = (await r.json()).address || {};
+  // Önce büyük birim: İstanbul'da "Beyoğlu" değil "İstanbul" gelsin.
+  // state en sona, yoksa Fransa'da şehir yerine bölge adı gelir.
   return {
     ulke: a.country || '',
-    sehir: a.city || a.town || a.village || a.municipality || a.county || a.state || ''
+    sehir: a.province || a.city || a.town || a.municipality
+        || a.village || a.county || a.state || ''
   };
 }
 
@@ -342,9 +345,14 @@ async function bdcCoz(lat, lng){
     + '&latitude=' + (+lat) + '&longitude=' + (+lng));
   if(!r.ok) throw new Error('bdc ' + r.status);
   const d = await r.json();
+  // idari kademelerden şehir seviyesindekini seç
+  const kademe = (d.localityInfo && d.localityInfo.administrative) || [];
+  const sehirKademe = kademe
+    .filter(x => x.adminLevel >= 4 && x.adminLevel <= 6)
+    .sort((x, y) => x.adminLevel - y.adminLevel)[0];
   return {
     ulke: d.countryName || '',
-    sehir: d.city || d.locality || d.principalSubdivision || ''
+    sehir: (sehirKademe && sehirKademe.name) || d.city || d.locality || d.principalSubdivision || ''
   };
 }
 
@@ -474,8 +482,8 @@ function kartHtml(it, i, tur){
       <div class="row"><label></label><p class="hint" style="margin:0">Google Haritalar'da yere sağ tıklayıp kopyaladığın <code style="color:var(--hydro)">36.1980, 29.6390</code> ikilisini sol kutuya yapıştırabilirsin.</p></div>
       <div class="row"><label>Ülke · Şehir</label>
         <div class="pair">
-          <input data-t="${tur}" data-i="${i}" data-k="ulke" value="${(it.ulke||'').replace(/"/g,'&quot;')}" placeholder="sayaç bunu kullanır">
-          <input data-t="${tur}" data-i="${i}" data-k="sehir" value="${(it.sehir||'').replace(/"/g,'&quot;')}" placeholder="şehir">
+          <input data-t="${tur}" data-i="${i}" data-k="ulke" value="${(it.ulke||'').replace(/"/g,'&quot;')}" placeholder="ülke">
+          <input data-t="${tur}" data-i="${i}" data-k="sehir" value="${(it.sehir||'').replace(/"/g,'&quot;')}" placeholder="şehir — ilçe değil, sayaç bunu kullanır">
         </div>
       </div>
       <div class="row"><label>Tarih</label><input data-t="${tur}" data-i="${i}" data-k="date" value="${it.date||''}"></div>
