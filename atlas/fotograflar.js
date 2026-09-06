@@ -177,7 +177,7 @@ const frames = [
 
   {
     title: "Kılıç Ali Paşa Cami",
-    place: "",
+    place: "Beyoğlu, İstanbul",
     lat: null, lng: null,
     date: "2025-11-27",
     ulke: "", sehir: "",
