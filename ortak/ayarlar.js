@@ -18,7 +18,7 @@
 const site = {
   ad:       "Mehmet Kutay",
   ikinciAd: "Davdav",
-  tanim:    "",
+  tanim:    "Buraya daha sonra bir şeyler yazılır.",
   altYazi:  "Buradaki her şey bana ait"
 };
 
@@ -27,7 +27,7 @@ const bolumler = [
   {
     ad: "Fotoğraf atlası",
     etiket: "Fotoğraf",
-    not: "Çektiğim kareler, çekildikleri yere sabitlenmiş. Haritadan gez ya da listeden seç.",
+    not: "Çektiğim kareleri çekildikleri yerlerde görebilirsin. Haritadan gezerek ya da listeden seçerek görüntüle.",
     yol: "atlas/index.html"
   },
   {
@@ -43,7 +43,7 @@ const araclar = [
   {
     ad: "Fotoğraf ekleyici",
     etiket: "Fotoğraf · çalışıyor",
-    not: "Fotoğrafı sürükle: çekim tarihini, koordinatını, makine ve poz bilgisini dosyanın içinden okur, haritada doğrular, web için küçültür. Dosya bilgisayarından çıkmıyor.",
+    not: "Fotoğrafı sürükle: çekim tarihini, koordinatını, makine ve poz bilgisini dosyanın içinden okur, haritada doğrular. Dosya bilgisayarından çıkmıyor.",
     yol: "araclar/ekleyici.html"
   },
   {
