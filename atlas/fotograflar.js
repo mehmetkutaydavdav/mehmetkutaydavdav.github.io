@@ -44,6 +44,17 @@ const ayarlar = {
 const frames = [
 
   {
+    title: "Söğüt'te Gün Batımı",
+    place: "Söğüt, Marmaris",
+    lat: 36.650118, lng: 28.096682,
+    date: "2026-08-05",
+    ulke: "Türkiye", sehir: "Muğla",
+    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/20 · f/22 · ISO 100",
+    src: "fotograflar/web/img-9027.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
     title: "Pantheon",
     place: "Jardin du Luxembourg, Paris",
     lat: 48.84786, lng: 2.338439,
@@ -62,6 +73,39 @@ const frames = [
     ulke: "İspanya", sehir: "Barselona",
     cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/640 · f/5 · ISO 800",
     src: "fotograflar/web/img-5720.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "\"İmrahor\"",
+    place: "Üsküdar",
+    lat: 41.023664, lng: 29.007888,
+    date: "2026-01-18",
+    ulke: "Türkiye", sehir: "İstanbul",
+    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/6.3 · ISO 200",
+    src: "fotograflar/web/img-4672.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Kız Kulesi",
+    place: "Üsküdar",
+    lat: 41.022327, lng: 29.00727,
+    date: "2026-01-18",
+    ulke: "Türkiye", sehir: "İstanbul",
+    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/60 · f/11 · ISO 100",
+    src: "fotograflar/web/img-4675-2.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Kabataş'ın Tekneleri",
+    place: "Kabataş, İstanbul",
+    lat: 41.036187, lng: 28.994733,
+    date: "2026-01-18",
+    ulke: "Türkiye", sehir: "İstanbul",
+    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/320 · f/4 · ISO 200",
+    src: "fotograflar/web/img-4663.jpg",
     tone: ["#15272B","#5E8F86"]
   },
 
@@ -110,8 +154,19 @@ const frames = [
   },
 
   {
+    title: "Beşiktaş İskelesi",
+    place: "Beşiktaş",
+    lat: 41.040887, lng: 29.007361,
+    date: "2025-11-27",
+    ulke: "Türkiye", sehir: "İstanbul",
+    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/500 · f/9 · ISO 200",
+    src: "fotograflar/web/img-1546-2.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
     title: "Topkapı'nın Çinileri",
-    place: "Topkapı Palace, Istanbul",
+    place: "Fatih, Istanbul",
     lat: 41.01, lng: 28.98,
     date: "2025-11-03",
     ulke: "Türkiye", sehir: "İstanbul",
@@ -216,61 +271,6 @@ const frames = [
     ulke: "İspanya", sehir: "Madrid",
     cam: "Canon PowerShot G11", lens: "6mm", exp: "1/320 · f/2.8 · ISO 400",
     src: "fotograflar/web/img-3827.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "Söğüt'te Gün Batımı",
-    place: "Söğüt, Marmaris",
-    lat: 36.650118, lng: 28.096682,
-    date: "2026-08-05",
-    ulke: "Türkiye", sehir: "Muğla",
-    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/20 · f/22 · ISO 100",
-    src: "fotograflar/web/img-9027.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "\"İmrahor\"",
-    place: "Üsküdar",
-    lat: 41.023664, lng: 29.007888,
-    date: "2026-01-18",
-    ulke: "Türkiye", sehir: "İstanbul",
-    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/6.3 · ISO 200",
-    src: "fotograflar/web/img-4672.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "Kız Kulesi",
-    place: "Üsküdar",
-    lat: 41.022327, lng: 29.00727,
-    date: "2026-01-18",
-    ulke: "Türkiye", sehir: "İstanbul",
-    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/60 · f/11 · ISO 100",
-    src: "fotograflar/web/img-4675-2.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "Beşiktaş İskelesi",
-    place: "Beşiktaş",
-    lat: 41.040887, lng: 29.007361,
-    date: "2025-11-27",
-    ulke: "Türkiye", sehir: "İstanbul",
-    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/500 · f/9 · ISO 200",
-    src: "fotograflar/web/img-1546-2.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "Kabataş'ın Tekneleri",
-    place: "Kabataş, İstanbul",
-    lat: 41.036187, lng: 28.994733,
-    date: "2026-01-18",
-    ulke: "Türkiye", sehir: "İstanbul",
-    cam: "Canon EOS 760D", lens: "Canon EF-S 18-135mm f/3.5-5.6 IS STM", exp: "1/320 · f/4 · ISO 200",
-    src: "fotograflar/web/img-4663.jpg",
     tone: ["#15272B","#5E8F86"]
   }
 
