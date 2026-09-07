@@ -18,7 +18,7 @@
 const site = {
   ad:       "Mehmet Kutay",
   ikinciAd: "Davdav",
-  tanim:    "Fotoğraf çekiyorum, bir şeyi üçüncü kez elle yaptığımda küçük bir araç yazıyorum. İkisi de burada.",
+  tanim:    "",
   altYazi:  "Buradaki her şey bana ait"
 };
 
