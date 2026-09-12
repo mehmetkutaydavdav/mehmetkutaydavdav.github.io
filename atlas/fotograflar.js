@@ -66,7 +66,7 @@ const frames = [
   },
 
   {
-    title: "Aşk bir çocuğun parmaklarının ucundadır",
+    title: "<3",
     place: "Barcelona",
     lat: 41.389211, lng: 2.186407,
     date: "2026-03-07",
