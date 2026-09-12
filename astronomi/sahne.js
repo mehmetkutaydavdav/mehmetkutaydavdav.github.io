@@ -132,7 +132,7 @@
           nx,ny,nz, light:.065 + Math.max(0,-nx*.58-ny*.35+nz*.73)*.935, z:nz});
       }
       const rand = random(42);
-      this.stars = Array.from({length:135}, () => ({x:rand(),y:rand(),r:rand()*.8+.25,a:rand()*.45+.15}));
+      this.stars = Array.from({length:260}, () => ({x:rand(),y:rand(),r:rand()*.95+.18,a:rand()*.62+.18,twinkle:rand()*TAU,color:rand()}));
       this.dust = Array.from({length:4200}, () => ({r:Math.sqrt(rand()),a:rand()*TAU,j:(rand()-.5),s:rand(),arm:Math.floor(rand()*4)}));
       this.clouds = Array.from({length:75}, () => ({x:(rand()-.5)*2,y:(rand()-.5)*1.3,r:rand()*.26+.12,a:rand()*TAU}));
       this.frame = this.frame.bind(this);
@@ -155,13 +155,19 @@
       canvas.addEventListener('pointermove', e => {
         if (!this.drag || this.drag.id !== e.pointerId) return;
         this.angle += (e.clientX-this.drag.x)*.009;
-        this.view = clamp(this.view+(e.clientY-this.drag.y)*.004,-.8,.8);
+        // Pointer yukarı gittiğinde kamera da yukarı baksın; önceki sürüm ters hareket ediyordu.
+        this.view = clamp(this.view-(e.clientY-this.drag.y)*.004,-.8,.8);
         this.drag.x=e.clientX;this.drag.y=e.clientY;this.draw();
       });
       const release = () => {this.drag=null;};
       canvas.addEventListener('pointerup',release);
       canvas.addEventListener('pointercancel',release);
       canvas.addEventListener('lostpointercapture',release);
+      canvas.addEventListener('wheel', e => {
+        e.preventDefault();
+        const factor=Math.exp(-e.deltaY*.0012);
+        this.setZoom(this.zoom*factor);
+      }, {passive:false});
       canvas.addEventListener('keydown', e => {
         const keys = {ArrowLeft:-.16,ArrowRight:.16,ArrowUp:-.08,ArrowDown:.08};
         if (e.key in keys) {
@@ -287,30 +293,42 @@
     }
     blackhole(r) {
       const ctx=this.ctx;
-      ctx.save();ctx.rotate(this.view*.25);
-      this.glow(0,0,r*2.5,'#B9793A',.24);
-      // Eğri ışık yollarını çağrıştıran temsili arka disk.
-      for (let i=0;i<42;i++) {
-        const rr=r*(1.12+i*.022);
-        ctx.strokeStyle=`rgba(236,${151+i},${72+i},${.12+(42-i)*.009})`;
-        ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(0,0,rr,rr*.88,0,Math.PI,TAU);ctx.stroke();
+      ctx.save();
+      const tilt=-.22+this.view*.22;ctx.rotate(tilt);
+      this.glow(0,0,r*2.8,'#E18C43',.16);
+      // İç ve dış birikim diski: diferansiyel dönüş ve Doppler parlaklığı için iki renkli akış.
+      for(let i=0;i<150;i++) {
+        const q=i/149,rr=r*(1.08+q*1.7),y=rr*(.18+.035*Math.sin(q*18));
+        const warm=.12+.34*(1-q),blue=.08+.24*q;
+        ctx.strokeStyle=`rgba(${245},${Math.round(115+100*(1-q))},${Math.round(48+55*(1-q))},${warm})`;
+        ctx.lineWidth=Math.max(.55,r*.018*(1-q));
+        ctx.beginPath();ctx.ellipse(0,y,rr,rr*(.18+.08*q),0,Math.PI,TAU);ctx.stroke();
+        ctx.strokeStyle=`rgba(112,${Math.round(166+50*q)},255,${blue})`;
+        ctx.beginPath();ctx.ellipse(0,y,rr,rr*(.18+.08*q),0,0,Math.PI);ctx.stroke();
       }
-      ctx.fillStyle='#010605';ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.fill();
-      ctx.strokeStyle='#F2C180';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,r*1.02,0,TAU);ctx.stroke();
-      this.glow(-r*.1,-r*1.06,r*.34,'#E9A75F',.42);
-      for (let i=0;i<90;i++) {
-        const rr=r*(1.15+i*.025);
-        const opacity=.16+Math.sin(i*.43)*.06;
-        ctx.strokeStyle=`rgba(241,${170-i*.4},${85-i*.4},${opacity})`;ctx.lineWidth=1.7;
-        ctx.beginPath();ctx.ellipse(0,r*.12,rr,rr*.22,0,0,Math.PI);ctx.stroke();
-        ctx.beginPath();ctx.ellipse(0,r*.12,rr,rr*.22,0,Math.PI,TAU);ctx.stroke();
-      }
-      for (let i=0;i<60;i++) {
-        const a=i/60*TAU+this.angle*2,rr=r*(1.2+(i%10)*.2);
-        const x=Math.cos(a)*rr,y=Math.sin(a)*rr*.22+r*.12;
-        this.glow(x,y,r*.07,'#F3B97F',.24);
+      // Foton halkası ve olay ufku.
+      ctx.strokeStyle='#FFE2A8';ctx.lineWidth=Math.max(2,r*.035);ctx.beginPath();ctx.arc(0,0,r*1.08,0,TAU);ctx.stroke();
+      ctx.fillStyle='#000';ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.fill();
+      ctx.strokeStyle='#FFB866';ctx.globalAlpha=.48;ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(0,0,r*1.17,0,TAU);ctx.stroke();ctx.globalAlpha=1;
+      for(let i=0;i<34;i++) {
+        const a=this.angle*2+i*.31,rr=r*(1.22+(i%7)*.18),x=Math.cos(a)*rr,y=Math.sin(a)*rr*.22+r*.16;
+        this.glow(x,y,r*.045,'#FFD18B',.38);
       }
       ctx.restore();
+    }
+
+    pluto(r) {
+      const ctx=this.ctx;
+      ctx.save();ctx.rotate(this.view*.35);
+      this.glow(0,0,r*1.24,'#9AB2C8',.12);
+      // New Horizons haritalarındaki kalp biçimli Tombaugh Regio için sadeleştirilmiş temsil.
+      ctx.save();ctx.rotate(this.angle*.35);
+      ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.clip();
+      const grad=ctx.createLinearGradient(-r,-r,r,r);grad.addColorStop(0,'#E4D2BA');grad.addColorStop(.42,'#B99D88');grad.addColorStop(1,'#554B55');ctx.fillStyle=grad;ctx.fillRect(-r,-r,r*2,r*2);
+      ctx.fillStyle='#E9DCC7';ctx.beginPath();ctx.moveTo(-r*.50,-r*.10);ctx.bezierCurveTo(-r*.78,-r*.72,-r*.08,-r*.82,r*.03,-r*.30);ctx.bezierCurveTo(r*.45,-r*.78,r*.80,-r*.42,r*.50,r*.19);ctx.bezierCurveTo(r*.22,r*.62,-r*.32,r*.48,-r*.50,-r*.10);ctx.fill();
+      const rand=random(740);for(let i=0;i<85;i++){const a=rand()*TAU,d=Math.sqrt(rand())*r*.84,x=Math.cos(a)*d,y=Math.sin(a)*d;ctx.fillStyle=`rgba(48,41,52,${.12+rand()*.20})`;ctx.beginPath();ctx.arc(x,y,rand()*r*.045+r*.008,0,TAU);ctx.fill();}
+      ctx.restore();
+      ctx.strokeStyle='#D3C0B0';ctx.globalAlpha=.32;ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(0,0,r*1.01,0,TAU);ctx.stroke();ctx.restore();
     }
     neutron(r) {
       const ctx=this.ctx,a=this.angle*2;
@@ -400,18 +418,19 @@
       if (!this.ctx||!this.object||!this.w) return;
       const ctx=this.ctx,w=this.w,h=this.h,kind=this.object.kind;
       ctx.clearRect(0,0,w,h);
-      const background=ctx.createRadialGradient(w*.45,h*.45,0,w*.5,h*.5,Math.max(w,h)*.65);
-      background.addColorStop(0,'#0C1930');background.addColorStop(1,'#020610');
-      ctx.fillStyle=background;ctx.fillRect(0,0,w,h);
+      // Uzay zemini: renkli panel yerine gerçek gözlemdeki siyaha yakın boşluk.
+      ctx.fillStyle='#000106';ctx.fillRect(0,0,w,h);
       for (const s of this.stars) {
-        ctx.fillStyle=`rgba(184,207,255,${s.a})`;ctx.beginPath();ctx.arc(s.x*w,s.y*h,s.r,0,TAU);ctx.fill();
+        const twinkle=s.a*(.82+.18*Math.sin(this.time*1.6+s.twinkle));
+        const color=s.color>.87?'255,238,203':s.color>.62?'205,222,255':'238,244,255';
+        ctx.fillStyle=`rgba(${color},${twinkle})`;ctx.beginPath();ctx.arc(s.x*w,s.y*h,s.r,0,TAU);ctx.fill();
       }
       const radius=Math.min(w*.28,h*.27)*this.zoom;
       ctx.save();ctx.translate(w*.5,h*.49);
       // İnce referans çemberi, bütün cisimlerde aynı gözlem alanı.
-      ctx.strokeStyle='#91B5A012';ctx.lineWidth=1;ctx.setLineDash([2,7]);
-      ctx.beginPath();ctx.arc(0,0,Math.min(w*.42,h*.37),0,TAU);ctx.stroke();ctx.setLineDash([]);
+      // Referans çemberi yalnızca klavye ile incelenen sahnelerde dikkat dağıtmasın.
       if(kind==='comet'||kind==='bennu') this.smallBody(radius,kind==='comet');
+      else if(kind==='pluto') this.pluto(radius);
       else if (kind==='blackhole') this.blackhole(radius*.51);
       else if (kind==='neutron') this.neutron(radius*.95);
       else if (kind==='nebula') this.nebula(radius*1.3);

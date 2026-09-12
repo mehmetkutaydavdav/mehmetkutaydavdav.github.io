@@ -62,7 +62,7 @@
 .astro-stage-bottom{bottom:22px;align-items:baseline}
 .astro-stage-bottom>span:first-child{color:#BCCBC2;font-size:13px;letter-spacing:.18em}
 .astro-stage-bottom>span:last-child{font-size:9px;letter-spacing:.02em;text-align:right;max-width:50%}
-#space-canvas{display:block;width:100%;height:100%;position:absolute;inset:0;cursor:grab;touch-action:pan-y}
+#space-canvas{display:block;width:100%;height:100%;position:absolute;inset:0;cursor:grab;touch-action:none}
 #space-canvas:active{cursor:grabbing}
 #space-canvas:focus-visible{outline-offset:-5px}
 .astro-poster{position:absolute;inset:0;display:grid;place-items:center}
