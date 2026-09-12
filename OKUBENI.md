@@ -31,8 +31,8 @@ Görünümler ağdan görsel, doku veya JavaScript kütüphanesi indirmez. Yazı
 sitenin diğer sayfaları gibi Google Fonts'tan gelir; çevrimdışıyken sistem
 yazı tipleri kullanılır.
 
-- 10 cisim: Güneş, Dünya, Ay, Mars, Jüpiter, Satürn, nötron yıldızı,
-  kara delik, Orion Bulutsusu ve Samanyolu.
+- 24 cisim: sekiz gezegen, Güneş, Ay, cüce gezegenler, buzlu uydular,
+  Bennu, 67P, yıldız türleri, kara delik, Orion Bulutsusu ve iki galaksi.
 - İsim veya tür ara; **Güneş sistemi**, **Yıldızlar**, **Derin uzay** ile süz.
 - Çizimi sürükle; klavyede çizime odaklanıp ok tuşlarını kullan.
   Boşluk tuşu oynatır/duraklatır. Hız, yalnızca görsel hareketi etkiler.
@@ -45,8 +45,7 @@ yazı tipleri kullanılır.
 Bilgi eklemek/düzeltmek için `cisimler.js` dosyasındaki kayıtları düzenle.
 Her kayıtta kaynak bağlantısını, yaklaşık değerleri ve çizim notunu koru.
 Yeni bir cisim için benzersiz `id` kullan; `kind`, `sahne.js` içinde desteklenen
-bir çizim türü olmalı. Cisim sayısı değişirse HTML'deki `01 — 10` baskı bilgisini
-de güncelle. Yeni çizim türleri `sahne.js` içinde eklenebilir. İleride olay
+bir çizim türü olmalı. Cisim sayısı katalogdan otomatik hesaplanır. Yeni çizim türleri `sahne.js` içinde eklenebilir. İleride olay
 simülasyonları aynı klasörde ayrı sayfalar olarak genişletilebilir.
 
 **Bilimsel kapsam:** Görünümler şematiktir; ortak ölçek, gerçek zamanlı hareket,
@@ -117,3 +116,17 @@ seçili olsun.
 Haritadaki koordinatlar birebir gerçek. Ev ya da iş yerinde
 çekilmiş kareler için ekleyicideki **Yaklaşıklaştır** düğmesini
 kullan — konumu yaklaşık bir kilometreye yuvarlar.
+
+
+## Astronomi kataloğu
+
+Astronomi sayfası 24 cisim içerir. Yakınlaştırma ve ışık açısı kaydırıcıları,
+sürükleme / ok tuşları, oynat-duraklat ve hız seçimiyle görünüm değişir.
+Sıfırla düğmesi bakış, yakınlaştırma, ışık ve hızı başlangıca döndürür.
+Koyu mavi-siyah tema yalnızca bu sayfaya aittir.
+
+Gezegen haritaları seçildikçe yerel dosyalardan yüklenir; ağ gerekmez.
+Dünya'nın gece ışıkları ve bulutları ayrı katmanlardır. Harita yüklenemezse
+şematik yüzey kalır. Doku lisansları astronomi/dokular/KAYNAKLAR.md içindedir.
+Görünümler öğretici modellerdir: ortak ölçek, gerçek zamanlı hız,
+güncel hava durumu veya bilimsel hassasiyetli fizik simülasyonu sunmaz.

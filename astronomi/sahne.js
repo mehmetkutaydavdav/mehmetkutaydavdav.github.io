@@ -3,7 +3,7 @@
 (() => {
   'use strict';
   const TAU = Math.PI * 2;
-  const TW = 512, TH = 256, SPHERE = 280;
+  const TW = 1024, TH = 512, SPHERE = 360;
   const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
   const random = seed => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
   const textures = new Map();
@@ -27,7 +27,17 @@
           rgb = [194 + band * 38 + grain, 153 + band * 48 + grain, 117 + band * 46 + grain];
           const spot = ((u - .55) / .065) ** 2 + ((v - .62) / .047) ** 2;
           if (spot < 1) { const swirl = Math.sin(spot * 30) * 12; rgb = [174 + swirl, 91 + swirl, 57 + swirl]; }
-        } else if (kind === 'earth') rgb = [34 + grain, 82 + grain, 108 + grain];
+        } else if (kind === 'uranus') rgb = [128+band*4,190+band*5,198+band*5];
+        else if (kind === 'neptune') rgb = [55+band*10,104+band*15,183+band*19];
+        else if (kind === 'venus' || kind === 'titan') rgb = [200+band*9+grain,158+band*8+grain,85+grain];
+        else if (kind === 'redgiant') rgb = [235+grain,99+band*20,43+grain];
+        else if (kind === 'whitedwarf') rgb = [199+grain,221+grain,247+grain];
+        else if (kind === 'europa' || kind === 'enceladus') {
+          const crack=Math.abs(Math.sin(u*41+Math.sin(v*19)*3));
+          rgb=crack<.06?[122,102,87]:[210+grain,205+grain,189+grain];
+        }
+        else if (kind === 'pluto') {const t=Math.sin(u*17+Math.sin(v*9));rgb=[168+t*37+grain,142+t*38+grain,120+t*37+grain];}
+        else if (kind === 'earth') rgb = [34 + grain, 82 + grain, 108 + grain];
         else if (kind === 'mars') {
           const terrain = Math.sin(u * TAU * 3 + Math.sin(v * 18)) * Math.sin(v * 27 + Math.cos(u * TAU * 4));
           rgb = [176 + terrain * 31 + grain, 102 + terrain * 25 + grain, 68 + terrain * 19 + grain];
@@ -41,6 +51,7 @@
       }
     }
     ctx.putImageData(data, 0, 0);
+    ctx.scale(2,2);
     if (kind === 'earth') {
       // Yaklaşık kıta siluetleri; kartta gerçek harita olmadığı açıklanır.
       const lands = [
@@ -99,6 +110,7 @@
       this.motion = window.matchMedia('(prefers-reduced-motion: reduce)');
       this.playing = !this.motion.matches;
       this.speed = 1;
+      this.zoom = 1; this.phase = -.65;
       this.angle = 0;
       this.view = -.28;
       this.time = 0;
@@ -117,11 +129,11 @@
         if (d > 1) continue;
         const nz = Math.sqrt(1-d);
         this.samples.push({i:(y*SPHERE+x)*4, u:Math.floor((Math.atan2(nx,nz)/TAU+.5)*TW), v:clamp(Math.floor((Math.asin(ny)/Math.PI+.5)*TH),0,TH-1)*TW,
-          light:.065 + Math.max(0,-nx*.58-ny*.35+nz*.73)*.935, z:nz});
+          nx,ny,nz, light:.065 + Math.max(0,-nx*.58-ny*.35+nz*.73)*.935, z:nz});
       }
       const rand = random(42);
       this.stars = Array.from({length:135}, () => ({x:rand(),y:rand(),r:rand()*.8+.25,a:rand()*.45+.15}));
-      this.dust = Array.from({length:1200}, () => ({r:Math.sqrt(rand()),a:rand()*TAU,j:(rand()-.5),s:rand(),arm:Math.floor(rand()*4)}));
+      this.dust = Array.from({length:4200}, () => ({r:Math.sqrt(rand()),a:rand()*TAU,j:(rand()-.5),s:rand(),arm:Math.floor(rand()*4)}));
       this.clouds = Array.from({length:75}, () => ({x:(rand()-.5)*2,y:(rand()-.5)*1.3,r:rand()*.26+.12,a:rand()*TAU}));
       this.frame = this.frame.bind(this);
       this.resize = this.resize.bind(this);
@@ -164,12 +176,29 @@
     }
     setObject(object) {
       this.object=object;this.angle=0;this.view=-.28;this.time=0;
-      this.tex=['sun','earth','moon','mars','jupiter','saturn'].includes(object.kind) ? texture(object.kind) : null;
+      this.tex=texture(object.kind);
+      this.zoom=1;this.phase=-.65;this.projectionView=null;
+      this.night=null;this.cloudMap=null;
+      const chosen=object;
+      window.AstroTextures?.load(object.kind).then(map=>{
+        if(this.object!==chosen)return;
+        if(map)this.tex=map;
+        this.draw();
+      });
+      if(object.kind==='earth') for(const key of ['earth-night','earth-clouds']) {
+        window.AstroTextures?.load(key).then(map=>{
+          if(this.object!==chosen)return;
+          if(key==='earth-night')this.night=map;else this.cloudMap=map;
+          this.draw();
+        });
+      }
       this.draw();this.sync();
     }
     setPlaying(value) {this.playing=!!value;this.onState?.(this.playing);this.sync();}
     setSpeed(value) {this.speed=clamp(Number(value)||1,.5,2);}
-    reset() {this.angle=0;this.view=-.28;this.time=0;this.draw();}
+    setZoom(value) {this.zoom=clamp(Number(value)||1,.7,1.5);this.draw();}
+    setPhase(value) {this.phase=clamp(Number(value)||0,-2.5,2.5);this.draw();}
+    reset() {this.zoom=1;this.phase=-.65;this.angle=0;this.view=-.28;this.time=0;this.draw();}
     resize() {
       const rect=this.canvas.parentElement.getBoundingClientRect();
       this.w=Math.max(1,rect.width);this.h=Math.max(1,rect.height);
@@ -191,7 +220,7 @@
       if (elapsed>=1000/24) {
         const dt=Math.min(elapsed/1000,.1)*this.speed;
         this.time+=dt;
-        if (!this.drag) this.angle+=dt*.105;
+        if (!this.drag) this.angle+=dt*.105*(['venus','uranus'].includes(this.object.kind)?-1:1);
         this.lastFrame=now;this.draw();
       }
       this.frameId=requestAnimationFrame(this.frame);
@@ -203,10 +232,41 @@
     }
     sphere(r,kind) {
       const output=this.sphereData.data, offset=Math.floor(this.angle/TAU*TW);
+      if(this.projectionView!==this.view) {
+        const c=Math.cos(this.view),s=Math.sin(this.view);
+        for(const p of this.samples) {
+          const y=p.ny*c+p.nz*s,z=p.nz*c-p.ny*s;
+          p.u=Math.floor((Math.atan2(p.nx,z)/TAU+.5)*TW);
+          p.v=clamp(Math.floor((Math.asin(clamp(y,-1,1))/Math.PI+.5)*TH),0,TH-1)*TW;
+        }
+        this.projectionView=this.view;
+      }
+      const lx=Math.sin(this.phase),lz=Math.cos(this.phase);
+      const luminous=['sun','redgiant','whitedwarf'].includes(kind);
+      const cloudOffset=Math.floor(this.time*1.3);
       for (const p of this.samples) {
         const u=((p.u+offset)%TW+TW)%TW, source=(p.v+u)*4;
-        const light=kind==='sun'?.73+p.z*.27:p.light;
-        output[p.i]=this.tex[source]*light;output[p.i+1]=this.tex[source+1]*light;output[p.i+2]=this.tex[source+2]*light;output[p.i+3]=255;
+        const illumination=p.nx*lx-p.ny*.24+p.nz*lz;
+        let light=luminous?.68+p.z*.32:.025+Math.max(0,illumination)*.94;
+        // Approximate ring shadow on the cloud tops; same light direction as the sphere.
+        if(kind==='saturn' && illumination>0) {
+          const tilt=.34+this.view*.18,c=Math.sqrt(1-tilt*tilt);
+          const t=-(p.ny*c-p.nz*tilt)/(-.24*c-lz*tilt);
+          if(t>0) {
+            const x=p.nx+t*lx,y=p.ny-t*.24,z=p.nz+t*lz;
+            const rr=Math.sqrt(x*x+y*y+z*z);
+            if(rr>1.26&&rr<2.37&&!(rr>1.99&&rr<2.08))light*=.42;
+          }
+        }
+        const cloud=kind==='earth'&&this.cloudMap?this.cloudMap[(p.v+(u+cloudOffset)%TW)*4]/255*.82:0;
+        for(let c=0;c<3;c++) {
+          let color=this.tex[source+c]*(1-cloud)+cloud*245;
+          color*=light;
+          if(kind==='earth'&&this.night)color+=this.night[source+c]*Math.max(0,-illumination)*.95*(1-cloud);
+          const rim=kind==='earth'?Math.pow(1-p.z,4)*Math.max(0,illumination)*.6:0;
+          output[p.i+c]=color+rim*[45,125,230][c];
+        }
+        output[p.i+3]=Math.min(255,p.nz*3500);
       }
       this.surfaceCtx.putImageData(this.sphereData,0,0);
       this.ctx.drawImage(this.surface,-r,-r,r*2,r*2);
@@ -222,13 +282,6 @@
         ctx.strokeStyle=`rgba(${shade+30},${shade+20},${shade-3},${front?.83:.56})`;
         ctx.lineWidth=r*.013;
         ctx.beginPath();ctx.ellipse(0,0,radius,radius*flatten,0,start,end);ctx.stroke();
-      }
-      // Hareketi görünür kılan soluk halka ayrıntıları.
-      for (let i=0;i<32;i++) {
-        const a=(i/32*TAU+this.angle*.8)%TAU;
-        if ((a<Math.PI)!==front) continue;
-        const radius=r*(1.3+(i%8)*.135);
-        ctx.fillStyle='#F2DFB788';ctx.beginPath();ctx.arc(Math.cos(a)*radius,Math.sin(a)*radius*flatten,.8,0,TAU);ctx.fill();
       }
       ctx.restore();
     }
@@ -291,7 +344,7 @@
     }
     galaxy(r) {
       const ctx=this.ctx;
-      ctx.save();ctx.rotate(-.38+this.view);ctx.scale(1,.55);
+      ctx.save();ctx.rotate(-.38+this.view);ctx.scale(1,clamp(.55+this.view*.45,.18,.92));
       this.glow(0,0,r*1.2,'#7A9EAA',.14);
       // Soluk yayılı ışık, tekil yıldız noktalarının arasındaki sarmal yapıyı gösterir.
       ctx.save();ctx.lineWidth=r*.12;ctx.strokeStyle='#84B8CD18';ctx.shadowColor='#88B9CF';ctx.shadowBlur=r*.1;
@@ -306,7 +359,7 @@
       }
       ctx.restore();
       for (const p of this.dust) {
-        const angle=p.arm*TAU/4+p.r*5.4+this.angle*.2+p.j*.55;
+        const angle=(this.object.kind==='andromeda'?p.arm%2*TAU/2:p.arm*TAU/4)+p.r*5.4+this.angle*.2+p.j*.55;
         const radius=(.13+p.r*.88)*r*1.8;
         const x=Math.cos(angle)*radius,y=Math.sin(angle)*radius;
         ctx.fillStyle=p.s>.78?'#D8D4B999':'#84AEBD66';
@@ -317,25 +370,55 @@
       this.glow(0,0,r*.27,'#F5E9C8',.9);
       ctx.restore();
     }
+    smallBody(r,comet) {
+      const ctx=this.ctx;
+      ctx.save();ctx.rotate(this.view*.4);
+      if(comet) {
+        for(let i=0;i<40;i++) {
+          const ion=ctx.createLinearGradient(0,0,r*2.5,0);
+          ion.addColorStop(0,'rgba(113,163,236,.035)');ion.addColorStop(1,'rgba(113,163,236,0)');
+          ctx.strokeStyle=ion;ctx.lineWidth=r*.07;
+          ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(r*1.1,i*r*.005,r*2.5,r*(i-20)*.018);ctx.stroke();
+          const dust=ctx.createLinearGradient(0,0,r*2.5,r);
+          dust.addColorStop(0,'rgba(230,207,174,.025)');dust.addColorStop(1,'rgba(230,207,174,0)');
+          ctx.strokeStyle=dust;
+          ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(r*1.5,r*.3,r*2.5,r*(.9+i*.012));ctx.stroke();
+        }
+        this.glow(0,0,r*1.3,'#A3CBEF',.24);
+      }
+      ctx.save();ctx.rotate(this.angle);
+      ctx.beginPath();
+      for(let i=0;i<=96;i++){
+        const a=i/96*TAU;
+        const rr=r*(comet?.48+.19*Math.cos(2*a):.68+.07*Math.cos(4*a))*(1+.035*Math.sin(a*17));
+        if(i===0)ctx.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);else ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr);
+      }
+      ctx.closePath();ctx.clip();this.sphere(r,comet?'comet':'bennu');
+      ctx.restore();ctx.restore();
+    }
     draw() {
       if (!this.ctx||!this.object||!this.w) return;
       const ctx=this.ctx,w=this.w,h=this.h,kind=this.object.kind;
       ctx.clearRect(0,0,w,h);
+      const background=ctx.createRadialGradient(w*.45,h*.45,0,w*.5,h*.5,Math.max(w,h)*.65);
+      background.addColorStop(0,'#0C1930');background.addColorStop(1,'#020610');
+      ctx.fillStyle=background;ctx.fillRect(0,0,w,h);
       for (const s of this.stars) {
-        ctx.fillStyle=`rgba(190,215,197,${s.a})`;ctx.beginPath();ctx.arc(s.x*w,s.y*h,s.r,0,TAU);ctx.fill();
+        ctx.fillStyle=`rgba(184,207,255,${s.a})`;ctx.beginPath();ctx.arc(s.x*w,s.y*h,s.r,0,TAU);ctx.fill();
       }
-      const radius=Math.min(w*.28,h*.27);
+      const radius=Math.min(w*.28,h*.27)*this.zoom;
       ctx.save();ctx.translate(w*.5,h*.49);
       // İnce referans çemberi, bütün cisimlerde aynı gözlem alanı.
       ctx.strokeStyle='#91B5A012';ctx.lineWidth=1;ctx.setLineDash([2,7]);
       ctx.beginPath();ctx.arc(0,0,Math.min(w*.42,h*.37),0,TAU);ctx.stroke();ctx.setLineDash([]);
-      if (kind==='blackhole') this.blackhole(radius*.51);
+      if(kind==='comet'||kind==='bennu') this.smallBody(radius,kind==='comet');
+      else if (kind==='blackhole') this.blackhole(radius*.51);
       else if (kind==='neutron') this.neutron(radius*.95);
       else if (kind==='nebula') this.nebula(radius*1.3);
-      else if (kind==='galaxy') this.galaxy(radius*.83);
+      else if (kind==='galaxy'||kind==='andromeda') this.galaxy(radius*.83);
       else {
-        const r=kind==='saturn'?Math.min(w*.19,h*.225):radius;
-        if (kind==='sun') this.glow(0,0,r*1.65,'#EBA04D',.32);
+        const r=kind==='saturn'?Math.min(w*.19,h*.225)*this.zoom:kind==='whitedwarf'?radius*.58:radius;
+        if (kind==='sun'||kind==='redgiant') this.glow(0,0,r*1.65,'#EBA04D',.32);
         if (kind==='earth') this.glow(0,0,r*1.09,'#70B1DB',.45);
         if (kind==='saturn') this.rings(r,false);
         ctx.save();ctx.rotate(kind==='saturn'?-.38+this.view*.35:this.view*.4);
