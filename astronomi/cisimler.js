@@ -4,13 +4,13 @@
 window.AstroCatalog = [
   {
     id: 'gunes', name: 'Güneş', kind: 'sun', category: 'yildizlar', group: 'Yıldızlar',
-    type: 'Yıldız · ana kol', subtitle: 'Bize en yakın yıldız', sceneLabel: 'Işığın başladığı yer',
-    intro: 'Gündüz gökyüzünü dolduran tanıdık yıldızımız. Çekirdeğinde hidrojeni helyuma dönüştürerek uzaya enerji yayıyor.',
+    type: 'Yıldız · G2V ana kol', subtitle: 'Bize en yakın yıldız', sceneLabel: 'Işığın başladığı yer',
+    intro: 'Güneş, Hertzsprung–Russell diyagramında G2V sınıfında bir ana kol yıldızıdır. Çekirdeğinde proton–proton zinciriyle hidrojeni helyuma dönüştürür.',
     facts: [['Çap', '≈ 1,4 milyon', 'km'], ['Fotosfer sıcaklığı', '≈ 5.500', '°C'], ['Çekirdek sıcaklığı', '≈ 15 milyon', '°C'], ['Ekvatorunda bir dönüş', '≈ 25', 'Dünya günü']],
     highlight: 'Güneş katı değil. Ekvatoru ve kutupları aynı sürede dönmüyor.',
     appearance: 'Parlak bir plazma küresi. Görünen yüzeyindeki küçük desenler, sıcak maddenin yükselip soğuyarak alçalmasıyla oluşur. Koyu güneş lekeleri çevrelerine göre daha serin bölgelerdir.',
     question: 'Güneş bir ateş topu mu?',
-    explanation: 'Bir odun ateşi gibi yanmıyor. Çekirdeğindeki çok yüksek sıcaklık ve basınç, atom çekirdeklerinin birleşmesini sağlıyor. Nükleer füzyon denen bu süreç açığa enerji çıkarıyor.',
+    explanation: 'Bir odun ateşi gibi yanmıyor. Çekirdeğindeki sıcaklık ve basınç proton–proton zincirini mümkün kılar; nükleer füzyon kütle farkını foton ve nötrino enerjisine dönüştürür.',
     modelNote: 'Sıcak tonlar ve parlama temsili. Bu bir teleskop görüntüsü değil; yüzey desenleri ve hareket hızı sadeleştirildi.',
     source: 'https://science.nasa.gov/sun/facts/'
   },
@@ -88,7 +88,7 @@ window.AstroCatalog = [
   },
   {
     id: 'kara-delik', name: 'Kara delik', kind: 'blackhole', category: 'derin-uzay', group: 'Derin uzay',
-    type: 'Kara delik · temsili örnek', subtitle: 'Işığın kaçamadığı sınır', sceneLabel: 'Karanlığın çevresindeki ışık',
+    type: 'Kara delik · akresyon diskli', subtitle: 'Işığın kaçamadığı sınır', sceneLabel: 'Karanlığın çevresindeki ışık',
     intro: 'Madde çok küçük bir bölgeye sıkıştığında uzayzamanı olağanüstü büker. Olay ufkunun içinden dışarıya ışık bile ulaşamaz.',
     facts: [['Sınır', 'Olay ufku', 'geri dönüşün olmadığı sınır'], ['Görünen ışık', 'Çevresindeki gaz', 'sıcak birikim diski'], ['Boyut', 'Kütleye bağlı', 'tek bir çapı yok'], ['Gözlem', 'Çevreye etkisi', 'ışık ve yörüngeler']],
     highlight: 'Parlayan kısım kara deliğin kendisi değil. Çevresindeki sıcak maddeyi ve bu ışığın bükülmüş görünümünü görüyoruz.',
@@ -287,10 +287,10 @@ window.AstroCatalog.push(...[
     "kind": "pluto",
     "category": "gunes-sistemi",
     "group": "Güneş sistemi",
-    "type": "Cüce gezegen",
+    "type": "Cüce gezegen · trans-Neptün cismi",
     "subtitle": "Buzdan bir kalp",
     "sceneLabel": "Buzdan bir kalp",
-    "intro": "Neptün’ün ötesinde, dağları ve azot buzuyla kaplı düzlükleri olan küçük bir dünya.",
+    "intro": "Neptün ötesi bir trans-Neptün cismi ve Kuiper kuşağının en bilinen cüce gezegeni. Dağları su buzu, geniş düzlükleri büyük ölçüde azot buzu içerir.",
     "facts": [
       [
         "Çap",
@@ -316,7 +316,7 @@ window.AstroCatalog.push(...[
     "highlight": "Güneş çevresinde döner ve yaklaşık küreseldir; ancak yörüngesinin çevresindeki bölgeye kütleçekimsel olarak egemen değildir.",
     "appearance": "Neptün’ün ötesinde, dağları ve azot buzuyla kaplı düzlükleri olan küçük bir dünya.",
     "question": "Neden cüce gezegen?",
-    "explanation": "Güneş çevresinde döner ve yaklaşık küreseldir; ancak yörüngesinin çevresindeki bölgeye kütleçekimsel olarak egemen değildir.",
+    "explanation": "Güneş çevresinde döner ve hidrostatik dengeye yakın küreseldir; ancak yörüngesinin çevresindeki Kuiper kuşağı bölgesini kütleçekimsel olarak temizlememiştir.",
     "modelNote": "Görünüm öğretici bir temsil; yüzey ayrıntıları, renkler ve hareket hızı gerçek gözlemle birebir eşleşmez.",
     "source": "https://science.nasa.gov/dwarf-planets/pluto/facts/"
   },
@@ -560,10 +560,10 @@ window.AstroCatalog.push(...[
     "kind": "redgiant",
     "category": "yildizlar",
     "group": "Yıldızlar",
-    "type": "Yıldız · evrim evresi",
+    "type": "Yıldız · kırmızı dev kolu",
     "subtitle": "Genişleyen bir yıldız",
     "sceneLabel": "Genişleyen bir yıldız",
-    "intro": "Çekirdeğindeki hidrojen azalan bazı yıldızlar genişler. Dış katmanları soğuyarak daha kırmızı görünür.",
+    "intro": "Çekirdeğindeki hidrojen tükenen düşük ve orta kütleli yıldız, kırmızı dev koluna yükselir. Helyum çekirdeği büzülürken hidrojen yanan kabuk dış zarfı genişletir.",
     "facts": [
       [
         "Ölçek",
@@ -599,10 +599,10 @@ window.AstroCatalog.push(...[
     "kind": "whitedwarf",
     "category": "yildizlar",
     "group": "Yıldızlar",
-    "type": "Yıldız kalıntısı",
+    "type": "Yıldız kalıntısı · DA beyaz cüce",
     "subtitle": "Dünya boyutlarında bir çekirdek",
     "sceneLabel": "Dünya boyutlarında bir çekirdek",
-    "intro": "Güneş benzeri bir yıldız dış katmanlarını attığında geriye çok yoğun ve sıcak bir çekirdek kalabilir.",
+    "intro": "Güneş benzeri bir yıldızın gezegenimsi bulutsu evresinden sonra geriye çoğunlukla karbon–oksijen çekirdekli, elektron dejenerasyon basıncıyla desteklenen beyaz cüce kalır.",
     "facts": [
       [
         "Boyut",
