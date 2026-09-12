@@ -6,6 +6,7 @@
   const categories = [['tumu','Tümü'],['gunes-sistemi','Güneş sistemi'],['yildizlar','Yıldızlar'],['derin-uzay','Derin uzay']];
   const normalize = text => String(text).toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i');
   let category = 'tumu', selected = null;
+  $('catalog-total').textContent='01 — '+catalog.length;
 
   const settings = typeof site === 'undefined' ? {} : site;
   const fullName = [settings.ad,settings.ikinciAd].filter(Boolean).join(' ') || 'Kutay';
@@ -27,11 +28,13 @@
   if (scene?.available) {
     $('scene-poster').hidden = true;
     canvas.hidden = false;
-    ['toggle-animation','animation-speed','reset-view'].forEach(id => {$(id).disabled=false;});
+    ['toggle-animation','animation-speed','reset-view','scene-zoom','scene-phase'].forEach(id => {$(id).disabled=false;});
     animationState(scene.playing);
+    $('scene-zoom').addEventListener('input',e=>scene.setZoom(e.target.value));
+    $('scene-phase').addEventListener('input',e=>scene.setPhase(e.target.value));
     $('toggle-animation').addEventListener('click',() => scene.setPlaying(!scene.playing));
     $('animation-speed').addEventListener('change',e => scene.setSpeed(e.target.value));
-    $('reset-view').addEventListener('click',() => {scene.reset();scene.setSpeed(1);$('animation-speed').value='1';});
+    $('reset-view').addEventListener('click',() => {scene.reset();scene.setSpeed(1);$('animation-speed').value='1';$('scene-zoom').value='1';$('scene-phase').value='-0.65';});
   } else {
     $('scene-poster').removeAttribute('role');
     $('scene-poster').removeAttribute('aria-label');
@@ -93,6 +96,8 @@
     }
     canvas.setAttribute('aria-label',`${object.name}: ${object.appearance}`);
     if(scene?.available)scene.setObject(object);
+    $('scene-zoom').value='1';$('scene-phase').value='-0.65';
+    $('phase-control').hidden=['sun','redgiant','whitedwarf','neutron','blackhole','galaxy','andromeda','nebula'].includes(object.kind);
     updateSelection();
     $('selection-status').textContent=`${object.name} seçildi. Görünümü ve bilgileri güncellendi.`;
     if (saveHash && location.hash!==`#${object.id}`) {
