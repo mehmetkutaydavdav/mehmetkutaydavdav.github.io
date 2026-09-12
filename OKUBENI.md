@@ -16,6 +16,43 @@ Tek bir klasör. Sunucu, kurulum, hesap gerekmiyor.
     araclar/
       ekleyici.html       Fotoğraf ekleme aracı.
       fotograflari_ekle.py
+    astronomi/
+      index.html          Gök cisimleri ve etkileşimli görünümler.
+      astronomi.css       Yalnızca astronomi sayfasının stilleri.
+      cisimler.js         Türkçe içerik, özellikler ve NASA kaynakları.
+      sahne.js            Bağımsız Canvas 2D çizimleri.
+      astronomi.js        Arama, filtreler, seçim ve oynatma kontrolleri.
+
+## Astronomi
+
+`astronomi/index.html` dosyasını aç veya ana sayfadaki **Astronomi** kartına tıkla.
+Kurulum ve derleme gerekmiyor; GitHub Pages ve yerel dosya olarak çalışır.
+Görünümler ağdan görsel, doku veya JavaScript kütüphanesi indirmez. Yazı tipleri,
+sitenin diğer sayfaları gibi Google Fonts'tan gelir; çevrimdışıyken sistem
+yazı tipleri kullanılır.
+
+- 10 cisim: Güneş, Dünya, Ay, Mars, Jüpiter, Satürn, nötron yıldızı,
+  kara delik, Orion Bulutsusu ve Samanyolu.
+- İsim veya tür ara; **Güneş sistemi**, **Yıldızlar**, **Derin uzay** ile süz.
+- Çizimi sürükle; klavyede çizime odaklanıp ok tuşlarını kullan.
+  Boşluk tuşu oynatır/duraklatır. Hız, yalnızca görsel hareketi etkiler.
+- Cisim seçimleri bağlantıya yazılır: `astronomi/index.html#kara-delik`.
+  Tarayıcının geri/ileri düğmeleri önceki seçimlere döner.
+- Azaltılmış hareket tercihinde animasyon duraklatılmış başlar.
+  Sayfa veya çizim görünmüyorken animasyon durur.
+- JavaScript kapalıysa Satürn'ün sabit çizimi ve bilgileri görünür.
+
+Bilgi eklemek/düzeltmek için `cisimler.js` dosyasındaki kayıtları düzenle.
+Her kayıtta kaynak bağlantısını, yaklaşık değerleri ve çizim notunu koru.
+Yeni bir cisim için benzersiz `id` kullan; `kind`, `sahne.js` içinde desteklenen
+bir çizim türü olmalı. Cisim sayısı değişirse HTML'deki `01 — 10` baskı bilgisini
+de güncelle. Yeni çizim türleri `sahne.js` içinde eklenebilir. İleride olay
+simülasyonları aynı klasörde ayrı sayfalar olarak genişletilebilir.
+
+**Bilimsel kapsam:** Görünümler şematiktir; ortak ölçek, gerçek zamanlı hareket,
+güncel gökyüzü konumu veya fiziksel simülasyon sunmaz. Kara delik görünümü
+genel görelilik hesabı yapmaz; galaksi dönüşü bir inceleme hareketidir.
+Kaynaklar her cismin kartında bulunur. İçerik kontrolü: 12 Eylül 2026.
 
 ## Yeni bölüm ya da araç eklemek
 

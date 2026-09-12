@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Gezegenlerden galaksilere: gök cisimlerini hareketli, etkileşimli çizimler ve anlaşılır Türkçe açıklamalarla keşfet.">
+  <meta name="theme-color" content="#07100F">
+  <title>Astronomi — Kutay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../ortak/tema.css">
+  <link rel="stylesheet" href="astronomi.css">
+  <script defer src="../ortak/ayarlar.js"></script>
+  <script defer src="cisimler.js"></script>
+  <script defer src="sahne.js"></script>
+  <script defer src="astronomi.js"></script>
+</head>
+<body class="astronomi">
+  <a class="astro-skip" href="#gozlem">Gözlem alanına geç</a>
+  <header class="topbar">
+    <span class="marka">
+      <a class="wordmark" href="../index.html" id="wordmark">Kutay</a>
+      <span class="sep">/</span>
+      <span class="sayfa">Astronomi</span>
+    </span>
+    <nav class="mono" aria-label="Site">
+      <a href="../index.html">← Ana sayfa</a>
+      <a class="astro-atlas-link" href="../atlas/index.html">Fotoğraf atlası</a>
+    </nav>
+  </header>
+
+  <main class="astro-main">
+    <section class="astro-intro" aria-labelledby="astro-title">
+      <div>
+        <p class="mono astro-eyebrow"><span aria-hidden="true">✦</span> Merakın götürdüğü yere</p>
+        <h1 id="astro-title">Biraz daha <em>uzağa bakalım.</em></h1>
+        <p>Bir gezegen, bir yıldız, koca bir galaksi. Evreni anlamak için önce içindekilerle tanışalım.</p>
+      </div>
+      <div class="astro-edition mono"><span>GÖK CİSİMLERİ</span><strong>01 — 10</strong><span>Bir keşif defteri</span></div>
+    </section>
+
+    <section class="astro-workspace" aria-label="Gök cismi kütüphanesi">
+      <aside class="astro-library" aria-labelledby="library-title">
+        <div class="astro-library-heading"><h2 class="mono" id="library-title">Keşfet</h2><span class="mono" id="object-count" role="status">10 cisim</span></div>
+        <label class="astro-sr-only" for="object-search">Gök cismi ara</label>
+        <div class="astro-search"><span aria-hidden="true">⌕</span><input id="object-search" type="search" placeholder="Bir cisim ara…" autocomplete="off"></div>
+        <div class="astro-filters" id="category-filters" aria-label="Cisim kategorileri"></div>
+        <ul class="astro-object-list" id="object-list" aria-label="Gök cisimleri"></ul>
+        <div class="astro-empty" id="empty-state" hidden><p>Bu aramada bir cisim bulunamadı.</p><button type="button" class="btn tiny" id="clear-filters">Aramayı temizle</button></div>
+        <p class="astro-library-note">Yakınımızdan başlayıp<br>hayal edebildiğin kadar uzağa.</p>
+      </aside>
+
+      <div class="astro-observation" id="gozlem">
+        <div class="astro-object-layout">
+          <figure class="astro-figure">
+            <div class="astro-stage" id="stage">
+              <div class="astro-stage-top mono"><span id="scene-category">Güneş sistemi / 06</span><span class="astro-status" id="animation-status">Temsili görünüm</span></div>
+              <div class="astro-poster" id="scene-poster" role="img" aria-label="Halkalarıyla Satürn'ün temsili çizimi"><span></span></div>
+              <canvas id="space-canvas" width="640" height="540" tabindex="0" aria-label="Satürn'ün etkileşimli temsili görünümü" aria-describedby="scene-help model-note" hidden>Gök cisminin açıklaması ve özellikleri bu çizimin yanında yer alıyor.</canvas>
+              <div class="astro-stage-bottom"><span class="mono" id="scene-name">SATÜRN</span><span class="mono" id="scene-caption">Halkalı gaz devi</span></div>
+            </div>
+            <figcaption class="astro-controls">
+              <div class="astro-control-row">
+                <button class="btn astro-play" id="toggle-animation" type="button" disabled>Animasyonu başlat</button>
+                <label for="animation-speed">Hız <select id="animation-speed" disabled><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+                <button class="btn astro-reset" id="reset-view" type="button" disabled title="Başlangıç görünümüne dön">↺ Sıfırla</button>
+              </div>
+              <p id="scene-help">Görünümü çevirmek için sürükle veya çizime odaklanıp ok tuşlarını kullan.</p>
+            </figcaption>
+          </figure>
+
+          <article class="astro-details" aria-labelledby="object-title">
+            <p class="mono astro-object-type" id="object-type">Gezegen · gaz devi</p>
+            <h2 id="object-title">Satürn</h2>
+            <p class="astro-object-intro" id="object-intro">Bir gezegenden fazlası gibi görünen, buzdan halkalarıyla çevrili bir dünya. Güneş sisteminin ikinci büyük gezegeni.</p>
+            <dl class="astro-facts" id="object-facts">
+              <div><dt>Ekvator çapı</dt><dd>≈ 120.500 <small>km</small></dd></div>
+              <div><dt>Bir dönüş</dt><dd>≈ 10,7 <small>saat</small></dd></div>
+              <div><dt>Bir yıl</dt><dd>≈ 29,4 <small>Dünya yılı</small></dd></div>
+              <div><dt>Güneş’e uzaklık</dt><dd>≈ 1,4 milyar <small>km</small></dd></div>
+            </dl>
+            <div class="astro-fact-note"><span aria-hidden="true">✧</span><p id="object-highlight">Halkalar tek parça değil. Her biri kendi yörüngesinde dolanan sayısız buz ve kaya parçasından oluşuyor.</p></div>
+            <a class="astro-source mono" id="object-source" href="https://science.nasa.gov/saturn/facts/" target="_blank" rel="noopener noreferrer">Kaynak: NASA Science ↗</a>
+          </article>
+        </div>
+
+        <div class="astro-reading">
+          <section aria-labelledby="appearance-title"><p class="mono astro-section-index">01 / Görünüm</p><h3 id="appearance-title">Neye bakıyorum?</h3><p id="object-appearance">Soluk altın renkli bulut kuşaklarına ve gezegeni çevreleyen ince halkalara. Halkaların eğimi, onları bazen geniş bir elips, bazen incecik bir çizgi gibi görmemize neden olur.</p></section>
+          <section aria-labelledby="explanation-title"><p class="mono astro-section-index">02 / Biraz daha yakından</p><h3 id="explanation-title">Üzerine inebilir miydik?</h3><p id="object-explanation">Satürn’ün üzerinde yürünecek katı bir yüzeyi yok. Derinlere indikçe gaz giderek yoğunlaşır; basınç ve sıcaklık çok yükselir.</p></section>
+        </div>
+        <p class="astro-model-note" id="model-note"><span class="mono">Çizim notu</span> <span id="object-model-note">Renkler, boyutlar ve hareketler anlatım için sadeleştirildi. Cisimler ortak ölçekte değil; hızlar gerçek zamanlı değil.</span></p>
+        <p class="astro-sr-only" id="selection-status" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <noscript><p class="astro-notice">Şu anda Satürn’ün sabit çizimi ve bilgileri açık. Diğer cisimleri seçmek ve animasyonları çalıştırmak için tarayıcında JavaScript’i etkinleştir.</p></noscript>
+    <section class="astro-future" aria-labelledby="future-title">
+      <span class="astro-orbits" aria-hidden="true">◎</span>
+      <div><p class="mono">Keşif devam edecek</p><h2 id="future-title">Peki, bütün bunlar <em>nasıl oluyor?</em></h2><p>Tutulmalar, yörüngeler, yıldızların yaşamı… Bu defterin bir sonraki sayfası, astronomik olayları birlikte kurcalayacağımız simülasyonlar olacak.</p></div>
+      <span class="mono astro-coming">İleride</span>
+    </section>
+  </main>
+  <footer class="astro-footer"><span class="mono" id="astro-credit">Kutay · Astronomi</span><a class="mono" href="../index.html">← Diğer meraklarım</a></footer>
+</body>
+</html>
