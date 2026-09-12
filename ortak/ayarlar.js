@@ -31,10 +31,10 @@ const bolumler = [
     yol: "atlas/index.html"
   },
   {
-    ad: "Sıradaki bölüm",
-    etiket: "Yakında",
-    not: "Başka bir hobi buraya gelecek.",
-    yol: ""
+    ad: "Astronomi",
+    etiket: "Uzay · keşfet",
+    not: "Yakınımızdaki gezegenlerden uzak galaksilere. Gök cisimlerini hareketli görünümleriyle keşfet, onları ilginç yapan şeyleri öğren.",
+    yol: "astronomi/index.html"
   }
 ];
 
