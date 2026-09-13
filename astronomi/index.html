@@ -1,126 +1,126 @@
 <!doctype html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Gezegenlerden galaksilere: gök cisimlerini hareketli, etkileşimli çizimler ve anlaşılır Türkçe açıklamalarla keşfet.">
+  <meta name="description" content="Explore planets, stars and galaxies through interactive models, physical properties and source-backed explanations.">
   <meta name="theme-color" content="#030814">
-  <title>Astronomi — Kutay</title>
+  <title>Astronomy — Kutay</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../ortak/tema.css">
   <link rel="stylesheet" href="astronomi.css">
   <script defer src="../ortak/ayarlar.js"></script>
-  <script defer src="cisimler.js"></script>
-  <script defer src="teknik.js"></script>
+  <script defer src="catalog.js"></script>
+  <script defer src="models.js"></script>
   <script defer src="dokular.js"></script>
   <script defer src="sahne.js"></script>
   <script defer src="astronomi.js"></script>
 </head>
 <body class="astronomi">
-  <a class="astro-skip" href="#gozlem">Gözlem alanına geç</a>
+  <a class="astro-skip" href="#gozlem">Skip to the viewer</a>
   <header class="topbar">
     <span class="marka">
       <a class="wordmark" href="../index.html" id="wordmark">Kutay</a>
       <span class="sep">/</span>
-      <span class="sayfa">Astronomi</span>
+      <span class="sayfa">Astronomy</span>
     </span>
     <nav class="mono" aria-label="Site">
-      <a href="../index.html">← Ana sayfa</a>
-      <a class="astro-atlas-link" href="../atlas/index.html">Fotoğraf atlası</a>
+      <a href="../index.html">← Home</a>
+      <a class="astro-atlas-link" href="../atlas/index.html">Photo atlas</a>
     </nav>
   </header>
 
   <main class="astro-main">
     <section class="astro-intro" aria-labelledby="astro-title">
       <div>
-        <p class="mono astro-eyebrow"><span aria-hidden="true">✦</span> Merakın götürdüğü yere</p>
-        <h1 id="astro-title">Biraz daha <em>uzağa bakalım.</em></h1>
-        <p>Bir gezegen, bir yıldız, koca bir galaksi. Evreni anlamak için önce içindekilerle tanışalım.</p>
+        <p class="mono astro-eyebrow"><span aria-hidden="true">✦</span> An observer’s notebook</p>
+        <h1 id="astro-title">Explore <em>the universe.</em></h1>
+        <p>Examine worlds, stars and galaxies. Rotate each model, explore its physical properties and see where observation ends and illustration begins.</p>
       </div>
-      <div class="astro-edition mono"><span>GÖK CİSİMLERİ</span><strong id="catalog-total">01 — 24</strong><span>Bir keşif defteri</span></div>
+      <div class="astro-edition mono"><span>CELESTIAL OBJECTS</span><strong id="catalog-total">01 — 24</strong><span>An interactive catalogue</span></div>
     </section>
 
-    <section class="astro-workspace" aria-label="Gök cismi kütüphanesi">
+    <section class="astro-workspace" aria-label="Celestial object catalogue">
       <aside class="astro-library" aria-labelledby="library-title">
-        <div class="astro-library-heading"><h2 class="mono" id="library-title">Keşfet</h2><span class="mono" id="object-count" role="status">24 cisim</span></div>
-        <label class="astro-sr-only" for="object-search">Gök cismi ara</label>
-        <div class="astro-search"><span aria-hidden="true">⌕</span><input id="object-search" type="search" placeholder="Bir cisim ara…" autocomplete="off"></div>
-        <div class="astro-filters" id="category-filters" aria-label="Cisim kategorileri"></div>
-        <ul class="astro-object-list" id="object-list" aria-label="Gök cisimleri"></ul>
-        <div class="astro-empty" id="empty-state" hidden><p>Bu aramada bir cisim bulunamadı.</p><button type="button" class="btn tiny" id="clear-filters">Aramayı temizle</button></div>
-        <p class="astro-library-note">Yakınımızdan başlayıp<br>hayal edebildiğin kadar uzağa.</p>
+        <div class="astro-library-heading"><h2 class="mono" id="library-title">Explore</h2><span class="mono" id="object-count" role="status">24 objects</span></div>
+        <label class="astro-sr-only" for="object-search">Search celestial objects</label>
+        <div class="astro-search"><span aria-hidden="true">⌕</span><input id="object-search" type="search" placeholder="Search the catalogue…" autocomplete="off"></div>
+        <div class="astro-filters" id="category-filters" aria-label="Object categories"></div>
+        <ul class="astro-object-list" id="object-list" aria-label="Celestial objects"></ul>
+        <div class="astro-empty" id="empty-state" hidden><p>No objects match your search.</p><button type="button" class="btn tiny" id="clear-filters">Clear search</button></div>
+        <p class="astro-library-note">From our solar system<br>to the galaxies beyond.</p>
       </aside>
 
       <div class="astro-observation" id="gozlem">
         <div class="astro-object-layout">
           <figure class="astro-figure">
             <div class="astro-stage" id="stage">
-              <div class="astro-stage-top mono"><span id="scene-category">Güneş sistemi / 06</span><span class="astro-status" id="animation-status">Temsili görünüm</span></div>
-              <div class="astro-poster" id="scene-poster" role="img" aria-label="Halkalarıyla Satürn'ün temsili çizimi"><span></span></div>
-              <canvas id="space-canvas" width="640" height="540" tabindex="0" aria-label="Satürn'ün etkileşimli temsili görünümü" aria-describedby="scene-help model-note" hidden>Gök cisminin açıklaması ve özellikleri bu çizimin yanında yer alıyor.</canvas>
-              <div class="astro-stage-bottom"><span class="mono" id="scene-name">SATÜRN</span><span class="mono" id="scene-caption">Halkalı gaz devi</span></div>
+              <div class="astro-stage-top mono"><span id="scene-category">Solar system / 06</span><span class="astro-status" id="animation-status">Illustrative model</span></div>
+              <div class="astro-poster" id="scene-poster" role="img" aria-label="An illustration of Saturn and its rings"><span></span></div>
+              <canvas id="space-canvas" width="640" height="540" tabindex="0" aria-label="Interactive model of Saturn" aria-describedby="scene-help model-note" hidden>A description and physical properties are available beside the model.</canvas>
+              <div class="astro-stage-bottom"><span class="mono" id="scene-name">SATURN</span><span class="mono" id="scene-caption">Ringed gas giant</span></div>
             </div>
             <figcaption class="astro-controls">
               <div class="astro-control-row">
-                <button class="btn astro-play" id="toggle-animation" type="button" disabled>Animasyonu başlat</button>
-                <label for="animation-speed">Hız <select id="animation-speed" disabled><option value="0.5">0,5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
-                <button class="btn astro-reset" id="reset-view" type="button" disabled title="Başlangıç görünümüne dön">↺ Sıfırla</button>
-                <button class="btn" id="toggle-sun" type="button" aria-pressed="false" aria-controls="space-canvas sun-location-note" hidden disabled>☉ Güneş’in konumu</button>
+                <button class="btn astro-play" id="toggle-animation" type="button" disabled>Start rotation</button>
+                <label for="animation-speed">Speed <select id="animation-speed" disabled><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+                <button class="btn astro-reset" id="reset-view" type="button" disabled title="Restore the initial view">↺ Reset</button>
+                <button class="btn" id="toggle-sun" type="button" aria-pressed="false" aria-controls="space-canvas sun-location-note" hidden disabled>☉ Sun’s location</button>
               </div>
               <div class="astro-adjustments">
-                <label>Yakınlaştır <input id="scene-zoom" type="range" min="0.7" max="1.5" step="0.05" value="1" disabled></label>
-                <label id="phase-control">Işık açısı <input id="scene-phase" type="range" min="-2.5" max="2.5" step="0.05" value="-0.65" disabled></label>
+                <label>Zoom <input id="scene-zoom" type="range" min="0.7" max="1.5" step="0.05" value="1" disabled></label>
+                <label id="phase-control">Light direction <input id="scene-phase" type="range" min="-2.5" max="2.5" step="0.05" value="-0.65" disabled></label>
               </div>
-              <p id="scene-help">Görünümü çevirmek için sürükle; yukarı/aşağı bakış yönü sürükleme yönünü takip eder. Fare tekerleği yakınlaştırır, ok tuşları da çalışır.</p>
-              <p id="sun-location-note" hidden>Güneş, Orion Kolu’nda (Yerel Kol), merkezden yaklaşık 26.000 ışık yılı uzaktadır. İşaret görünür olması için büyütülmüştür; kol geometrisi ve açısal yerleşim şematiktir. <a href="https://science.nasa.gov/resource/the-milky-way-galaxy/">NASA: konum</a> · <a href="https://science.nasa.gov/mission/webb/galaxies-over-time/">uzaklık</a>.</p>
+              <p id="scene-help">Drag to rotate the object. Scroll to zoom; arrow keys also rotate. Reset restores the initial view.</p>
+              <p id="sun-location-note" hidden>The Sun is in the Local (Orion) Arm, about 26,000 light-years from the Galactic centre. The marker is enlarged; arm geometry and azimuth are illustrative. <a href="https://science.nasa.gov/resource/the-milky-way-galaxy/">NASA: location</a> · <a href="https://science.nasa.gov/mission/webb/galaxies-over-time/">distance</a>.</p>
             </figcaption>
           </figure>
 
           <article class="astro-details" aria-labelledby="object-title">
-            <p class="mono astro-object-type" id="object-type">Gezegen · gaz devi</p>
-            <h2 id="object-title">Satürn</h2>
-            <p class="astro-object-intro" id="object-intro">Bir gezegenden fazlası gibi görünen, buzdan halkalarıyla çevrili bir dünya. Güneş sisteminin ikinci büyük gezegeni.</p>
+            <p class="mono astro-object-type" id="object-type">Planet · gas giant</p>
+            <h2 id="object-title">Saturn</h2>
+            <p class="astro-object-intro" id="object-intro">A rapidly rotating gas giant surrounded by an extensive disk of icy ring particles.</p>
             <dl class="astro-facts" id="object-facts">
-              <div><dt>Ekvator çapı</dt><dd>≈ 120.500 <small>km</small></dd></div>
-              <div><dt>Bir dönüş</dt><dd>≈ 10,7 <small>saat</small></dd></div>
-              <div><dt>Bir yıl</dt><dd>≈ 29,4 <small>Dünya yılı</small></dd></div>
-              <div><dt>Güneş’e uzaklık</dt><dd>≈ 1,4 milyar <small>km</small></dd></div>
+              <div><dt>Equatorial diameter</dt><dd>≈ 120,500 <small>km</small></dd></div>
+              <div><dt>Rotation</dt><dd>≈ 10.7 <small>hours</small></dd></div>
+              <div><dt>Orbital period</dt><dd>≈ 29.4 <small>Earth years</small></dd></div>
+              <div><dt>Distance from the Sun</dt><dd>≈ 1.4 billion <small>km</small></dd></div>
             </dl>
-            <div class="astro-fact-note"><span aria-hidden="true">✧</span><p id="object-highlight">Halkalar tek parça değil. Her biri kendi yörüngesinde dolanan sayısız buz ve kaya parçasından oluşuyor.</p></div>
-            <a class="astro-source mono" id="object-source" href="https://science.nasa.gov/saturn/facts/" target="_blank" rel="noopener noreferrer">Kaynak: NASA Science ↗</a>
+            <div class="astro-fact-note"><span aria-hidden="true">✧</span><p id="object-highlight">The rings consist of countless orbiting particles, not a single rigid sheet.</p></div>
+            <a class="astro-source mono" id="object-source" href="https://science.nasa.gov/saturn/facts/" target="_blank" rel="noopener noreferrer">Source: NASA Science ↗</a>
           </article>
         </div>
 
-        <section class="astro-technical" aria-label="Teknik bilgiler">
-          <h3>Fiziksel yapı ve sınıflandırma</h3>
+        <section class="astro-technical" aria-label="Technical information">
+          <h3>Physical structure and classification</h3>
           <dl id="technical-facts"></dl>
           <div id="orbital-section" hidden>
-            <h3>Yörünge elemanları</h3>
+            <h3>Orbital elements</h3>
             <p id="orbit-note"></p>
-            <table><caption>Altı Kepler yörünge elemanı</caption><thead><tr><th scope="col">Eleman</th><th scope="col">Değer</th><th scope="col">Birim</th></tr></thead><tbody id="orbit-elements"></tbody></table>
-            <p><a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html" target="_blank" rel="noopener noreferrer">Kaynak: NASA/JPL — Table 1 ↗</a></p>
+            <table><caption>Six Keplerian orbital elements</caption><thead><tr><th scope="col">Element</th><th scope="col">Value</th><th scope="col">Unit</th></tr></thead><tbody id="orbit-elements"></tbody></table>
+            <p><a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html" target="_blank" rel="noopener noreferrer">Source: NASA/JPL — Table 1 ↗</a></p>
           </div>
-          <p>Ders kaynakları: Zerefşan Kaymaz, <em>Planetary Atmospheres</em> — Star Formation (12 Şubat 2026), Luminosity and Brightness, H–R Diagram ve Giant Planets (21 Mayıs 2026). <a href="KAYNAKLAR.md">Kaynak ve model ayrıntıları</a>.</p>
+          <p>Course references: Zerefşan Kaymaz, <em>Planetary Atmospheres</em> — Star Formation (12 February 2026), Luminosity and Brightness, H–R Diagram and Giant Planets (21 May 2026). <a href="KAYNAKLAR.md">Sources and model limitations</a>.</p>
         </section>
         <div class="astro-reading">
-          <section aria-labelledby="appearance-title"><p class="mono astro-section-index">01 / Görünüm</p><h3 id="appearance-title">Neye bakıyorum?</h3><p id="object-appearance">Soluk altın renkli bulut kuşaklarına ve gezegeni çevreleyen ince halkalara. Halkaların eğimi, onları bazen geniş bir elips, bazen incecik bir çizgi gibi görmemize neden olur.</p></section>
-          <section aria-labelledby="explanation-title"><p class="mono astro-section-index">02 / Biraz daha yakından</p><h3 id="explanation-title">Üzerine inebilir miydik?</h3><p id="object-explanation">Satürn’ün üzerinde yürünecek katı bir yüzeyi yok. Derinlere indikçe gaz giderek yoğunlaşır; basınç ve sıcaklık çok yükselir.</p></section>
+          <section aria-labelledby="appearance-title"><p class="mono astro-section-index">01 / Appearance</p><h3 id="appearance-title">What am I looking at?</h3><p id="object-appearance">Pale cloud bands and an inclined ring system. The viewing angle changes the rings’ apparent shape.</p></section>
+          <section aria-labelledby="explanation-title"><p class="mono astro-section-index">02 / The physics</p><h3 id="explanation-title">Could we land on it?</h3><p id="object-explanation">Saturn has no solid surface to stand on. Pressure, density and temperature increase beneath the clouds.</p></section>
         </div>
-        <p class="astro-model-note" id="model-note"><span class="mono">Çizim notu</span> <span id="object-model-note">Renkler, boyutlar ve hareketler anlatım için sadeleştirildi. Cisimler ortak ölçekte değil; hızlar gerçek zamanlı değil.</span></p>
-        <p class="astro-model-note">Yüzey haritaları: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope / INOVE</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Küçültülüp WebP biçimine dönüştürüldü. Plüton: <a href="https://www.jpl.nasa.gov/images/pia11707-pluto-color-map/">NASA / JHUAPL / SwRI, New Horizons</a>; küçültülmüş JPEG mozaik. Diğer yüzeyler şematik; hareketler gerçek zamanlı değil.</p>
+        <p class="astro-model-note" id="model-note"><span class="mono">Model notes</span> <span id="object-model-note">Objects are not shown at a common scale. Rotation and lighting are for inspection, not an ephemeris.</span></p>
+        <p class="astro-model-note">Surface maps: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope / INOVE</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. 2048-pixel maps converted to WebP. Pluto: <a href="https://www.jpl.nasa.gov/images/pia11707-pluto-color-map/">NASA / JHUAPL / SwRI, New Horizons</a>; a resized JPEG mosaic. Bennu uses a NASA visualization mesh; 67P remains a morphological approximation. See the source notes for model limitations.</p>
         <p class="astro-sr-only" id="selection-status"  role="status" aria-live="polite"></p>
       </div>
     </section>
 
-    <noscript><p class="astro-notice">Şu anda Satürn’ün sabit çizimi ve bilgileri açık. Diğer cisimleri seçmek ve animasyonları çalıştırmak için tarayıcında JavaScript’i etkinleştir.</p></noscript>
+    <noscript><p class="astro-notice">Saturn’s information is shown below. Enable JavaScript to choose other objects and use the interactive viewer.</p></noscript>
     <section class="astro-future" aria-labelledby="future-title">
       <span class="astro-orbits" aria-hidden="true">◎</span>
-      <div><p class="mono">Keşif devam edecek</p><h2 id="future-title">Peki, bütün bunlar <em>nasıl oluyor?</em></h2><p>Tutulmalar, yörüngeler, yıldızların yaşamı… Bu defterin bir sonraki sayfası, astronomik olayları birlikte kurcalayacağımız simülasyonlar olacak.</p></div>
-      <span class="mono astro-coming">İleride</span>
+      <div><p class="mono">Next in the notebook</p><h2 id="future-title">Explore the physics <em>behind the view.</em></h2><p>Future chapters will explore eclipses, orbital motion and stellar evolution through interactive simulations.</p></div>
+      <span class="mono astro-coming">Coming later</span>
     </section>
   </main>
-  <footer class="astro-footer"><span class="mono" id="astro-credit">Kutay · Astronomi</span><a class="mono" href="../index.html">← Diğer meraklarım</a></footer>
+  <footer class="astro-footer"><span class="mono" id="astro-credit">Kutay · Astronomy</span><a class="mono" href="../index.html">← Back to my interests</a></footer>
 </body>
 </html>

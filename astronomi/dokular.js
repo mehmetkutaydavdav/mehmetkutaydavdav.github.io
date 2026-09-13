@@ -1,6 +1,6 @@
 /* Lazy local texture loading; no third-party requests. */
 (() => {
-  const keys=new Set(['mercury','venus','earth','earth-night','earth-clouds','moon','mars','jupiter','saturn','uranus','neptune','sun','pluto']);
+  const keys=new Set(['mercury','venus','earth','earth-night','earth-clouds','moon','mars','jupiter','saturn','uranus','neptune','sun','pluto','europa','enceladus','ceres']);
   const pending=new Map();
   window.AstroTextures={load(key) {
     if(!keys.has(key))return Promise.resolve(null);
@@ -16,9 +16,9 @@
         img.onerror=()=>finish(null);
         img.onload=()=>{
           try {
-            const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=512;
-            const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,1024,512);
-            finish(ctx.getImageData(0,0,1024,512).data);
+            const canvas=document.createElement('canvas');canvas.width=2048;canvas.height=1024;
+            const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,2048,1024);
+            finish(ctx.getImageData(0,0,2048,1024).data);
           } catch {finish(null);}
         };
         img.src=window.AstroTextureData[key];
