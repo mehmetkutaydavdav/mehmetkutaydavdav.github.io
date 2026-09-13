@@ -33,6 +33,11 @@
     canvas.addEventListener('astrozoom',e=>{$('scene-zoom').value=String(e.detail);});
     $('scene-zoom').addEventListener('input',e=>scene.setZoom(e.target.value));
     $('scene-phase').addEventListener('input',e=>scene.setPhase(e.target.value));
+    $('toggle-sun').addEventListener('click',()=>{
+      scene.showSun=!scene.showSun;scene.draw();
+      $('toggle-sun').setAttribute('aria-pressed',String(scene.showSun));
+      $('sun-location-note').hidden=!scene.showSun;
+    });
     $('toggle-animation').addEventListener('click',() => scene.setPlaying(!scene.playing));
     $('animation-speed').addEventListener('change',e => scene.setSpeed(e.target.value));
     $('reset-view').addEventListener('click',() => {scene.reset();scene.setSpeed(1);$('animation-speed').value='1';$('scene-zoom').value='1';$('scene-phase').value='-0.65';});
@@ -99,7 +104,9 @@
     $('explanation-title').textContent=object.question;
     $('object-explanation').textContent=object.explanation;
     $('object-model-note').textContent=`${object.modelNote} Cisimler ortak ölçekte gösterilmiyor.`;
-    $('scene-help').textContent=(['blackhole','neutron','nebula','galaxy','andromeda'].includes(object.kind)
+    $('scene-help').textContent=(['galaxy','andromeda'].includes(object.kind)
+      ? 'Yatay sürükleyerek galaksiyi döndür; dikey sürükleyerek diskine üstten veya yandan bak. Ok tuşları da çalışır. '
+      : ['blackhole','neutron','nebula'].includes(object.kind)
       ? 'Bu iki boyutlu temsili sürükleyerek taşı; ok tuşları da görüntüyü aynı yönde taşır. '
       : 'Cismi tutup istediğin yöne çevir; ok tuşları da aynı yönde çalışır. ')
       +'Fare tekerleği yakınlaştırır. Sıfırla düğmesi başlangıç görünümüne döner.';
@@ -114,6 +121,8 @@
     }
     canvas.setAttribute('aria-label',`${object.name}: ${object.appearance}`);
     if(scene?.available)scene.setObject(object);
+    $('toggle-sun').hidden=object.id!=='samanyolu';$('toggle-sun').disabled=!scene?.available;
+    $('toggle-sun').setAttribute('aria-pressed','false');$('sun-location-note').hidden=true;
     $('scene-zoom').value='1';$('scene-phase').value='-0.65';
     $('phase-control').hidden=['sun','redgiant','whitedwarf','neutron','blackhole','galaxy','andromeda','nebula'].includes(object.kind);
     updateSelection();

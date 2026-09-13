@@ -7,6 +7,17 @@
   const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
   const random = seed => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296);
   const textures = new Map();
+  const noise3=(x,y,z)=>{
+    const ix=Math.floor(x),iy=Math.floor(y),iz=Math.floor(z),smooth=t=>t*t*(3-2*t);
+    const fx=smooth(x-ix),fy=smooth(y-iy),fz=smooth(z-iz);
+    let total=0;
+    for(let a=0;a<2;a++)for(let b=0;b<2;b++)for(let c=0;c<2;c++){
+      let h=Math.imul(ix+a,374761393)^Math.imul(iy+b,668265263)^Math.imul(iz+c,1274126177);
+      h=Math.imul(h^(h>>>13),1274126177);
+      total+=((h^(h>>>16))>>>0)/4294967296*(a?fx:1-fx)*(b?fy:1-fy)*(c?fz:1-fz);
+    }
+    return total;
+  };
 
   function texture(kind) {
     if (textures.has(kind)) return textures.get(kind);
@@ -30,7 +41,11 @@
         } else if (kind === 'uranus') rgb = [128+band*4,190+band*5,198+band*5];
         else if (kind === 'neptune') rgb = [55+band*10,104+band*15,183+band*19];
         else if (kind === 'venus' || kind === 'titan') rgb = [200+band*9+grain,158+band*8+grain,85+grain];
-        else if (kind === 'redgiant') {const cell=Math.sin(u*TAU*19+Math.sin(v*31))*Math.sin(v*47+Math.cos(u*TAU*11));rgb=[237+grain,133+cell*28+grain,72+cell*18];}
+        else if (kind === 'redgiant') {
+          const lat=(v-.5)*Math.PI,px=Math.cos(u*TAU)*Math.cos(lat),py=Math.sin(lat),pz=Math.sin(u*TAU)*Math.cos(lat);
+          const cell=noise3(px*15+20,py*15+20,pz*15+20)*.7+noise3(px*38+45,py*38+45,pz*38+45)*.3;
+          rgb=[211+cell*42+grain*.25,96+cell*80+grain*.25,45+cell*40];
+        }
         else if (kind === 'whitedwarf') rgb = [199+grain,221+grain,247+grain];
         else if (kind === 'europa' || kind === 'enceladus') {
           const crack=Math.abs(Math.sin(u*TAU*7+Math.sin(v*19+Math.cos(u*TAU*3))*3));
@@ -182,7 +197,9 @@
       this.resize();
     }
     moveView(dx,dy) {
-      if(['blackhole','neutron','nebula','galaxy','andromeda'].includes(this.object?.kind)) {
+      if(['galaxy','andromeda'].includes(this.object?.kind)) {
+        this.angle-=dx*.009;this.view=clamp(this.view-dy*.006,-1.45,1.45);
+      } else if(['blackhole','neutron','nebula'].includes(this.object?.kind)) {
         this.panX=clamp((this.panX||0)+dx,-this.w*.3,this.w*.3);
         this.panY=clamp((this.panY||0)+dy,-this.h*.3,this.h*.3);
       } else {
@@ -192,14 +209,14 @@
     }
     setObject(object) {
       this.panX=0;this.panY=0;
-      this.object=object;this.angle=0;this.view=-.28;this.time=0;
+      this.object=object;this.angle=0;this.view=['galaxy','andromeda'].includes(object.kind)?.65:-.28;this.time=0;this.showSun=false;
       this.tex=texture(object.kind);
       this.zoom=1;this.phase=-.65;this.projectionView=null;
       this.night=null;this.cloudMap=null;
       const chosen=object;
       window.AstroTextures?.load(object.kind).then(map=>{
         if(this.object!==chosen)return;
-        if(map)this.tex=map;
+        if(map)this.tex=object.kind==='pluto'?this.completePluto(map):map;
         this.draw();
       });
       if(object.kind==='earth') for(const key of ['earth-night','earth-clouds']) {
@@ -212,10 +229,24 @@
       this.draw();this.sync();
     }
     setPlaying(value) {this.playing=!!value;this.onState?.(this.playing);this.sync();}
+    completePluto(map) {
+      // Preserve observation data; replace only the unobserved black southern mask in a display copy.
+      const result=new Uint8ClampedArray(map);
+      for(let x=0;x<TW;x++){
+        let edge=TH;
+        while(edge>TH*.5){const i=((edge-1)*TW+x)*4;if(Math.max(map[i],map[i+1],map[i+2])>=28)break;edge--;}
+        for(let y=edge;y<TH;y++){
+          const i=(y*TW+x)*4;
+          const sample=(Math.max(0,edge-8)*TW+x)*4,t=clamp((y-edge)/48,0,1),blend=t*t*(3-2*t),neutral=[155,145,132];
+          for(let c=0;c<3;c++)result[i+c]=Math.max(50,map[sample+c])*(1-blend)+neutral[c]*blend;
+        }
+      }
+      return result;
+    }
     setSpeed(value) {this.speed=clamp(Number(value)||1,.5,2);}
     setZoom(value) {this.zoom=clamp(Number(value)||1,.7,1.5);this.canvas.dispatchEvent(new CustomEvent('astrozoom',{detail:this.zoom}));this.draw();}
     setPhase(value) {this.phase=clamp(Number(value)||0,-2.5,2.5);this.draw();}
-    reset() {this.panX=0;this.panY=0;this.zoom=1;this.phase=-.65;this.angle=0;this.view=-.28;this.time=0;this.draw();}
+    reset() {this.panX=0;this.panY=0;this.zoom=1;this.phase=-.65;this.angle=0;this.view=['galaxy','andromeda'].includes(this.object?.kind)?.65:-.28;this.time=0;this.draw();}
     resize() {
       const rect=this.canvas.parentElement.getBoundingClientRect();
       this.w=Math.max(1,rect.width);this.h=Math.max(1,rect.height);
@@ -315,19 +346,18 @@
         ctx.globalAlpha=.35;ctx.beginPath();ctx.ellipse(0,0,rr,rr*.87,0,0,Math.PI);ctx.stroke();ctx.globalAlpha=1;
       }
       ctx.fillStyle='#000';ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.fill();
-      // Continuous disk filaments with differential motion and approaching-side brightening.
-      for(let i=0;i<96;i++){
-        const q=i/95,rr=r*(1.15+q*1.55),flow=this.angle*2/Math.pow(1+q,1.5);
-        for(let k=0;k<80;k++){
-          const a=k/80*TAU,b=(k+1.08)/80*TAU;
-          const front=Math.sin(a)>0,y=Math.sin(a)*rr*opening;
-          if(!front && Math.hypot(Math.cos(a)*rr,y)<r*1.06)continue;
-          const boost=.32+.68*(1-Math.cos(a))*.5;
-          const detail=.75+.25*Math.sin(i*2.13+Math.sin(a*7+flow)*2);
-          ctx.strokeStyle=`rgba(255,${Math.round(110+(1-q)*118)},${Math.round(42+(1-q)*135)},${boost*detail*(.14+.38*(1-q))})`;
-          ctx.lineWidth=Math.max(.6,r*.022);ctx.beginPath();ctx.ellipse(0,0,rr,rr*opening,0,a,b);ctx.stroke();
-        }
+      // Pixel shading avoids the spoke-like seams of segmented ellipse strokes.
+      if(!this.disk){this.disk=document.createElement('canvas');this.disk.width=512;this.disk.height=256;this.diskCtx=this.disk.getContext('2d');this.diskData=this.diskCtx.createImageData(512,256);}
+      const pixels=this.diskData.data;pixels.fill(0);
+      for(let y=0;y<256;y++)for(let x=0;x<512;x++){
+        const xx=(x+.5-256)/512*5.5,yy=(y+.5-128)/256*2.8,rr=Math.hypot(xx,yy/opening);
+        if(rr<1.15||rr>2.7||(yy<0&&Math.hypot(xx,yy)<1.015))continue;
+        const q=(rr-1.15)/1.55,a=Math.atan2(yy/opening,xx),flow=this.time*.65/Math.pow(rr,1.5);
+        const detail=.8+.2*Math.sin(rr*100+Math.sin(a*6+flow)*2),boost=.35+.65*(1-xx/rr)/2;
+        const edge=clamp((rr-1.15)*20,0,1)*clamp((2.7-rr)*9,0,1),i=(y*512+x)*4;
+        pixels[i]=255;pixels[i+1]=120+(1-q)*112;pixels[i+2]=48+(1-q)*125;pixels[i+3]=255*edge*detail*boost*(.4+.6*(1-q));
       }
+      this.diskCtx.putImageData(this.diskData,0,0);ctx.drawImage(this.disk,-r*2.75,-r*1.4,r*5.5,r*2.8);
       // The observed shadow is not the event horizon; no stars/particles are painted inside it.
       ctx.save();ctx.globalCompositeOperation='source-over';
       ctx.strokeStyle='#FFE2ACB0';ctx.lineWidth=r*.018;ctx.beginPath();ctx.arc(0,0,r*1.025,Math.PI,TAU);ctx.stroke();ctx.restore();
@@ -364,37 +394,58 @@
       ctx.restore();
     }
     galaxy(r) {
-      const ctx=this.ctx;
-      ctx.save();ctx.rotate(-.38+this.view);ctx.scale(1,clamp(.55+this.view*.45,.18,.92));
-      this.glow(0,0,r*1.95,'#A4ABA7',.55);
-      const arms=this.object.kind==='andromeda'?2:4;
-      for (const p of this.dust) {
-        const angle=p.arm%arms*TAU/arms+Math.log(.14+p.r)*3.7+this.angle*.2+p.j*(.4+p.r*.45);
-        const radius=(.04+p.r*.96)*r*1.85;
-        const x=Math.cos(angle)*radius,y=Math.sin(angle)*radius;
-        ctx.fillStyle=p.s>.85?'#DAD8CC99':p.s>.5?'#A6B9CC55':'#BDB9AB33';
-        ctx.beginPath();ctx.arc(x,y,p.s*.65+.15,0,TAU);ctx.fill();
-        if(p.s>.92)this.glow(x,y,r*.035,'#A5BDDC',.11);
+      const ctx=this.ctx,milky=this.object.kind==='galaxy',extent=r*1.85,spin=this.time*.018;
+      // Camera yaw and pitch, independent of time: the disk and its annotations share this projection.
+      const project=(x,z,height=0)=>{
+        const c=Math.cos(this.angle),s=Math.sin(this.angle),xx=x*c-z*s,zz=x*s+z*c;
+        return [xx,height*Math.cos(this.view)-zz*Math.sin(this.view),height*Math.sin(this.view)+zz*Math.cos(this.view)];
+      };
+      const diskPoint=(radius,a,height=0)=>project(Math.cos(a+spin)*radius,Math.sin(a+spin)*radius,height);
+      ctx.save();ctx.scale(1,Math.max(.035,Math.abs(Math.sin(this.view))));
+      this.glow(0,0,extent,'#ABB1B3',.44);ctx.restore();
+      const particles=[];
+      for(const p of this.dust){
+        const arms=milky?4:2,a=p.arm%arms*TAU/arms+Math.log(.14+p.r)*3.7+p.j*(.25+p.r*.35);
+        const q=diskPoint((.035+p.r*.965)*extent,a,p.j*extent*.025);
+        particles.push({q,size:.25+p.s*.8,color:p.s>.86?'#E4E1D1A0':p.s>.45?'#ACC1D17A':'#C3C1B355'});
+        // An older, diffuse disk under the younger stars concentrated in the arms.
+        const old=diskPoint(p.r*extent,p.a,p.j*extent*.07);
+        particles.push({q:old,size:.3+p.s*.45,color:'#C8C0AB28'});
       }
-      ctx.save();ctx.rotate(this.angle*.2);ctx.scale(1,this.object.kind==='andromeda'?.72:.32);
-      this.glow(0,0,r*.68,'#DBC69F',.6);ctx.restore();
-      this.glow(0,0,r*.32,'#F1E0BE',.8);
-      ctx.restore();
+      if(milky)for(let i=0;i<160;i++){
+        const t=i/159-.5,a=.58+t*.5,rr=extent*(.52+t*.045+Math.sin(i*137.5)*.014);
+        particles.push({q:diskPoint(rr,a),size:.25+Math.abs(Math.sin(i*2.7))*.35,color:'#B4C5D555'});
+      }
+      particles.sort((a,b)=>a.q[2]-b.q[2]);
+      for(const p of particles){ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.q[0],p.q[1],p.size,0,TAU);ctx.fill();}
+      // The stellar bulge has finite thickness, so it remains visible edge-on.
+      ctx.save();ctx.scale(1,milky?.6:.8);this.glow(0,0,r*.62,'#D6BD92',.72);ctx.restore();
+      if(milky){
+        for(let i=0;i<20;i++){const p=diskPoint((i/19-.5)*r*.8,.15);this.glow(p[0],p[1],r*.12,'#D8C7A5',.09);}
+      }
+      this.glow(0,0,r*.19,'#F1E1C4',.8);
+      this.sunScreen=null;
+      if(milky&&this.showSun){
+        const [x,y]=diskPoint(extent*.52,.58);this.sunScreen=[x,y];
+        this.glow(x,y,13,'#FFE6A5',.75);
+        ctx.strokeStyle='#FFD789';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(x,y,6,0,TAU);ctx.stroke();
+        ctx.fillStyle='#FFF3D0';ctx.beginPath();ctx.arc(x,y,2.5,0,TAU);ctx.fill();
+        const tx=clamp(x+18,-this.w*.45,this.w*.45-105),ty=clamp(y-20,-this.h*.38,this.h*.34);
+        ctx.beginPath();ctx.moveTo(x+5,y-5);ctx.lineTo(tx,ty+3);ctx.stroke();
+        ctx.font='12px sans-serif';ctx.fillStyle='#071019E8';ctx.fillRect(tx-5,ty-15,116,22);
+        ctx.fillStyle='#FFE6AD';ctx.fillText('Güneş · Orion Kolu',tx,ty);
+      }
     }
     smallBody(r,comet) {
       const ctx=this.ctx;
       ctx.save();
       if(comet) {
-        for(let i=0;i<40;i++) {
-          const ion=ctx.createLinearGradient(0,0,r*2.5,0);
-          ion.addColorStop(0,'rgba(113,163,236,.035)');ion.addColorStop(1,'rgba(113,163,236,0)');
-          ctx.strokeStyle=ion;ctx.lineWidth=r*.07;
-          ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(r*1.1,i*r*.005,r*2.5,r*(i-20)*.018);ctx.stroke();
-          const dust=ctx.createLinearGradient(0,0,r*2.5,r);
-          dust.addColorStop(0,'rgba(230,207,174,.025)');dust.addColorStop(1,'rgba(230,207,174,0)');
-          ctx.strokeStyle=dust;
-          ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(r*1.5,r*.3,r*2.5,r*(.9+i*.012));ctx.stroke();
-        }
+        ctx.save();ctx.filter=`blur(${Math.max(2,r*.035)}px)`;
+        const ion=ctx.createLinearGradient(0,0,r*2.6,0);ion.addColorStop(0,'#ADCFF566');ion.addColorStop(1,'#ADCFF500');
+        ctx.fillStyle=ion;ctx.beginPath();ctx.moveTo(0,-r*.05);ctx.lineTo(r*2.6,-r*.22);ctx.lineTo(r*2.6,r*.22);ctx.lineTo(0,r*.05);ctx.closePath();ctx.fill();
+        const dust=ctx.createLinearGradient(0,0,r*2.5,0);dust.addColorStop(0,'#DDC9A655');dust.addColorStop(1,'#DDC9A600');
+        ctx.fillStyle=dust;ctx.beginPath();ctx.moveTo(0,-r*.04);ctx.bezierCurveTo(r*.8,r*.02,r*1.8,r*.15,r*2.5,r*.65);ctx.lineTo(r*2.5,r*1.12);ctx.bezierCurveTo(r*1.7,r*.5,r*.8,r*.18,0,r*.08);ctx.closePath();ctx.fill();
+        ctx.restore();
         this.glow(0,0,r*1.3,'#A3CBEF',.24);
       }
       // Faceted three-dimensional morphology; illustrative, not a mission shape model.
@@ -448,7 +499,7 @@
       // Referans çemberi yalnızca klavye ile incelenen sahnelerde dikkat dağıtmasın.
       if(kind==='comet'||kind==='bennu') this.smallBody(radius,kind==='comet');
       else if (kind==='blackhole') this.blackhole(radius*.51);
-      else if (kind==='neutron') this.neutron(radius*.95);
+      else if (kind==='neutron') this.neutron(radius*.65);
       else if (kind==='nebula') this.nebula(radius*1.3);
       else if (kind==='galaxy'||kind==='andromeda') this.galaxy(radius*.83);
       else {
