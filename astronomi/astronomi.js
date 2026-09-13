@@ -3,8 +3,8 @@
   const catalog = window.AstroCatalog;
   if (!Array.isArray(catalog) || !catalog.length) return;
   const $ = id => document.getElementById(id);
-  const categories = [['tumu','Tümü'],['gunes-sistemi','Güneş sistemi'],['yildizlar','Yıldızlar'],['derin-uzay','Derin uzay']];
-  const normalize = text => String(text).toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i');
+  const categories = [['tumu','All'],['gunes-sistemi','Solar system'],['yildizlar','Stars'],['derin-uzay','Deep space']];
+  const normalize = text => String(text).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i');
   let category = 'tumu', selected = null;
   $('catalog-total').textContent='01 — '+catalog.length;
 
@@ -16,12 +16,12 @@
     surname.textContent = settings.ikinciAd;
     $('wordmark').append(' ',surname);
   }
-  $('astro-credit').textContent = `${fullName} · ${new Date().getFullYear()} · Astronomi`;
+  $('astro-credit').textContent = `${fullName} · ${new Date().getFullYear()} · Astronomy`;
 
   function animationState(playing) {
-    $('toggle-animation').textContent = playing ? 'Ⅱ Duraklat' : '▷ Oynat';
-    $('toggle-animation').setAttribute('aria-label', playing ? 'Animasyonu duraklat' : 'Animasyonu oynat');
-    $('animation-status').textContent = playing ? 'Hareketli görünüm' : 'Durduruldu';
+    $('toggle-animation').textContent = playing ? 'Ⅱ Pause' : '▷ Play';
+    $('toggle-animation').setAttribute('aria-label', playing ? 'Pause animation' : 'Play animation');
+    $('animation-status').textContent = playing ? 'Animating' : 'Paused';
   }
   const canvas = $('space-canvas');
   const scene = typeof window.AstroScene === 'function' ? new window.AstroScene(canvas,animationState) : null;
@@ -46,10 +46,10 @@
     $('scene-poster').removeAttribute('aria-label');
     $('scene-poster').replaceChildren();
     const notice=document.createElement('p');
-    notice.textContent='Bu tarayıcıda çizim açılamadı. Cisimlerin bilgilerini okumaya devam edebilirsin.';
+    notice.textContent='The interactive view is unavailable. You can still explore every object’s information.';
     $('scene-poster').append(notice);
-    $('scene-help').textContent='Etkileşimli çizim için Canvas destekleyen güncel bir tarayıcı kullan.';
-    $('animation-status').textContent='Metin görünümü';
+    $('scene-help').textContent='Use a browser with Canvas support for the interactive view.';
+    $('animation-status').textContent='Text view';
   }
 
   function filtered() {
@@ -75,14 +75,14 @@
       button.addEventListener('click',() => selectObject(object,true));
       li.append(button);$('object-list').append(li);
     }
-    $('object-count').textContent=`${objects.length} cisim`;
+    $('object-count').textContent=`${objects.length} objects`;
     $('empty-state').hidden=objects.length!==0;
     return objects;
   }
   function selectObject(object,saveHash=false) {
     selected=object;
     const index=catalog.indexOf(object)+1;
-    document.title=`${object.name} · Astronomi — ${fullName}`;
+    document.title=`${object.name} · Astronomy — ${fullName}`;
     $('object-title').textContent=object.name;
     $('object-type').textContent=object.type;
     $('object-intro').textContent=object.intro;
@@ -96,21 +96,19 @@
     $('orbit-elements').replaceChildren();
     for(const [label,value,unit] of object.orbit||[]) {
       const tr=document.createElement('tr'),th=document.createElement('th');th.scope='row';th.textContent=label;tr.append(th);
-      for(const text of [value.toLocaleString('tr-TR',{maximumFractionDigits:8}),unit]) {const td=document.createElement('td');td.textContent=text;tr.append(td);}
+      for(const text of [value.toLocaleString('en-US',{maximumFractionDigits:8}),unit]) {const td=document.createElement('td');td.textContent=text;tr.append(td);}
       $('orbit-elements').append(tr);
     }
     $('object-highlight').textContent=object.highlight;
     $('object-appearance').textContent=object.appearance;
     $('explanation-title').textContent=object.question;
     $('object-explanation').textContent=object.explanation;
-    $('object-model-note').textContent=`${object.modelNote} Cisimler ortak ölçekte gösterilmiyor.`;
-    $('scene-help').textContent=(['galaxy','andromeda'].includes(object.kind)
-      ? 'Yatay sürükleyerek galaksiyi döndür; dikey sürükleyerek diskine üstten veya yandan bak. Ok tuşları da çalışır. '
-      : ['blackhole','neutron','nebula'].includes(object.kind)
-      ? 'Bu iki boyutlu temsili sürükleyerek taşı; ok tuşları da görüntüyü aynı yönde taşır. '
-      : 'Cismi tutup istediğin yöne çevir; ok tuşları da aynı yönde çalışır. ')
-      +'Fare tekerleği yakınlaştırır. Sıfırla düğmesi başlangıç görünümüne döner.';
-    $('scene-name').textContent=object.name.toLocaleUpperCase('tr-TR');
+    $('object-model-note').textContent=object.modelNote;
+    $('scene-help').textContent=(['blackhole','neutron','nebula'].includes(object.kind)
+      ? 'Drag to move this illustrative view. '
+      : 'Drag to rotate: the near side follows your pointer in any orientation. ')
+      +'Scroll to zoom. Arrow keys also work. Reset restores the initial view.';
+    $('scene-name').textContent=object.name.toUpperCase();
     $('scene-caption').textContent=object.sceneLabel;
     $('scene-category').textContent=`${object.group} / ${String(index).padStart(2,'0')}`;
     $('object-source').href=object.source;
@@ -126,7 +124,7 @@
     $('scene-zoom').value='1';$('scene-phase').value='-0.65';
     $('phase-control').hidden=['sun','redgiant','whitedwarf','neutron','blackhole','galaxy','andromeda','nebula'].includes(object.kind);
     updateSelection();
-    $('selection-status').textContent=`${object.name} seçildi. Görünümü ve bilgileri güncellendi.`;
+    $('selection-status').textContent=`${object.name} selected. Model and information updated.`;
     if (saveHash && location.hash!==`#${object.id}`) {
       // file:// için de çalışır. Tarayıcı geçmişinde geri/ileri seçimleri korunur.
       try {history.pushState(null,'',`#${object.id}`);} catch {location.hash=object.id;}
