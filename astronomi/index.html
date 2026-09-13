@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="astronomi.css">
   <script defer src="../ortak/ayarlar.js"></script>
   <script defer src="cisimler.js"></script>
+  <script defer src="teknik.js"></script>
   <script defer src="dokular.js"></script>
   <script defer src="sahne.js"></script>
   <script defer src="astronomi.js"></script>
@@ -90,12 +91,23 @@
           </article>
         </div>
 
+        <section class="astro-technical" aria-label="Teknik bilgiler">
+          <h3>Fiziksel yapı ve sınıflandırma</h3>
+          <dl id="technical-facts"></dl>
+          <div id="orbital-section" hidden>
+            <h3>Yörünge elemanları</h3>
+            <p id="orbit-note"></p>
+            <table><caption>Altı Kepler yörünge elemanı</caption><thead><tr><th scope="col">Eleman</th><th scope="col">Değer</th><th scope="col">Birim</th></tr></thead><tbody id="orbit-elements"></tbody></table>
+            <p><a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html" target="_blank" rel="noopener noreferrer">Kaynak: NASA/JPL — Table 1 ↗</a></p>
+          </div>
+          <p>Ders kaynakları: Zerefşan Kaymaz, <em>Planetary Atmospheres</em> — Star Formation (12 Şubat 2026), Luminosity and Brightness, H–R Diagram ve Giant Planets (21 Mayıs 2026). <a href="KAYNAKLAR.md">Kaynak ve model ayrıntıları</a>.</p>
+        </section>
         <div class="astro-reading">
           <section aria-labelledby="appearance-title"><p class="mono astro-section-index">01 / Görünüm</p><h3 id="appearance-title">Neye bakıyorum?</h3><p id="object-appearance">Soluk altın renkli bulut kuşaklarına ve gezegeni çevreleyen ince halkalara. Halkaların eğimi, onları bazen geniş bir elips, bazen incecik bir çizgi gibi görmemize neden olur.</p></section>
           <section aria-labelledby="explanation-title"><p class="mono astro-section-index">02 / Biraz daha yakından</p><h3 id="explanation-title">Üzerine inebilir miydik?</h3><p id="object-explanation">Satürn’ün üzerinde yürünecek katı bir yüzeyi yok. Derinlere indikçe gaz giderek yoğunlaşır; basınç ve sıcaklık çok yükselir.</p></section>
         </div>
         <p class="astro-model-note" id="model-note"><span class="mono">Çizim notu</span> <span id="object-model-note">Renkler, boyutlar ve hareketler anlatım için sadeleştirildi. Cisimler ortak ölçekte değil; hızlar gerçek zamanlı değil.</span></p>
-        <p class="astro-model-note">Yüzey haritaları: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope / INOVE</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Küçültülüp WebP biçimine dönüştürüldü. Diğer yüzeyler şematik; hareketler gerçek zamanlı değil.</p>
+        <p class="astro-model-note">Yüzey haritaları: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope / INOVE</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Küçültülüp WebP biçimine dönüştürüldü. Plüton: <a href="https://www.jpl.nasa.gov/images/pia11707-pluto-color-map/">NASA / JHUAPL / SwRI, New Horizons</a>; küçültülmüş JPEG mozaik. Diğer yüzeyler şematik; hareketler gerçek zamanlı değil.</p>
         <p class="astro-sr-only" id="selection-status"  role="status" aria-live="polite"></p>
       </div>
     </section>

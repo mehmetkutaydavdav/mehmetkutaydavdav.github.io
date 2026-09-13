@@ -30,6 +30,7 @@
     canvas.hidden = false;
     ['toggle-animation','animation-speed','reset-view','scene-zoom','scene-phase'].forEach(id => {$(id).disabled=false;});
     animationState(scene.playing);
+    canvas.addEventListener('astrozoom',e=>{$('scene-zoom').value=String(e.detail);});
     $('scene-zoom').addEventListener('input',e=>scene.setZoom(e.target.value));
     $('scene-phase').addEventListener('input',e=>scene.setPhase(e.target.value));
     $('toggle-animation').addEventListener('click',() => scene.setPlaying(!scene.playing));
@@ -80,11 +81,28 @@
     $('object-title').textContent=object.name;
     $('object-type').textContent=object.type;
     $('object-intro').textContent=object.intro;
+    $('technical-facts').replaceChildren();
+    for(const [label,value] of object.technical||[]) {
+      const dt=document.createElement('dt'),dd=document.createElement('dd');
+      dt.textContent=label;dd.textContent=value;$('technical-facts').append(dt,dd);
+    }
+    $('orbital-section').hidden=!object.orbit;
+    $('orbit-note').textContent=object.orbitNote||'';
+    $('orbit-elements').replaceChildren();
+    for(const [label,value,unit] of object.orbit||[]) {
+      const tr=document.createElement('tr'),th=document.createElement('th');th.scope='row';th.textContent=label;tr.append(th);
+      for(const text of [value.toLocaleString('tr-TR',{maximumFractionDigits:8}),unit]) {const td=document.createElement('td');td.textContent=text;tr.append(td);}
+      $('orbit-elements').append(tr);
+    }
     $('object-highlight').textContent=object.highlight;
     $('object-appearance').textContent=object.appearance;
     $('explanation-title').textContent=object.question;
     $('object-explanation').textContent=object.explanation;
     $('object-model-note').textContent=`${object.modelNote} Cisimler ortak ölçekte gösterilmiyor.`;
+    $('scene-help').textContent=(['blackhole','neutron','nebula','galaxy','andromeda'].includes(object.kind)
+      ? 'Bu iki boyutlu temsili sürükleyerek taşı; ok tuşları da görüntüyü aynı yönde taşır. '
+      : 'Cismi tutup istediğin yöne çevir; ok tuşları da aynı yönde çalışır. ')
+      +'Fare tekerleği yakınlaştırır. Sıfırla düğmesi başlangıç görünümüne döner.';
     $('scene-name').textContent=object.name.toLocaleUpperCase('tr-TR');
     $('scene-caption').textContent=object.sceneLabel;
     $('scene-category').textContent=`${object.group} / ${String(index).padStart(2,'0')}`;

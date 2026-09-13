@@ -30,11 +30,12 @@
         } else if (kind === 'uranus') rgb = [128+band*4,190+band*5,198+band*5];
         else if (kind === 'neptune') rgb = [55+band*10,104+band*15,183+band*19];
         else if (kind === 'venus' || kind === 'titan') rgb = [200+band*9+grain,158+band*8+grain,85+grain];
-        else if (kind === 'redgiant') rgb = [235+grain,99+band*20,43+grain];
+        else if (kind === 'redgiant') {const cell=Math.sin(u*TAU*19+Math.sin(v*31))*Math.sin(v*47+Math.cos(u*TAU*11));rgb=[237+grain,133+cell*28+grain,72+cell*18];}
         else if (kind === 'whitedwarf') rgb = [199+grain,221+grain,247+grain];
         else if (kind === 'europa' || kind === 'enceladus') {
-          const crack=Math.abs(Math.sin(u*41+Math.sin(v*19)*3));
-          rgb=crack<.06?[122,102,87]:[210+grain,205+grain,189+grain];
+          const crack=Math.abs(Math.sin(u*TAU*7+Math.sin(v*19+Math.cos(u*TAU*3))*3));
+          const terrain=Math.sin(u*TAU*17+v*24)*Math.cos(v*39);
+          rgb=crack<.024?(kind==='europa'?[137,110,87]:[155,177,192]):[221+terrain*10+grain,217+terrain*9+grain,204+grain];
         }
         else if (kind === 'pluto') {const t=Math.sin(u*17+Math.sin(v*9));rgb=[168+t*37+grain,142+t*38+grain,120+t*37+grain];}
         else if (kind === 'earth') rgb = [34 + grain, 82 + grain, 108 + grain];
@@ -82,17 +83,18 @@
         ctx.bezierCurveTo(x+10,y-9,x+24,y+6,x+rand()*44+15,y-7);ctx.stroke();
       }
     }
-    if (kind === 'moon' || kind === 'mars') {
+    if (['moon','mars','ceres','bennu','comet','enceladus'].includes(kind)) {
       if (kind === 'moon') {
         for (let i = 0; i < 12; i++) {
           ctx.fillStyle = '#626F6755';ctx.beginPath();
           ctx.ellipse(rand()*TW,45+rand()*170,rand()*38+10,rand()*20+10,rand()*3,0,TAU);ctx.fill();
         }
       }
-      for (let i = 0; i < (kind === 'moon' ? 310 : 70); i++) {
-        const x = rand()*TW, y = 18+rand()*220, r = 1 + rand()**3*11;
-        ctx.beginPath();ctx.ellipse(x,y,r,r*.75,0,0,TAU);ctx.fillStyle = kind === 'moon' ? '#414F4A66' : '#703D293A';ctx.fill();
-        ctx.beginPath();ctx.ellipse(x+.4,y+.5,r,r*.75,0,0,Math.PI);ctx.strokeStyle='#F2E6CF44';ctx.lineWidth=.8;ctx.stroke();
+      for (let i = 0; i < (kind === 'moon' ? 310 : kind==='enceladus'?45:180); i++) {
+        const x = rand()*512, y = 12+rand()*232, r = .4 + rand()**4*6;
+        const bowl=ctx.createRadialGradient(x-r*.22,y-r*.18,0,x,y,r);
+        bowl.addColorStop(0,'#34394148');bowl.addColorStop(.68,'#35373C24');bowl.addColorStop(.85,'#EEE5D126');bowl.addColorStop(1,'#EEEEEE00');
+        ctx.fillStyle=bowl;ctx.beginPath();ctx.ellipse(x,y,r,r*.8,0,0,TAU);ctx.fill();
       }
     }
     const result = ctx.getImageData(0,0,TW,TH).data;
@@ -154,9 +156,7 @@
       });
       canvas.addEventListener('pointermove', e => {
         if (!this.drag || this.drag.id !== e.pointerId) return;
-        this.angle += (e.clientX-this.drag.x)*.009;
-        // Pointer yukarı gittiğinde kamera da yukarı baksın; önceki sürüm ters hareket ediyordu.
-        this.view = clamp(this.view-(e.clientY-this.drag.y)*.004,-.8,.8);
+        this.moveView(e.clientX-this.drag.x,e.clientY-this.drag.y);
         this.drag.x=e.clientX;this.drag.y=e.clientY;this.draw();
       });
       const release = () => {this.drag=null;};
@@ -164,23 +164,34 @@
       canvas.addEventListener('pointercancel',release);
       canvas.addEventListener('lostpointercapture',release);
       canvas.addEventListener('wheel', e => {
+        if(e.ctrlKey)return; // Preserve browser accessibility zoom.
         e.preventDefault();
-        const factor=Math.exp(-e.deltaY*.0012);
+        const pixels=e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?this.h:1);
+        const factor=Math.exp(-clamp(pixels,-300,300)*.0012);
         this.setZoom(this.zoom*factor);
       }, {passive:false});
       canvas.addEventListener('keydown', e => {
-        const keys = {ArrowLeft:-.16,ArrowRight:.16,ArrowUp:-.08,ArrowDown:.08};
+        const keys = {ArrowLeft:.16,ArrowRight:-.16,ArrowUp:.08,ArrowDown:-.08};
         if (e.key in keys) {
           e.preventDefault();
-          if (e.key==='ArrowLeft'||e.key==='ArrowRight') this.angle+=keys[e.key];
-          else this.view=clamp(this.view+keys[e.key],-.8,.8);
+          this.moveView(e.key==='ArrowLeft'?-18:e.key==='ArrowRight'?18:0,e.key==='ArrowUp'?-20:e.key==='ArrowDown'?20:0);
           this.draw();
         }
         if (e.code==='Space') {e.preventDefault();this.setPlaying(!this.playing);}
       });
       this.resize();
     }
+    moveView(dx,dy) {
+      if(['blackhole','neutron','nebula','galaxy','andromeda'].includes(this.object?.kind)) {
+        this.panX=clamp((this.panX||0)+dx,-this.w*.3,this.w*.3);
+        this.panY=clamp((this.panY||0)+dy,-this.h*.3,this.h*.3);
+      } else {
+        this.angle-=dx*.009;
+        this.view=clamp(this.view-dy*.004,-.8,.8);
+      }
+    }
     setObject(object) {
+      this.panX=0;this.panY=0;
       this.object=object;this.angle=0;this.view=-.28;this.time=0;
       this.tex=texture(object.kind);
       this.zoom=1;this.phase=-.65;this.projectionView=null;
@@ -202,9 +213,9 @@
     }
     setPlaying(value) {this.playing=!!value;this.onState?.(this.playing);this.sync();}
     setSpeed(value) {this.speed=clamp(Number(value)||1,.5,2);}
-    setZoom(value) {this.zoom=clamp(Number(value)||1,.7,1.5);this.draw();}
+    setZoom(value) {this.zoom=clamp(Number(value)||1,.7,1.5);this.canvas.dispatchEvent(new CustomEvent('astrozoom',{detail:this.zoom}));this.draw();}
     setPhase(value) {this.phase=clamp(Number(value)||0,-2.5,2.5);this.draw();}
-    reset() {this.zoom=1;this.phase=-.65;this.angle=0;this.view=-.28;this.time=0;this.draw();}
+    reset() {this.panX=0;this.panY=0;this.zoom=1;this.phase=-.65;this.angle=0;this.view=-.28;this.time=0;this.draw();}
     resize() {
       const rect=this.canvas.parentElement.getBoundingClientRect();
       this.w=Math.max(1,rect.width);this.h=Math.max(1,rect.height);
@@ -292,43 +303,35 @@
       ctx.restore();
     }
     blackhole(r) {
-      const ctx=this.ctx;
-      ctx.save();
-      const tilt=-.22+this.view*.22;ctx.rotate(tilt);
-      this.glow(0,0,r*2.8,'#E18C43',.16);
-      // İç ve dış birikim diski: diferansiyel dönüş ve Doppler parlaklığı için iki renkli akış.
-      for(let i=0;i<150;i++) {
-        const q=i/149,rr=r*(1.08+q*1.7),y=rr*(.18+.035*Math.sin(q*18));
-        const warm=.12+.34*(1-q),blue=.08+.24*q;
-        ctx.strokeStyle=`rgba(${245},${Math.round(115+100*(1-q))},${Math.round(48+55*(1-q))},${warm})`;
-        ctx.lineWidth=Math.max(.55,r*.018*(1-q));
-        ctx.beginPath();ctx.ellipse(0,y,rr,rr*(.18+.08*q),0,Math.PI,TAU);ctx.stroke();
-        ctx.strokeStyle=`rgba(112,${Math.round(166+50*q)},255,${blue})`;
-        ctx.beginPath();ctx.ellipse(0,y,rr,rr*(.18+.08*q),0,0,Math.PI);ctx.stroke();
+      const ctx=this.ctx,opening=clamp(.27+this.view*.22,.09,.5);
+      ctx.save();ctx.rotate(-.13);
+      this.glow(0,0,r*2.9,'#C77731',.14);
+      // Lensed far side of the accretion disk: visual approximation, not a geodesic solver.
+      for(let i=0;i<80;i++){
+        const q=i/80,rr=r*(1.04+q*.68);
+        ctx.strokeStyle=`rgba(255,${Math.round(206-q*96)},${Math.round(133-q*94)},${.32*(1-q)})`;
+        ctx.lineWidth=r*.025;
+        ctx.beginPath();ctx.ellipse(0,0,rr,rr*.91,0,Math.PI,TAU);ctx.stroke();
+        ctx.globalAlpha=.35;ctx.beginPath();ctx.ellipse(0,0,rr,rr*.87,0,0,Math.PI);ctx.stroke();ctx.globalAlpha=1;
       }
-      // Foton halkası ve olay ufku.
-      ctx.strokeStyle='#FFE2A8';ctx.lineWidth=Math.max(2,r*.035);ctx.beginPath();ctx.arc(0,0,r*1.08,0,TAU);ctx.stroke();
       ctx.fillStyle='#000';ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.fill();
-      ctx.strokeStyle='#FFB866';ctx.globalAlpha=.48;ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(0,0,r*1.17,0,TAU);ctx.stroke();ctx.globalAlpha=1;
-      for(let i=0;i<34;i++) {
-        const a=this.angle*2+i*.31,rr=r*(1.22+(i%7)*.18),x=Math.cos(a)*rr,y=Math.sin(a)*rr*.22+r*.16;
-        this.glow(x,y,r*.045,'#FFD18B',.38);
+      // Continuous disk filaments with differential motion and approaching-side brightening.
+      for(let i=0;i<96;i++){
+        const q=i/95,rr=r*(1.15+q*1.55),flow=this.angle*2/Math.pow(1+q,1.5);
+        for(let k=0;k<80;k++){
+          const a=k/80*TAU,b=(k+1.08)/80*TAU;
+          const front=Math.sin(a)>0,y=Math.sin(a)*rr*opening;
+          if(!front && Math.hypot(Math.cos(a)*rr,y)<r*1.06)continue;
+          const boost=.32+.68*(1-Math.cos(a))*.5;
+          const detail=.75+.25*Math.sin(i*2.13+Math.sin(a*7+flow)*2);
+          ctx.strokeStyle=`rgba(255,${Math.round(110+(1-q)*118)},${Math.round(42+(1-q)*135)},${boost*detail*(.14+.38*(1-q))})`;
+          ctx.lineWidth=Math.max(.6,r*.022);ctx.beginPath();ctx.ellipse(0,0,rr,rr*opening,0,a,b);ctx.stroke();
+        }
       }
+      // The observed shadow is not the event horizon; no stars/particles are painted inside it.
+      ctx.save();ctx.globalCompositeOperation='source-over';
+      ctx.strokeStyle='#FFE2ACB0';ctx.lineWidth=r*.018;ctx.beginPath();ctx.arc(0,0,r*1.025,Math.PI,TAU);ctx.stroke();ctx.restore();
       ctx.restore();
-    }
-
-    pluto(r) {
-      const ctx=this.ctx;
-      ctx.save();ctx.rotate(this.view*.35);
-      this.glow(0,0,r*1.24,'#9AB2C8',.12);
-      // New Horizons haritalarındaki kalp biçimli Tombaugh Regio için sadeleştirilmiş temsil.
-      ctx.save();ctx.rotate(this.angle*.35);
-      ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.clip();
-      const grad=ctx.createLinearGradient(-r,-r,r,r);grad.addColorStop(0,'#E4D2BA');grad.addColorStop(.42,'#B99D88');grad.addColorStop(1,'#554B55');ctx.fillStyle=grad;ctx.fillRect(-r,-r,r*2,r*2);
-      ctx.fillStyle='#E9DCC7';ctx.beginPath();ctx.moveTo(-r*.50,-r*.10);ctx.bezierCurveTo(-r*.78,-r*.72,-r*.08,-r*.82,r*.03,-r*.30);ctx.bezierCurveTo(r*.45,-r*.78,r*.80,-r*.42,r*.50,r*.19);ctx.bezierCurveTo(r*.22,r*.62,-r*.32,r*.48,-r*.50,-r*.10);ctx.fill();
-      const rand=random(740);for(let i=0;i<85;i++){const a=rand()*TAU,d=Math.sqrt(rand())*r*.84,x=Math.cos(a)*d,y=Math.sin(a)*d;ctx.fillStyle=`rgba(48,41,52,${.12+rand()*.20})`;ctx.beginPath();ctx.arc(x,y,rand()*r*.045+r*.008,0,TAU);ctx.fill();}
-      ctx.restore();
-      ctx.strokeStyle='#D3C0B0';ctx.globalAlpha=.32;ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(0,0,r*1.01,0,TAU);ctx.stroke();ctx.restore();
     }
     neutron(r) {
       const ctx=this.ctx,a=this.angle*2;
@@ -363,34 +366,24 @@
     galaxy(r) {
       const ctx=this.ctx;
       ctx.save();ctx.rotate(-.38+this.view);ctx.scale(1,clamp(.55+this.view*.45,.18,.92));
-      this.glow(0,0,r*1.2,'#7A9EAA',.14);
-      // Soluk yayılı ışık, tekil yıldız noktalarının arasındaki sarmal yapıyı gösterir.
-      ctx.save();ctx.lineWidth=r*.12;ctx.strokeStyle='#84B8CD18';ctx.shadowColor='#88B9CF';ctx.shadowBlur=r*.1;
-      for (let arm=0;arm<4;arm++) {
-        ctx.beginPath();
-        for(let i=0;i<=90;i++) {
-          const d=i/90,a=arm*TAU/4+d*5.4+this.angle*.2,rr=(.13+d*.88)*r*1.8;
-          if(i===0)ctx.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);
-          else ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr);
-        }
-        ctx.stroke();
-      }
-      ctx.restore();
+      this.glow(0,0,r*1.95,'#A4ABA7',.55);
+      const arms=this.object.kind==='andromeda'?2:4;
       for (const p of this.dust) {
-        const angle=(this.object.kind==='andromeda'?p.arm%2*TAU/2:p.arm*TAU/4)+p.r*5.4+this.angle*.2+p.j*.55;
-        const radius=(.13+p.r*.88)*r*1.8;
+        const angle=p.arm%arms*TAU/arms+Math.log(.14+p.r)*3.7+this.angle*.2+p.j*(.4+p.r*.45);
+        const radius=(.04+p.r*.96)*r*1.85;
         const x=Math.cos(angle)*radius,y=Math.sin(angle)*radius;
-        ctx.fillStyle=p.s>.78?'#D8D4B999':'#84AEBD66';
-        ctx.beginPath();ctx.arc(x,y,p.s*1.15+.25,0,TAU);ctx.fill();
+        ctx.fillStyle=p.s>.85?'#DAD8CC99':p.s>.5?'#A6B9CC55':'#BDB9AB33';
+        ctx.beginPath();ctx.arc(x,y,p.s*.65+.15,0,TAU);ctx.fill();
+        if(p.s>.92)this.glow(x,y,r*.035,'#A5BDDC',.11);
       }
-      ctx.save();ctx.rotate(this.angle*.2);ctx.scale(1,.38);
-      this.glow(0,0,r*.6,'#F0D8AC',.7);ctx.restore();
-      this.glow(0,0,r*.27,'#F5E9C8',.9);
+      ctx.save();ctx.rotate(this.angle*.2);ctx.scale(1,this.object.kind==='andromeda'?.72:.32);
+      this.glow(0,0,r*.68,'#DBC69F',.6);ctx.restore();
+      this.glow(0,0,r*.32,'#F1E0BE',.8);
       ctx.restore();
     }
     smallBody(r,comet) {
       const ctx=this.ctx;
-      ctx.save();ctx.rotate(this.view*.4);
+      ctx.save();
       if(comet) {
         for(let i=0;i<40;i++) {
           const ion=ctx.createLinearGradient(0,0,r*2.5,0);
@@ -404,15 +397,39 @@
         }
         this.glow(0,0,r*1.3,'#A3CBEF',.24);
       }
-      ctx.save();ctx.rotate(this.angle);
-      ctx.beginPath();
-      for(let i=0;i<=96;i++){
-        const a=i/96*TAU;
-        const rr=r*(comet?.48+.19*Math.cos(2*a):.68+.07*Math.cos(4*a))*(1+.035*Math.sin(a*17));
-        if(i===0)ctx.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);else ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr);
+      // Faceted three-dimensional morphology; illustrative, not a mission shape model.
+      const faces=[],rotate=p=>{
+        const c=Math.cos(this.angle),s=Math.sin(this.angle),x=p[0]*c-p[2]*s,z=p[0]*s+p[2]*c;
+        const cv=Math.cos(this.view),sv=Math.sin(this.view);
+        return [x,p[1]*cv-z*sv,p[1]*sv+z*cv];
+      };
+      const lobes=comet?[[.5,.46,.44,-.26,.12,0],[.35,.3,.33,.27,-.18,.02]]:[[.7,.66,.7,0,0,0]];
+      for(const [rx,ry,rz,cx,cy,cz] of lobes){
+        const point=(i,j)=>{
+          const t=i/36*Math.PI,a=j/72*TAU;
+          let hash=Math.imul(i+827,(j%72)+3761);hash=Math.imul(hash^(hash>>>16),2246822519);hash=(hash^(hash>>>13))>>>0;
+          const relief=1+(hash/4294967296-.5)*.055*Math.sin(t)+.025*Math.sin(a*5+t*3)*Math.sin(t*4);
+          const ridge=comet?1:1+.1*Math.exp(-(((t-Math.PI/2)/.22)**2));
+          return rotate([cx+rx*Math.sin(t)*Math.cos(a)*relief*ridge,cy+ry*Math.cos(t)*relief,cz+rz*Math.sin(t)*Math.sin(a)*relief*ridge]);
+        };
+        for(let i=0;i<36;i++)for(let j=0;j<72;j++) {
+          const a=point(i,j),b=point(i+1,j),c=point(i+1,j+1),d=point(i,j+1);
+          for(const v of [[a,b,c],[a,c,d]]){
+            const u=v[1].map((x,k)=>x-v[0][k]),w=v[2].map((x,k)=>x-v[0][k]);
+            let n=[u[1]*w[2]-u[2]*w[1],u[2]*w[0]-u[0]*w[2],u[0]*w[1]-u[1]*w[0]],length=Math.hypot(...n);
+            if(length<1e-9)continue;
+            const center=rotate([cx,cy,cz]);
+            if(n.reduce((sum,x,k)=>sum+x*(v[0][k]-center[k]),0)<0)n=n.map(x=>-x);
+            if(n[2]<=0)continue;
+            const light=.09+.91*Math.max(0,(n[0]*Math.sin(this.phase)-n[1]*.3+n[2]*Math.cos(this.phase))/length);
+            const albedo=.94+.06*Math.sin(i*19+j*13);
+            faces.push({v,z:(v[0][2]+v[1][2]+v[2][2])/3,shade:Math.round(163*light*albedo)});
+          }
+        }
       }
-      ctx.closePath();ctx.clip();this.sphere(r,comet?'comet':'bennu');
-      ctx.restore();ctx.restore();
+      faces.sort((a,b)=>a.z-b.z);
+      for(const {v,shade} of faces){ctx.fillStyle=ctx.strokeStyle=`rgb(${shade},${Math.round(shade*.98)},${Math.round(shade*.94)})`;ctx.lineWidth=.45;ctx.beginPath();v.forEach((p,i)=>i?ctx.lineTo(p[0]*r,p[1]*r):ctx.moveTo(p[0]*r,p[1]*r));ctx.closePath();ctx.fill();ctx.stroke();}
+      ctx.restore();
     }
     draw() {
       if (!this.ctx||!this.object||!this.w) return;
@@ -421,16 +438,15 @@
       // Uzay zemini: renkli panel yerine gerçek gözlemdeki siyaha yakın boşluk.
       ctx.fillStyle='#000106';ctx.fillRect(0,0,w,h);
       for (const s of this.stars) {
-        const twinkle=s.a*(.82+.18*Math.sin(this.time*1.6+s.twinkle));
+        const twinkle=s.a; // No atmospheric scintillation when observing from space.
         const color=s.color>.87?'255,238,203':s.color>.62?'205,222,255':'238,244,255';
         ctx.fillStyle=`rgba(${color},${twinkle})`;ctx.beginPath();ctx.arc(s.x*w,s.y*h,s.r,0,TAU);ctx.fill();
       }
       const radius=Math.min(w*.28,h*.27)*this.zoom;
-      ctx.save();ctx.translate(w*.5,h*.49);
+      ctx.save();ctx.translate(w*.5+(this.panX||0),h*.49+(this.panY||0));
       // İnce referans çemberi, bütün cisimlerde aynı gözlem alanı.
       // Referans çemberi yalnızca klavye ile incelenen sahnelerde dikkat dağıtmasın.
       if(kind==='comet'||kind==='bennu') this.smallBody(radius,kind==='comet');
-      else if(kind==='pluto') this.pluto(radius);
       else if (kind==='blackhole') this.blackhole(radius*.51);
       else if (kind==='neutron') this.neutron(radius*.95);
       else if (kind==='nebula') this.nebula(radius*1.3);
@@ -440,7 +456,7 @@
         if (kind==='sun'||kind==='redgiant') this.glow(0,0,r*1.65,'#EBA04D',.32);
         if (kind==='earth') this.glow(0,0,r*1.09,'#70B1DB',.45);
         if (kind==='saturn') this.rings(r,false);
-        ctx.save();ctx.rotate(kind==='saturn'?-.38+this.view*.35:this.view*.4);
+        ctx.save();ctx.rotate(kind==='saturn'?-.38+this.view*.35:0);
         if(kind==='jupiter'||kind==='saturn')ctx.scale(1,.92);
         this.sphere(r,kind);ctx.restore();
         if (kind==='saturn') this.rings(r,true);
