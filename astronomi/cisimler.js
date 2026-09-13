@@ -599,7 +599,7 @@ window.AstroCatalog.push(...[
     "kind": "whitedwarf",
     "category": "yildizlar",
     "group": "Yıldızlar",
-    "type": "Yıldız kalıntısı · DA beyaz cüce",
+    "type": "Yıldız kalıntısı · Beyaz cüce",
     "subtitle": "Dünya boyutlarında bir çekirdek",
     "sceneLabel": "Dünya boyutlarında bir çekirdek",
     "intro": "Güneş benzeri bir yıldızın gezegenimsi bulutsu evresinden sonra geriye çoğunlukla karbon–oksijen çekirdekli, elektron dejenerasyon basıncıyla desteklenen beyaz cüce kalır.",

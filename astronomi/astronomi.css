@@ -115,6 +115,14 @@
 @media(prefers-reduced-motion:reduce){.astronomi{scroll-behavior:auto}.astro-observation{scroll-behavior:auto}}
 
 /* Astronomy alone uses the deeper blue-black palette. */
+.astro-technical{padding:24px 28px;border-top:1px solid var(--line);background:#060D1B;font-size:12px;line-height:1.8}
+.astro-technical h3{font:25px "Instrument Serif",Georgia,serif;margin:12px 0}
+.astro-technical dt{color:#B9DAFF;margin-top:12px;font-weight:500}
+.astro-technical dd{margin:4px 0 18px;color:#C3CDDE}
+.astro-technical table{width:100%;border-collapse:collapse;font-size:11px}
+.astro-technical th,.astro-technical td{padding:8px 4px;text-align:left;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.astro-technical a{color:#A6C8F7}
+.astro-technical caption{text-align:left;color:var(--muted)}
 body.astronomi{--void:#030814;--paper:#E6EDF9;--muted:#96A7C2;--hydro:#91BDFA;--gold:#D6BD90;--line:#A4BEF021;background:radial-gradient(ellipse at 75% 0%,#10203C66,transparent 55%),#030814;color:var(--paper)}
 .astronomi .topbar{background:#050B18E8;border-color:var(--line)}
 .astronomi .astro-workspace{box-shadow:0 25px 100px #0005}
