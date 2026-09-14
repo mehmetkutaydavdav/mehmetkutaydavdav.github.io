@@ -44,8 +44,9 @@
 .astro-mini[data-kind="moon"]{background:radial-gradient(circle at 34% 40%,#6F7470 0 16%,transparent 18%),radial-gradient(circle at 34% 25%,#C1C5B9,#686F69 65%,#18211D)}
 .astro-mini[data-kind="mars"]{background:radial-gradient(circle at 30% 30%,#D99772,#994E34 60%,#281B16)}
 .astro-mini[data-kind="jupiter"]{background:repeating-linear-gradient(8deg,#A9815B 0 4px,#E6C69F 4px 7px,#997050 7px 9px)}
-.astro-mini[data-kind="saturn"]{width:23px;height:23px;margin-left:2px;margin-right:1px}
-.astro-mini[data-kind="saturn"]::after{content:"";position:absolute;width:35px;height:10px;border:3px solid #B9A487;border-radius:50%;left:-6px;top:7px;transform:rotate(-28deg)}
+.astro-mini[data-kind="saturn"]{width:26px;height:26px;margin:0;background:none;box-shadow:none}
+.astro-mini[data-kind="saturn"]::before{content:"";position:absolute;width:40px;height:32px;left:50%;top:50%;transform:translate(-50%,-50%);background:center/contain no-repeat url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2032%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22s%22%20cx%3D%22.32%22%20cy%3D%22.25%22%20r%3D%22.8%22%3E%3Cstop%20stop-color%3D%22%23F6DFAB%22%2F%3E%3Cstop%20offset%3D%22.65%22%20stop-color%3D%22%23B59B72%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23514537%22%2F%3E%3C%2FradialGradient%3E%3C%2Fdefs%3E%3Cg%20transform%3D%22rotate(-25%2020%2016)%22%3E%3Cellipse%20cx%3D%2220%22%20cy%3D%2216%22%20rx%3D%2217%22%20ry%3D%226%22%20fill%3D%22none%22%20stroke%3D%22%23A28C69%22%20stroke-width%3D%222.5%22%2F%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2216%22%20r%3D%229.5%22%20fill%3D%22url(%23s)%22%2F%3E%3Cpath%20d%3D%22M3%2016%20A17%206%200%200%200%2037%2016%22%20fill%3D%22none%22%20stroke%3D%22%23DFCAA2%22%20stroke-width%3D%222.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+.astro-mini[data-kind="saturn"]::after{content:none}
 .astro-mini[data-kind="neutron"]{width:17px;height:17px;margin:4px;background:#C3EAF4;box-shadow:0 0 10px #88BDDF}
 .astro-mini[data-kind="blackhole"]{background:#010505;box-shadow:0 0 0 2px #B08257,0 0 12px #C2824F66}
 .astro-mini[data-kind="nebula"]{background:radial-gradient(ellipse at 34% 38%,#A2C8C1,transparent 50%),radial-gradient(ellipse at 65% 60%,#926D98,transparent 65%);box-shadow:none}
@@ -150,3 +151,9 @@ body.astronomi{--void:#030814;--paper:#E6EDF9;--muted:#96A7C2;--hydro:#91BDFA;--
 .astro-mini[data-kind=redgiant]{background:#EA7042;box-shadow:0 0 14px #DE583B60}
 .astro-mini[data-kind=bennu],.astro-mini[data-kind=comet]{border-radius:36% 54% 31% 46%;background:#7F7A74}
 .astro-mini[data-kind=andromeda]{background:radial-gradient(ellipse,#FBE6BF,#879BC766,transparent 70%);transform:rotate(-30deg) scaleY(.5)}
+
+/* Compact icons keep the same centre and reserve a consistent 26px slot. */
+.astro-mini[data-kind=redgiant]{background:radial-gradient(circle at 32% 28%,#FFD294,#D66E36 48%,#78361F);box-shadow:0 0 9px #DE583B40,inset -2px -2px 4px #713017}
+.astro-mini[data-kind=whitedwarf]{background:radial-gradient(circle at 40% 35%,#FFF,#E8F4FF 50%,#84B5DE 85%,#416580);box-shadow:0 0 8px #9DD7FF60}
+.astro-mini[data-kind=neutron]{background:radial-gradient(circle at 35% 30%,#FFF,#CAEAFE 55%,#5D94C5);box-shadow:0 0 8px #88BDDF88}
+.astro-mini[data-kind=blackhole]{background:radial-gradient(ellipse at center,#000 0 42%,#FFE2AC 47%,#DC8744 53%,#5D3018 62%,transparent 72%);box-shadow:none}

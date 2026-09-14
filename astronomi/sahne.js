@@ -48,10 +48,10 @@
         }
         else if (kind === 'redgiant') {
           const lat=(v-.5)*Math.PI,px=Math.cos(u*TAU)*Math.cos(lat),py=Math.sin(lat),pz=Math.sin(u*TAU)*Math.cos(lat);
-          const cell=noise3(px*15+20,py*15+20,pz*15+20)*.7+noise3(px*38+45,py*38+45,pz*38+45)*.3;
-          rgb=[211+cell*42+grain*.25,96+cell*80+grain*.25,45+cell*40];
+          const cell=noise3(px*5+20,py*5+20,pz*5+20)*.58+noise3(px*16+45,py*16+45,pz*16+45)*.3+noise3(px*42+9,py*42+9,pz*42+9)*.12;
+          rgb=[183+cell*72,66+cell*115,29+cell*58];
         }
-        else if (kind === 'whitedwarf') rgb = [199+grain,221+grain,247+grain];
+        else if (kind === 'whitedwarf') rgb = [226+grain*.08,238+grain*.08,251+grain*.08];
         else if (kind === 'europa' || kind === 'enceladus') {
           const crack=Math.abs(Math.sin(u*TAU*7+Math.sin(v*19+Math.cos(u*TAU*3))*3));
           const terrain=Math.sin(u*TAU*17+v*24)*Math.cos(v*39);
@@ -310,6 +310,8 @@
         const u=((p.u+offset)%TW+TW)%TW, source=(p.v+u)*4;
         const illumination=p.nx*lx-p.ny*.24+p.nz*lz;
         let light=luminous?.62+p.z*.38:Math.sqrt(.008+Math.max(0,illumination)*.94);
+        if(kind==='redgiant')light=(.38+.62*p.nz)*(1+.045*Math.sin(this.time*.35+u/TW*TAU*7)*Math.sin(p.v/TW/TH*Math.PI));
+        if(kind==='whitedwarf')light=.43+.57*Math.sqrt(p.nz);
         // Approximate ring shadow on the cloud tops; same light direction as the sphere.
         if(kind==='saturn' && illumination>0) {
           const m=this.orientation,den=m[1]*lx-m[4]*.24+m[7]*lz;
@@ -358,48 +360,74 @@
       ctx.restore();
     }
     blackhole(r) {
-      const ctx=this.ctx,opening=clamp(.27+this.view*.22,.09,.5);
+      const ctx=this.ctx,opening=.26;
       ctx.save();ctx.rotate(-.13);
-      this.glow(0,0,r*2.9,'#C77731',.14);
-      // Lensed far side of the accretion disk: visual approximation, not a geodesic solver.
-      for(let i=0;i<80;i++){
-        const q=i/80,rr=r*(1.04+q*.68);
-        ctx.strokeStyle=`rgba(255,${Math.round(206-q*96)},${Math.round(133-q*94)},${.32*(1-q)})`;
-        ctx.lineWidth=r*.025;
-        ctx.beginPath();ctx.ellipse(0,0,rr,rr*.91,0,Math.PI,TAU);ctx.stroke();
-        ctx.globalAlpha=.35;ctx.beginPath();ctx.ellipse(0,0,rr,rr*.87,0,0,Math.PI);ctx.stroke();ctx.globalAlpha=1;
+      this.glow(0,0,r*3,'#BA652A',.12);
+      // Illustrative lensing, not a numerical solution of photon geodesics.
+      // Continuous curved bands show the far side above and below the shadow.
+      for(let i=100;i>=0;i--){
+        const q=i/100,rr=r*(1.035+q*.58);
+        const heat=1-q,alpha=(.03+.18*heat)*(1-q*.7);
+        ctx.strokeStyle='rgba(255,'+Math.round(145+heat*100)+','+Math.round(66+heat*135)+','+alpha+')';
+        ctx.lineWidth=r*.019;
+        ctx.beginPath();ctx.ellipse(0,-r*.015,rr,rr*.94,0,Math.PI,TAU);ctx.stroke();
+        ctx.globalAlpha=.28;ctx.beginPath();ctx.ellipse(0,0,rr,rr*.94,0,0,Math.PI);ctx.stroke();ctx.globalAlpha=1;
       }
       ctx.fillStyle='#000';ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.fill();
-      // Pixel shading avoids the spoke-like seams of segmented ellipse strokes.
-      if(!this.disk){this.disk=document.createElement('canvas');this.disk.width=512;this.disk.height=256;this.diskCtx=this.disk.getContext('2d');this.diskData=this.diskCtx.createImageData(512,256);}
+      const dw=768,dh=384;
+      if(!this.disk){this.disk=document.createElement('canvas');this.disk.width=dw;this.disk.height=dh;this.diskCtx=this.disk.getContext('2d');this.diskData=this.diskCtx.createImageData(dw,dh);}
       const pixels=this.diskData.data;pixels.fill(0);
-      for(let y=0;y<256;y++)for(let x=0;x<512;x++){
-        const xx=(x+.5-256)/512*5.5,yy=(y+.5-128)/256*2.8,rr=Math.hypot(xx,yy/opening);
-        if(rr<1.15||rr>2.7||(yy<0&&Math.hypot(xx,yy)<1.015))continue;
-        const q=(rr-1.15)/1.55,a=Math.atan2(yy/opening,xx),flow=this.time*.65/Math.pow(rr,1.5);
-        const detail=.8+.2*Math.sin(rr*100+Math.sin(a*6+flow)*2),boost=.35+.65*(1-xx/rr)/2;
-        const edge=clamp((rr-1.15)*20,0,1)*clamp((2.7-rr)*9,0,1),i=(y*512+x)*4;
-        pixels[i]=255;pixels[i+1]=120+(1-q)*112;pixels[i+2]=48+(1-q)*125;pixels[i+3]=255*edge*detail*boost*(.4+.6*(1-q));
+      for(let y=0;y<dh;y++)for(let x=0;x<dw;x++){
+        const xx=(x+.5-dw/2)/dw*5.5,yy=(y+.5-dh/2)/dh*2.8,rr=Math.hypot(xx,yy/opening);
+        if(rr<1.13||rr>2.7||(yy<0&&Math.hypot(xx,yy)<1.015))continue;
+        const q=(rr-1.13)/1.57,a=Math.atan2(yy/opening,xx),flow=this.time*.55/Math.pow(rr,1.5);
+        const filaments=.78+.12*Math.sin(rr*135+Math.sin(a*5-flow*3)*2)+.1*Math.sin(a*19-flow*8+rr*31);
+        const doppler=.42+.58*(1-xx/rr)/2;
+        const edge=clamp((rr-1.13)*26,0,1)*clamp((2.7-rr)*7,0,1);
+        const heat=Math.pow(1-q,.6),i=(y*dw+x)*4;
+        pixels[i]=255;pixels[i+1]=90+heat*151;pixels[i+2]=30+heat*174;
+        pixels[i+3]=255*edge*filaments*doppler*(.2+.8*heat);
       }
       this.diskCtx.putImageData(this.diskData,0,0);ctx.drawImage(this.disk,-r*2.75,-r*1.4,r*5.5,r*2.8);
-      // The observed shadow is not the event horizon; no stars/particles are painted inside it.
-      ctx.save();ctx.globalCompositeOperation='source-over';
-      ctx.strokeStyle='#FFE2ACB0';ctx.lineWidth=r*.018;ctx.beginPath();ctx.arc(0,0,r*1.025,Math.PI,TAU);ctx.stroke();ctx.restore();
+      ctx.strokeStyle='#FFEBD1A0';ctx.lineWidth=Math.max(.65,r*.012);
+      ctx.beginPath();ctx.arc(0,0,r*1.018,Math.PI,TAU);ctx.stroke();
       ctx.restore();
     }
     neutron(r) {
-      const ctx=this.ctx,a=this.angle*2;
-      ctx.save();ctx.rotate(this.view);
-      ctx.strokeStyle='#86B7C52B';ctx.lineWidth=1;
-      for (let i=0;i<5;i++) {ctx.beginPath();ctx.ellipse(0,0,r*(.7+i*.12),r*(1.2+i*.25),0,0,TAU);ctx.stroke();}
-      const dx=Math.sin(a)*r*1.1,dy=-r*2;
-      for (const sign of [-1,1]) {
-        const g=ctx.createLinearGradient(0,0,dx*sign,dy*sign);
-        g.addColorStop(0,'#C4EEFA99');g.addColorStop(1,'#7DA9D600');ctx.fillStyle=g;
-        ctx.beginPath();ctx.moveTo(-r*.09,0);ctx.lineTo(dx*sign-r*.3,dy*sign);ctx.lineTo(dx*sign+r*.3,dy*sign);ctx.lineTo(r*.09,0);ctx.closePath();ctx.fill();
+      const ctx=this.ctx,spin=this.angle*5,tilt=.48;
+      // A tilted magnetic axis rotates in depth; the opposing beams share it.
+      const axis=[Math.sin(tilt)*Math.cos(spin),-Math.cos(tilt),Math.sin(tilt)*Math.sin(spin)];
+      const project=(x,y,z)=>[x*r,(y*.9-z*.32)*r,z*.9+y*.32];
+      ctx.save();ctx.rotate(-.2);
+      const drawBeam=sign=>{
+        const tip=project(axis[0]*sign*2.1,axis[1]*sign*2.1,axis[2]*sign*2.1);
+        const length=Math.hypot(tip[0],tip[1]),nx=-tip[1]/length,ny=tip[0]/length;
+        ctx.save();ctx.globalCompositeOperation='screen';
+        for(let i=7;i>=1;i--){
+          const width=r*(.055+i*.025),g=ctx.createLinearGradient(0,0,tip[0],tip[1]);
+          g.addColorStop(0,'rgba(210,242,255,.12)');g.addColorStop(.35,'rgba(115,184,250,.055)');g.addColorStop(1,'rgba(75,133,230,0)');
+          ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(nx*r*.04,ny*r*.04);
+          ctx.lineTo(tip[0]+nx*width,tip[1]+ny*width);ctx.lineTo(tip[0]-nx*width,tip[1]-ny*width);
+          ctx.lineTo(-nx*r*.04,-ny*r*.04);ctx.closePath();ctx.fill();
+        }ctx.restore();
+      };
+      // Dipole-shaped guides, sampled as 3D curves rather than concentric ellipses.
+      for(let j=0;j<6;j++){
+        const az=j*TAU/6+spin;
+        ctx.strokeStyle='#75ADD22C';ctx.lineWidth=.8;ctx.beginPath();
+        for(let i=0;i<=80;i++){
+          const theta=.16+(Math.PI-.32)*i/80,rr=1.35*Math.sin(theta)**2;
+          const x=rr*Math.sin(theta)*Math.cos(az),z=rr*Math.sin(theta)*Math.sin(az),y=rr*Math.cos(theta);
+          const p=project(x*Math.cos(tilt)-y*Math.sin(tilt),x*Math.sin(tilt)+y*Math.cos(tilt),z);
+          if(i===0)ctx.moveTo(p[0],p[1]);else ctx.lineTo(p[0],p[1]);
+        }ctx.stroke();
       }
-      this.glow(0,0,r*.65,'#9DCCE7',.7);
-      ctx.fillStyle='#D9F0E8';ctx.beginPath();ctx.arc(0,0,r*.18,0,TAU);ctx.fill();
+      drawBeam(axis[2]>0?-1:1);
+      this.glow(0,0,r*.5,'#8DCBFF',.32);
+      const surface=ctx.createRadialGradient(-r*.055,-r*.055,0,0,0,r*.2);
+      surface.addColorStop(0,'#FFFFFF');surface.addColorStop(.6,'#DBF1FF');surface.addColorStop(.9,'#93BBD8');surface.addColorStop(1,'#436A90');
+      ctx.fillStyle=surface;ctx.beginPath();ctx.arc(0,0,r*.2,0,TAU);ctx.fill();
+      drawBeam(axis[2]>0?1:-1);
       ctx.restore();
     }
     nebula(r) {
@@ -561,7 +589,9 @@
       else if (kind==='galaxy'||kind==='andromeda') this.galaxy(radius*.83);
       else {
         const r=kind==='saturn'?Math.min(w*.19,h*.225)*this.zoom:kind==='whitedwarf'?radius*.58:radius;
-        if (kind==='sun'||kind==='redgiant') this.glow(0,0,r*1.65,'#EBA04D',.32);
+        if (kind==='sun') this.glow(0,0,r*1.65,'#EBA04D',.32);
+        if (kind==='redgiant') this.glow(0,0,r*1.13,'#DD5B26',.2);
+        if (kind==='whitedwarf') this.glow(0,0,r*1.2,'#A9D8FF',.2);
         if (kind==='earth') this.glow(0,0,r*1.045,'#70B1DB',.24);
         if (kind==='titan') this.glow(0,0,r*1.035,'#96B7D1',.12);
         if (kind==='saturn') this.rings(r,false);
