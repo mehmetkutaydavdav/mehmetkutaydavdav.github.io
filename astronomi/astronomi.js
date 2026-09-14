@@ -93,6 +93,8 @@
     }
     $('orbital-section').hidden=!object.orbit;
     $('orbit-note').textContent=object.orbitNote||'';
+    $('orbit-reference').textContent=object.orbitReference||'';
+    $('orbit-reference').parentElement.open=false;
     $('orbit-elements').replaceChildren();
     for(const [label,value,unit] of object.orbit||[]) {
       const tr=document.createElement('tr'),th=document.createElement('th');th.scope='row';th.textContent=label;tr.append(th);

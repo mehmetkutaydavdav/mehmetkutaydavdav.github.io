@@ -37,7 +37,7 @@
       <div>
         <p class="mono astro-eyebrow"><span aria-hidden="true">✦</span> An observer’s notebook</p>
         <h1 id="astro-title">Explore <em>the universe.</em></h1>
-        <p>Examine worlds, stars and galaxies. Rotate each model, explore its physical properties and see where observation ends and illustration begins.</p>
+        <p>Take a closer look at planets, stars and galaxies. Explore the models, find out what each object is made of, and discover what makes it interesting.</p>
       </div>
       <div class="astro-edition mono"><span>CELESTIAL OBJECTS</span><strong id="catalog-total">01 — 24</strong><span>An interactive catalogue</span></div>
     </section>
@@ -81,7 +81,7 @@
           <article class="astro-details" aria-labelledby="object-title">
             <p class="mono astro-object-type" id="object-type">Planet · gas giant</p>
             <h2 id="object-title">Saturn</h2>
-            <p class="astro-object-intro" id="object-intro">A rapidly rotating gas giant surrounded by an extensive disk of icy ring particles.</p>
+            <p class="astro-object-intro" id="object-intro">Saturn’s rings look solid from a distance, but they are made of countless orbiting pieces of ice. The planet beneath them is a fast-spinning gas giant.</p>
             <dl class="astro-facts" id="object-facts">
               <div><dt>Equatorial diameter</dt><dd>≈ 120,500 <small>km</small></dd></div>
               <div><dt>Rotation</dt><dd>≈ 10.7 <small>hours</small></dd></div>
@@ -94,22 +94,24 @@
         </div>
 
         <section class="astro-technical" aria-label="Technical information">
-          <h3>Physical structure and classification</h3>
+          <h3>A closer look</h3>
           <dl id="technical-facts"></dl>
           <div id="orbital-section" hidden>
             <h3>Orbital elements</h3>
             <p id="orbit-note"></p>
-            <table><caption>Six Keplerian orbital elements</caption><thead><tr><th scope="col">Element</th><th scope="col">Value</th><th scope="col">Unit</th></tr></thead><tbody id="orbit-elements"></tbody></table>
+            <table><caption>Six numbers that describe the orbit</caption><thead><tr><th scope="col">Element</th><th scope="col">Value</th><th scope="col">Unit</th></tr></thead><tbody id="orbit-elements"></tbody></table>
+            <p class="astro-orbit-guide">Semi-major axis sets the orbit’s size; eccentricity tells you how stretched it is. Inclination and the two orientation angles set its tilt and direction. Mean anomaly tracks progress around the orbit from a reference time. One au is roughly Earth’s average distance from the Sun.</p>
+            <details class="astro-orbit-reference"><summary>Reference frame and dates</summary><p id="orbit-reference"></p></details>
             <p><a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html" target="_blank" rel="noopener noreferrer">Source: NASA/JPL — Table 1 ↗</a></p>
           </div>
-          <p>Course references: Zerefşan Kaymaz, <em>Planetary Atmospheres</em> — Star Formation (12 February 2026), Luminosity and Brightness, H–R Diagram and Giant Planets (21 May 2026). <a href="KAYNAKLAR.md">Sources and model limitations</a>.</p>
+          <p>Want to go further? <a href="KAYNAKLAR.md">Explore the sources, course notes and model details.</a></p>
         </section>
         <div class="astro-reading">
-          <section aria-labelledby="appearance-title"><p class="mono astro-section-index">01 / Appearance</p><h3 id="appearance-title">What am I looking at?</h3><p id="object-appearance">Pale cloud bands and an inclined ring system. The viewing angle changes the rings’ apparent shape.</p></section>
-          <section aria-labelledby="explanation-title"><p class="mono astro-section-index">02 / The physics</p><h3 id="explanation-title">Could we land on it?</h3><p id="object-explanation">Saturn has no solid surface to stand on. Pressure, density and temperature increase beneath the clouds.</p></section>
+          <section aria-labelledby="appearance-title"><p class="mono astro-section-index">01 / Appearance</p><h3 id="appearance-title">What am I looking at?</h3><p id="object-appearance">Look for pale cloud bands and the dark Cassini Division in the rings. Rotate the view to see how a broad ring system can look almost like a thin line.</p></section>
+          <section aria-labelledby="explanation-title"><p class="mono astro-section-index">02 / How it works</p><h3 id="explanation-title">Why are the rings so thin?</h3><p id="object-explanation">Collisions between ring particles gradually reduce their up-and-down motion. Moons also shape the rings through gravity, creating patterns and gaps.</p></section>
         </div>
-        <p class="astro-model-note" id="model-note"><span class="mono">Model notes</span> <span id="object-model-note">Objects are not shown at a common scale. Rotation and lighting are for inspection, not an ephemeris.</span></p>
-        <p class="astro-model-note">Surface maps: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope / INOVE</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. 2048-pixel maps converted to WebP. Pluto: <a href="https://www.jpl.nasa.gov/images/pia11707-pluto-color-map/">NASA / JHUAPL / SwRI, New Horizons</a>; a resized JPEG mosaic. Bennu uses a NASA visualization mesh; 67P remains a morphological approximation. See the source notes for model limitations.</p>
+        <p class="astro-model-note" id="model-note"><span class="mono">About this view</span> <span id="object-model-note">Ring brightness and shadows are approximate; the globe’s flattening is not modelled. Sizes and animation speeds are adjusted for viewing.</span></p>
+        <p class="astro-model-note">Maps and models: <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener noreferrer">Solar System Scope / INOVE</a> (<a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>), NASA and mission teams. <a href="KAYNAKLAR.md">Full credits and model details.</a></p>
         <p class="astro-sr-only" id="selection-status"  role="status" aria-live="polite"></p>
       </div>
     </section>
