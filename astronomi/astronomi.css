@@ -30,6 +30,12 @@
 .astronomi .astro-filter[aria-pressed="true"]{background:#142B4B;border-color:#44668C;color:#B9DAFF}
 .astro-object-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
 .astro-object-list li{min-width:0}
+.astro-group-list,.astro-moon-list{list-style:none;margin:0;padding:0}
+.astro-group-title{font-size:11px;font-weight:500;line-height:1.5;letter-spacing:.03em;color:#AEC3DD;margin:19px 8px 8px}
+.astro-catalog-group:first-child .astro-group-title{margin-top:4px}
+.astro-moon-list{margin:3px 0 8px 19px;padding-left:7px;border-left:1px solid #476184}
+.astronomi .astro-moon-list .astro-object-button{gap:9px;padding:8px 5px;min-height:46px;font-size:12px}
+.astro-moon-list .astro-mini{width:18px;height:18px}
 .astronomi .astro-object-button{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:9px 10px;border:1px solid transparent;border-radius:2px;text-align:left;background:transparent;color:var(--paper);font-size:13px;cursor:pointer}
 .astro-object-button:hover{background:#0D1E36}
 .astronomi .astro-object-button[aria-pressed="true"]{background:#112642;border-color:#345578}
@@ -144,6 +150,12 @@ body.astronomi{--void:#030814;--paper:#E6EDF9;--muted:#96A7C2;--hydro:#91BDFA;--
 .astronomi input[type=range]{width:100%;min-width:0;accent-color:#92BFFC;padding:0;cursor:pointer}
 .astronomi .astro-object-list{scrollbar-color:#345578 #050C1B;scrollbar-width:thin}
 @media(min-width:701px){.astronomi .astro-object-list{max-height:620px;overflow-y:auto;overscroll-behavior:contain}}
+@media(max-width:700px){
+  .astronomi .astro-object-list{display:block;max-height:340px;overflow:auto;overscroll-behavior:contain}
+  .astronomi .astro-object-button{min-width:0;min-height:48px}
+  .astronomi .astro-moon-list .astro-object-button small{display:block;font-size:10px;letter-spacing:0}
+  .astro-group-title{margin-top:16px}
+}
 .astro-mini[data-kind=uranus]{background:#8DC6D3}
 .astro-mini[data-kind=neptune]{background:#376AAE}
 .astro-mini[data-kind=venus],.astro-mini[data-kind=titan]{background:#C6A065}
