@@ -1,6 +1,6 @@
 /* Lazy local texture loading; no third-party requests. */
 (() => {
-  const keys=new Set(['mercury','venus','earth','earth-night','earth-clouds','moon','mars','jupiter','saturn','uranus','neptune','sun','pluto','europa','enceladus','ceres']);
+  const keys=new Set(['mercury','venus','earth','earth-night','earth-clouds','moon','mars','jupiter','saturn','uranus','neptune','sun','pluto','io','europa','enceladus','ceres']);
   const pending=new Map();
   window.AstroTextures={load(key) {
     if(!keys.has(key))return Promise.resolve(null);

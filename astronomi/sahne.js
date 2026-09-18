@@ -51,6 +51,12 @@
           const cell=noise3(px*5+20,py*5+20,pz*5+20)*.58+noise3(px*16+45,py*16+45,pz*16+45)*.3+noise3(px*42+9,py*42+9,pz*42+9)*.12;
           rgb=[183+cell*72,66+cell*115,29+cell*58];
         }
+        else if (kind === 'reddwarf' || kind === 'sunlike') {
+          const lat=(v-.5)*Math.PI,px=Math.cos(u*TAU)*Math.cos(lat),py=Math.sin(lat),pz=Math.sin(u*TAU)*Math.cos(lat);
+          const granule=noise3(px*60+70,py*60+70,pz*60+70)-.5;
+          rgb=kind==='reddwarf'?[237+granule*23,158+granule*21,106+granule*18]:[249+granule*12,239+granule*15,218+granule*18];
+        }
+        else if (kind === 'io') rgb=[202+grain,179+grain,104+grain];
         else if (kind === 'whitedwarf') rgb = [226+grain*.08,238+grain*.08,251+grain*.08];
         else if (kind === 'europa' || kind === 'enceladus') {
           const crack=Math.abs(Math.sin(u*TAU*7+Math.sin(v*19+Math.cos(u*TAU*3))*3));
@@ -171,15 +177,19 @@
       }
       canvas.addEventListener('pointerdown', e => {
         if (e.button !== 0 || !e.isPrimary) return;
-        this.drag = {id:e.pointerId,x:e.clientX,y:e.clientY};
+        const rect=canvas.getBoundingClientRect();
+        this.drag = {id:e.pointerId,x:e.clientX,y:e.clientY,localX:(e.clientX-rect.left)*this.w/(rect.width||this.w),localY:(e.clientY-rect.top)*this.h/(rect.height||this.h)};
+        this.draw();
         canvas.setPointerCapture(e.pointerId);
       });
       canvas.addEventListener('pointermove', e => {
         if (!this.drag || this.drag.id !== e.pointerId) return;
-        this.moveView(e.clientX-this.drag.x,e.clientY-this.drag.y);
+        const rect=canvas.getBoundingClientRect(),dx=(e.clientX-this.drag.x)*this.w/(rect.width||this.w),dy=(e.clientY-this.drag.y)*this.h/(rect.height||this.h);
+        this.moveView(dx,dy);
+        this.drag.localX+=dx;this.drag.localY+=dy;
         this.drag.x=e.clientX;this.drag.y=e.clientY;this.draw();
       });
-      const release = () => {this.drag=null;};
+      const release = e => {if(this.drag&&this.drag.id===e.pointerId){this.drag=null;this.draw();}};
       canvas.addEventListener('pointerup',release);
       canvas.addEventListener('pointercancel',release);
       canvas.addEventListener('lostpointercapture',release);
@@ -202,20 +212,41 @@
       this.resize();
     }
     moveView(dx,dy) {
-      if(['blackhole','neutron','nebula'].includes(this.object?.kind)) {
+      if(this.object?.kind==='nebula') {
         this.panX=clamp((this.panX||0)+dx,-this.w*.3,this.w*.3);
         this.panY=clamp((this.panY||0)+dy,-this.h*.3,this.h*.3);
       } else {
+        let direction=1;
+        // Pick the actual disk depth: its far side must follow the grabbed point too.
+        if(this.drag&&['galaxy','andromeda'].includes(this.object?.kind)){
+          const m=this.orientation,x=this.drag.localX-this.w*.5,y=this.drag.localY-this.h*.49;
+          if(Math.abs(m[7])>.08){
+            const z=-(m[1]*x+m[4]*y)/m[7],length=Math.hypot(x,y,z);
+            const extent=Math.min(this.w*.28,this.h*.27)*this.zoom*.83*1.85;
+            if(length>extent*.12&&length<extent*1.15){
+              direction=z<0?-1:1;
+              const bx=x+dx,by=y+dy,remaining=length*length-bx*bx-by*by;
+              if(remaining>length*length*.002){
+                const b=[bx,by,(z<0?-1:1)*Math.sqrt(remaining)],a=[x,y,z];
+                const cross=[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],n=Math.hypot(...cross);
+                if(n>1e-7){this.rotateAxis(cross.map(v=>v/n),Math.atan2(n,a.reduce((sum,v,i)=>sum+v*b[i],0)));return;}
+              }
+            }
+          }
+        }
         const distance=Math.hypot(dx,dy);if(!distance)return;
-        const x=-dy/distance,y=dx/distance,a=distance*.006,c=Math.cos(a),s=Math.sin(a),t=1-c;
-        const r=[t*x*x+c,t*x*y,s*y,t*x*y,t*y*y+c,-s*x,-s*y,s*x,c],m=this.orientation;
-        this.orientation=Array.from({length:9},(_,i)=>{const row=Math.floor(i/3),col=i%3;return r[row*3]*m[col]+r[row*3+1]*m[col+3]+r[row*3+2]*m[col+6];});
-        this.projectionView=null;
+        this.rotateAxis([-dy/distance*direction,dx/distance*direction,0],distance*.006);
       }
+    }
+    rotateAxis([x,y,z],a){
+      const c=Math.cos(a),s=Math.sin(a),t=1-c;
+      const r=[t*x*x+c,t*x*y-s*z,t*x*z+s*y,t*x*y+s*z,t*y*y+c,t*y*z-s*x,t*x*z-s*y,t*y*z+s*x,t*z*z+c],m=this.orientation;
+      this.orientation=Array.from({length:9},(_,i)=>{const row=Math.floor(i/3),col=i%3;return r[row*3]*m[col]+r[row*3+1]*m[col+3]+r[row*3+2]*m[col+6];});
+      this.projectionView=null;
     }
     resetOrientation(){const a=['galaxy','andromeda'].includes(this.object?.kind)?.65:-.28,c=Math.cos(a),s=Math.sin(a);this.orientation=[1,0,0,0,c,-s,0,s,c];this.projectionView=null;}
     setObject(object) {
-      this.panX=0;this.panY=0;
+      this.drag=null;this.panX=0;this.panY=0;
       this.object=object;this.angle=0;this.view=['galaxy','andromeda'].includes(object.kind)?.65:-.28;this.time=0;this.showSun=false;
       this.resetOrientation();
       this.tex=texture(object.kind);
@@ -260,7 +291,7 @@
     setSpeed(value) {this.speed=clamp(Number(value)||1,.5,2);}
     setZoom(value) {this.zoom=clamp(Number(value)||1,.7,1.5);this.canvas.dispatchEvent(new CustomEvent('astrozoom',{detail:this.zoom}));this.draw();}
     setPhase(value) {this.phase=clamp(Number(value)||0,-2.5,2.5);this.draw();}
-    reset() {this.panX=0;this.panY=0;this.zoom=1;this.phase=-.65;this.angle=0;this.view=['galaxy','andromeda'].includes(this.object?.kind)?.65:-.28;this.time=0;this.resetOrientation();this.draw();}
+    reset() {this.drag=null;this.panX=0;this.panY=0;this.zoom=1;this.phase=-.65;this.angle=0;this.view=['galaxy','andromeda'].includes(this.object?.kind)?.65:-.28;this.time=0;this.resetOrientation();this.draw();}
     resize() {
       const rect=this.canvas.parentElement.getBoundingClientRect();
       this.w=Math.max(1,rect.width);this.h=Math.max(1,rect.height);
@@ -304,7 +335,7 @@
         this.projectionView=this.orientation;
       }
       const lx=Math.sin(this.phase),lz=Math.cos(this.phase);
-      const luminous=['sun','redgiant','whitedwarf'].includes(kind);
+      const luminous=['sun','reddwarf','sunlike','redgiant','whitedwarf'].includes(kind);
       const cloudOffset=Math.floor(this.time*1.3);
       for (const p of this.samples) {
         const u=((p.u+offset)%TW+TW)%TW, source=(p.v+u)*4;
@@ -360,8 +391,9 @@
       ctx.restore();
     }
     blackhole(r) {
-      const ctx=this.ctx,opening=.26;
-      ctx.save();ctx.rotate(-.13);
+      const ctx=this.ctx,m=this.orientation,normal=[m[1],m[4],m[7]],opening=Math.max(.012,Math.abs(normal[2]));
+      const roll=Math.atan2(-normal[0],normal[1]),cr=Math.cos(roll),sr=Math.sin(roll);
+      ctx.save();ctx.rotate(roll);
       this.glow(0,0,r*3,'#BA652A',.12);
       // Illustrative lensing, not a numerical solution of photon geodesics.
       // Continuous curved bands show the far side above and below the shadow.
@@ -371,16 +403,17 @@
         ctx.strokeStyle='rgba(255,'+Math.round(145+heat*100)+','+Math.round(66+heat*135)+','+alpha+')';
         ctx.lineWidth=r*.019;
         ctx.beginPath();ctx.ellipse(0,-r*.015,rr,rr*.94,0,Math.PI,TAU);ctx.stroke();
-        ctx.globalAlpha=.28;ctx.beginPath();ctx.ellipse(0,0,rr,rr*.94,0,0,Math.PI);ctx.stroke();ctx.globalAlpha=1;
+        ctx.globalAlpha=.28+.72*opening;ctx.beginPath();ctx.ellipse(0,0,rr,rr*.94,0,0,Math.PI);ctx.stroke();ctx.globalAlpha=1;
       }
       ctx.fillStyle='#000';ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.fill();
-      const dw=768,dh=384;
+      const dw=640,dh=640;
       if(!this.disk){this.disk=document.createElement('canvas');this.disk.width=dw;this.disk.height=dh;this.diskCtx=this.disk.getContext('2d');this.diskData=this.diskCtx.createImageData(dw,dh);}
       const pixels=this.diskData.data;pixels.fill(0);
       for(let y=0;y<dh;y++)for(let x=0;x<dw;x++){
-        const xx=(x+.5-dw/2)/dw*5.5,yy=(y+.5-dh/2)/dh*2.8,rr=Math.hypot(xx,yy/opening);
-        if(rr<1.13||rr>2.7||(yy<0&&Math.hypot(xx,yy)<1.015))continue;
-        const q=(rr-1.13)/1.57,a=Math.atan2(yy/opening,xx),flow=this.time*.55/Math.pow(rr,1.5);
+        const xx=(x+.5-dw/2)/dw*5.5,yy=(y+.5-dh/2)/dh*5.5,rr=Math.hypot(xx,yy/opening);
+        const sx=cr*xx-sr*yy,sy=sr*xx+cr*yy,sz=-(normal[0]*sx+normal[1]*sy)/(Math.abs(normal[2])<.012?(normal[2]<0?-.012:.012):normal[2]);
+        if(rr<1.13||rr>2.7||(sz<0&&Math.hypot(xx,yy)<1.015))continue;
+        const q=(rr-1.13)/1.57,a=Math.atan2(m[2]*sx+m[5]*sy+m[8]*sz,m[0]*sx+m[3]*sy+m[6]*sz),flow=this.time*.55/Math.pow(rr,1.5);
         const filaments=.78+.12*Math.sin(rr*135+Math.sin(a*5-flow*3)*2)+.1*Math.sin(a*19-flow*8+rr*31);
         const doppler=.42+.58*(1-xx/rr)/2;
         const edge=clamp((rr-1.13)*26,0,1)*clamp((2.7-rr)*7,0,1);
@@ -388,7 +421,7 @@
         pixels[i]=255;pixels[i+1]=90+heat*151;pixels[i+2]=30+heat*174;
         pixels[i+3]=255*edge*filaments*doppler*(.2+.8*heat);
       }
-      this.diskCtx.putImageData(this.diskData,0,0);ctx.drawImage(this.disk,-r*2.75,-r*1.4,r*5.5,r*2.8);
+      this.diskCtx.putImageData(this.diskData,0,0);ctx.drawImage(this.disk,-r*2.75,-r*2.75,r*5.5,r*5.5);
       ctx.strokeStyle='#FFEBD1A0';ctx.lineWidth=Math.max(.65,r*.012);
       ctx.beginPath();ctx.arc(0,0,r*1.018,Math.PI,TAU);ctx.stroke();
       ctx.restore();
@@ -397,11 +430,12 @@
       const ctx=this.ctx,spin=this.angle*5,tilt=.48;
       // A tilted magnetic axis rotates in depth; the opposing beams share it.
       const axis=[Math.sin(tilt)*Math.cos(spin),-Math.cos(tilt),Math.sin(tilt)*Math.sin(spin)];
-      const project=(x,y,z)=>[x*r,(y*.9-z*.32)*r,z*.9+y*.32];
-      ctx.save();ctx.rotate(-.2);
+      const m=this.orientation,project=(x,y,z)=>[(m[0]*x+m[1]*y+m[2]*z)*r,(m[3]*x+m[4]*y+m[5]*z)*r,m[6]*x+m[7]*y+m[8]*z];
+      const axisDepth=project(...axis)[2];
+      ctx.save();
       const drawBeam=sign=>{
         const tip=project(axis[0]*sign*2.1,axis[1]*sign*2.1,axis[2]*sign*2.1);
-        const length=Math.hypot(tip[0],tip[1]),nx=-tip[1]/length,ny=tip[0]/length;
+        const length=Math.max(.001,Math.hypot(tip[0],tip[1])),nx=-tip[1]/length,ny=tip[0]/length;
         ctx.save();ctx.globalCompositeOperation='screen';
         for(let i=7;i>=1;i--){
           const width=r*(.055+i*.025),g=ctx.createLinearGradient(0,0,tip[0],tip[1]);
@@ -413,21 +447,22 @@
       };
       // Dipole-shaped guides, sampled as 3D curves rather than concentric ellipses.
       for(let j=0;j<6;j++){
-        const az=j*TAU/6+spin;
+        const az=j*TAU/6;
         ctx.strokeStyle='#75ADD22C';ctx.lineWidth=.8;ctx.beginPath();
         for(let i=0;i<=80;i++){
           const theta=.16+(Math.PI-.32)*i/80,rr=1.35*Math.sin(theta)**2;
           const x=rr*Math.sin(theta)*Math.cos(az),z=rr*Math.sin(theta)*Math.sin(az),y=rr*Math.cos(theta);
-          const p=project(x*Math.cos(tilt)-y*Math.sin(tilt),x*Math.sin(tilt)+y*Math.cos(tilt),z);
+          const tx=x*Math.cos(tilt)-y*Math.sin(tilt),ty=x*Math.sin(tilt)+y*Math.cos(tilt);
+          const p=project(tx*Math.cos(spin)-z*Math.sin(spin),ty,tx*Math.sin(spin)+z*Math.cos(spin));
           if(i===0)ctx.moveTo(p[0],p[1]);else ctx.lineTo(p[0],p[1]);
         }ctx.stroke();
       }
-      drawBeam(axis[2]>0?-1:1);
+      drawBeam(axisDepth>0?-1:1);
       this.glow(0,0,r*.5,'#8DCBFF',.32);
       const surface=ctx.createRadialGradient(-r*.055,-r*.055,0,0,0,r*.2);
       surface.addColorStop(0,'#FFFFFF');surface.addColorStop(.6,'#DBF1FF');surface.addColorStop(.9,'#93BBD8');surface.addColorStop(1,'#436A90');
       ctx.fillStyle=surface;ctx.beginPath();ctx.arc(0,0,r*.2,0,TAU);ctx.fill();
-      drawBeam(axis[2]>0?1:-1);
+      drawBeam(axisDepth>0?1:-1);
       ctx.restore();
     }
     nebula(r) {
@@ -446,7 +481,7 @@
       ctx.restore();
     }
     galaxy(r) {
-      const ctx=this.ctx,milky=this.object.kind==='galaxy',extent=r*1.85,spin=this.time*.018;
+      const ctx=this.ctx,milky=this.object.kind==='galaxy',extent=r*1.85,spin=this.angle*(.018/.105);
       // Camera yaw and pitch, independent of time: the disk and its annotations share this projection.
       const project=(x,z,height=0)=>{
         const m=this.orientation;
@@ -590,6 +625,7 @@
       else {
         const r=kind==='saturn'?Math.min(w*.19,h*.225)*this.zoom:kind==='whitedwarf'?radius*.58:radius;
         if (kind==='sun') this.glow(0,0,r*1.65,'#EBA04D',.32);
+        if(kind==='reddwarf'||kind==='sunlike')this.glow(0,0,r*1.14,kind==='reddwarf'?'#EAAA77':'#FFF1CF',.15);
         if (kind==='redgiant') this.glow(0,0,r*1.13,'#DD5B26',.2);
         if (kind==='whitedwarf') this.glow(0,0,r*1.2,'#A9D8FF',.2);
         if (kind==='earth') this.glow(0,0,r*1.045,'#70B1DB',.24);
@@ -598,6 +634,17 @@
         ctx.save();
         this.sphere(r,kind);ctx.restore();
         if (kind==='saturn') this.rings(r,true);
+        if(kind==='whitedwarf'&&this.drag){
+          const m=this.orientation;ctx.strokeStyle='#8ABBD999';ctx.lineWidth=1;
+          for(let meridian=0;meridian<3;meridian++){
+            ctx.beginPath();let visible=false;
+            for(let i=0;i<=180;i++){
+              const a=i/180*TAU,b=meridian*Math.PI/3,x=Math.cos(a)*Math.cos(b),y=Math.sin(a),z=Math.cos(a)*Math.sin(b);
+              const px=m[0]*x+m[1]*y+m[2]*z,py=m[3]*x+m[4]*y+m[5]*z,pz=m[6]*x+m[7]*y+m[8]*z;
+              if(pz>=0){if(visible)ctx.lineTo(px*r,py*r);else ctx.moveTo(px*r,py*r);visible=true;}else visible=false;
+            }ctx.stroke();
+          }
+        }
       }
       ctx.restore();
     }
