@@ -1,7 +1,24 @@
 (() => {
   'use strict';
-  const catalog = window.AstroCatalog;
-  if (!Array.isArray(catalog) || !catalog.length) return;
+  if (!Array.isArray(window.AstroCatalog) || !window.AstroCatalog.length) return;
+  const sections = [
+    ['planets','Planets and moons',['merkur','venus','dunya','ay','mars','jupiter','europa','saturn','titan','enceladus','uranus','neptun']],
+    ['dwarfs','Dwarf planets',['ceres','pluton']],
+    ['small-bodies','Asteroids and comets',['bennu','67p']],
+    ['stars','Stars',['gunes','kirmizi-dev']],
+    ['compact','Compact objects',['beyaz-cuce','notron-yildizi','kara-delik']],
+    ['nebulae','Nebulae',['orion']],
+    ['galaxies','Galaxies',['samanyolu','andromeda']]
+  ];
+  const parentOf = {ay:'dunya',europa:'jupiter',titan:'saturn',enceladus:'saturn'};
+  const order = sections.flatMap(([, ,ids])=>ids);
+  const catalog = [...window.AstroCatalog].sort((a,b)=>{
+    const rank=id=>order.includes(id)?order.indexOf(id):order.length;
+    return rank(a.id)-rank(b.id);
+  });
+  const byId = new Map(catalog.map(object=>[object.id,object]));
+  const extra = catalog.filter(object=>!order.includes(object.id)).map(object=>object.id);
+  if(extra.length)sections.push(['other','Other objects',extra]);
   const $ = id => document.getElementById(id);
   const categories = [['tumu','All'],['gunes-sistemi','Solar system'],['yildizlar','Stars'],['derin-uzay','Deep space']];
   const normalize = text => String(text).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i');
@@ -55,27 +72,52 @@
   function filtered() {
     const query=normalize($('object-search').value.trim());
     return catalog.filter(object => (category==='tumu'||object.category===category) &&
-      normalize(`${object.name} ${object.type} ${object.subtitle} ${object.id}`).includes(query));
+      normalize(`${object.name} ${object.type} ${object.subtitle} ${object.id} ${byId.get(parentOf[object.id])?.name||''}`).includes(query));
   }
   function updateSelection() {
     $('object-list').querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.id===selected?.id)));
   }
   function renderList() {
     const objects=filtered();
+    const matches=new Set(objects.map(object=>object.id));
+    const visible=new Set(matches);
+    for(const object of objects)if(parentOf[object.id])visible.add(parentOf[object.id]);
     $('object-list').replaceChildren();
-    for (const object of objects) {
+    function objectRow(object) {
       const li=document.createElement('li'), button=document.createElement('button');
       button.type='button';button.className='astro-object-button';button.dataset.id=object.id;
       button.setAttribute('aria-pressed',String(selected?.id===object.id));
       const mini=document.createElement('span');mini.className='astro-mini';mini.dataset.kind=object.kind;mini.setAttribute('aria-hidden','true');
       const text=document.createElement('span');text.textContent=object.name;
-      const subtitle=document.createElement('small');subtitle.textContent=object.subtitle;text.append(subtitle);
+      const subtitle=document.createElement('small');
+      subtitle.textContent=parentOf[object.id]?`Moon of ${byId.get(parentOf[object.id]).name}`:object.subtitle;
+      if(!matches.has(object.id))subtitle.textContent='Parent planet';
+      text.append(subtitle);
+      if(parentOf[object.id])button.setAttribute('aria-label',`${object.name}, moon of ${byId.get(parentOf[object.id]).name}`);
       const dot=document.createElement('span');dot.className='astro-selected-dot';dot.setAttribute('aria-hidden','true');
       button.append(mini,text,dot);
       button.addEventListener('click',() => selectObject(object,true));
-      li.append(button);$('object-list').append(li);
+      li.append(button);
+      const moons=catalog.filter(moon=>parentOf[moon.id]===object.id&&visible.has(moon.id));
+      if(moons.length){
+        const children=document.createElement('ul');children.className='astro-moon-list';
+        children.setAttribute('aria-label',`${object.name} moons`);
+        for(const moon of moons)children.append(objectRow(moon));
+        li.append(children);
+      }
+      return li;
     }
-    $('object-count').textContent=`${objects.length} objects`;
+    for(const [id,title,ids] of sections){
+      const roots=ids.map(id=>byId.get(id)).filter(object=>object&&visible.has(object.id)&&!parentOf[object.id]);
+      if(!roots.length)continue;
+      const section=document.createElement('li'),heading=document.createElement('h3'),list=document.createElement('ul');
+      section.className='astro-catalog-group';heading.className='astro-group-title';heading.id=`catalog-group-${id}`;heading.textContent=title;
+      list.className='astro-group-list';list.setAttribute('aria-labelledby',heading.id);
+      for(const object of roots)list.append(objectRow(object));
+      section.append(heading,list);$('object-list').append(section);
+    }
+    const searching=$('object-search').value.trim().length>0;
+    $('object-count').textContent=searching?`${objects.length} ${objects.length===1?'match':'matches'}`:`${objects.length} objects`;
     $('empty-state').hidden=objects.length!==0;
     return objects;
   }
