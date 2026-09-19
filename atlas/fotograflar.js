@@ -272,6 +272,72 @@ const frames = [
     cam: "Canon PowerShot G11", lens: "6mm", exp: "1/320 · f/2.8 · ISO 400",
     src: "fotograflar/web/img-3827.jpg",
     tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "The Statue With No Hand",
+    place: "Palais Royale, Paris",
+    lat: 48.864171, lng: 2.337415,
+    date: "2026-06-16",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/3200 · f/5 · ISO 200",
+    src: "fotograflar/web/img-8504.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Statue of Henry IV",
+    place: "Paris",
+    lat: 48.858927, lng: 2.33912,
+    date: "2026-06-13",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "", exp: "ISO 200",
+    src: "fotograflar/web/img-8339-2.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Église de la Madeleine",
+    place: "8th Arrondissement, Paris",
+    lat: 48.868561, lng: 2.323313,
+    date: "2026-06-16",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/1000 · f/9 · ISO 400",
+    src: "fotograflar/web/img-8639.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "The Domes of Paris",
+    place: "Paris",
+    lat: 48.85815, lng: 2.294689,
+    date: "2026-06-17",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/11 · ISO 100",
+    src: "fotograflar/web/img-8732.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Ay Yıldız",
+    place: "Paris",
+    lat: 48.958297, lng: 2.439201,
+    date: "2025-06-17",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/8 · ISO 100",
+    src: "fotograflar/web/img-5767.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Golden Hour Along the Seine",
+    place: "Paris",
+    lat: 48.858902, lng: 2.339216,
+    date: "2026-06-13",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/200 · f/8 · ISO 200",
+    src: "fotograflar/web/img-8346.jpg",
+    tone: ["#15272B","#5E8F86"]
   }
 
 ];
