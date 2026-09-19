@@ -338,6 +338,39 @@ const frames = [
     cam: "Canon PowerShot G11", lens: "6mm", exp: "1/320 · f/2.8 · ISO 400",
     src: "fotograflar/web/img-3827.jpg",
     tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "The Seine",
+    place: "Paris",
+    lat: 48.853717, lng: 2.344823,
+    date: "2026-06-13",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/9 · ISO 100",
+    src: "fotograflar/web/img-8316.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Mercat de la Boqueria",
+    place: "Barcelona",
+    lat: 41.382106, lng: 2.172467,
+    date: "2026-03-06",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/400 · f/9 · ISO 1600",
+    src: "fotograflar/web/img-5578.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Cabel Car",
+    place: "",
+    lat: 41.374584, lng: 2.178233,
+    date: "2026-03-07",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/2500 · f/6.3 · ISO 200",
+    src: "fotograflar/web/img-5652.jpg",
+    tone: ["#15272B","#5E8F86"]
   }
 
 ];
