@@ -2,15 +2,15 @@
   'use strict';
   if (!Array.isArray(window.AstroCatalog) || !window.AstroCatalog.length) return;
   const sections = [
-    ['planets','Planets and moons',['merkur','venus','dunya','ay','mars','jupiter','europa','saturn','titan','enceladus','uranus','neptun']],
+    ['planets','Planets and moons',['merkur','venus','dunya','ay','mars','jupiter','io','europa','saturn','titan','enceladus','uranus','neptun']],
     ['dwarfs','Dwarf planets',['ceres','pluton']],
     ['small-bodies','Asteroids and comets',['bennu','67p']],
-    ['stars','Stars',['gunes','kirmizi-dev']],
+    ['stars','Stars',['gunes','alpha-centauri-a','proxima-centauri','kirmizi-dev']],
     ['compact','Compact objects',['beyaz-cuce','notron-yildizi','kara-delik']],
     ['nebulae','Nebulae',['orion']],
     ['galaxies','Galaxies',['samanyolu','andromeda']]
   ];
-  const parentOf = {ay:'dunya',europa:'jupiter',titan:'saturn',enceladus:'saturn'};
+  const parentOf = {ay:'dunya',io:'jupiter',europa:'jupiter',titan:'saturn',enceladus:'saturn'};
   const order = sections.flatMap(([, ,ids])=>ids);
   const catalog = [...window.AstroCatalog].sort((a,b)=>{
     const rank=id=>order.includes(id)?order.indexOf(id):order.length;
@@ -148,14 +148,16 @@
     $('explanation-title').textContent=object.question;
     $('object-explanation').textContent=object.explanation;
     $('object-model-note').textContent=object.modelNote;
-    $('scene-help').textContent=(['blackhole','neutron','nebula'].includes(object.kind)
+    $('scene-help').textContent=(object.kind==='nebula'
       ? 'Drag to move this illustrative view. '
-      : 'Drag to rotate: the near side follows your pointer in any orientation. ')
+      : 'Drag to rotate. ')
       +'Scroll to zoom. Arrow keys also work. Reset restores the initial view.';
     $('scene-name').textContent=object.name.toUpperCase();
     $('scene-caption').textContent=object.sceneLabel;
     $('scene-category').textContent=`${object.group} / ${String(index).padStart(2,'0')}`;
     $('object-source').href=object.source;
+    $('object-source').textContent='Source ↗';
+    if(object.kind==='whitedwarf')$('scene-help').textContent+=' The grid shown while dragging is an orientation guide, not a surface feature.';
     $('object-facts').replaceChildren();
     for (const [label,value,unit] of object.facts) {
       const row=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd'),small=document.createElement('small');
@@ -166,7 +168,7 @@
     $('toggle-sun').hidden=object.id!=='samanyolu';$('toggle-sun').disabled=!scene?.available;
     $('toggle-sun').setAttribute('aria-pressed','false');$('sun-location-note').hidden=true;
     $('scene-zoom').value='1';$('scene-phase').value='-0.65';
-    $('phase-control').hidden=['sun','redgiant','whitedwarf','neutron','blackhole','galaxy','andromeda','nebula'].includes(object.kind);
+    $('phase-control').hidden=['sun','reddwarf','sunlike','redgiant','whitedwarf','neutron','blackhole','galaxy','andromeda','nebula'].includes(object.kind);
     updateSelection();
     $('selection-status').textContent=`${object.name} selected. Model and information updated.`;
     if (saveHash && location.hash!==`#${object.id}`) {

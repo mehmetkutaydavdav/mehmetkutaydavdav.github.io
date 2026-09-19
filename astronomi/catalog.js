@@ -888,12 +888,123 @@
     "mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-31/",
     "An older central bulge, a star-forming disk, gas, dust and an extended halo. The points in this model suggest populations of stars, not individually mapped stars.",
     "A schematic galaxy; turning it changes your view, not its position in the sky."
-  ]
+  ],
+[
+  "io",
+  "Io",
+  "io",
+  "gunes-sistemi",
+  "Volcanic moon of Jupiter",
+  "Io is a rocky world that keeps remaking its surface. Jupiter’s tides flex its interior, powering the most intense volcanic activity in the solar system.",
+  [
+    [
+      "Parent planet",
+      "Jupiter",
+      ""
+    ],
+    [
+      "Surface",
+      "Silicate lava",
+      "and sulfur deposits"
+    ],
+    [
+      "Activity",
+      "Hundreds",
+      "of volcanoes"
+    ],
+    [
+      "Rotation",
+      "Synchronous",
+      "same face toward Jupiter"
+    ]
+  ],
+  "Volcanoes replace old terrain with fresh lava and colourful deposits.",
+  "Look for pale sulfur-rich plains, reddish deposits and dark volcanic centres. The map combines spacecraft observations, so sharpness varies across the globe.",
+  "Why is a small moon so active?",
+  "Orbital resonance with Europa and Ganymede keeps Io’s orbit slightly eccentric. Jupiter’s varying tidal pull stretches and squeezes the moon, turning orbital energy into heat.",
+  "jupiter/jupiter-moons/io/",
+  "A rocky silicate interior beneath a surface coated with sulfur-bearing material and sulfur dioxide frost. A thin, variable atmosphere is dominated by sulfur dioxide.",
+  "NASA spacecraft-derived surface mosaic. Small missing polar areas use a blended extension, not observed terrain. Rotation is slowed for inspection; this view does not simulate its orbit."
+],
+[
+  "proxima-centauri",
+  "Proxima Centauri",
+  "reddwarf",
+  "yildizlar",
+  "M-type · main-sequence red dwarf",
+  "The closest star beyond the Sun is easy to miss: Proxima is too faint to see without a telescope. This small red dwarf belongs to the Alpha Centauri system.",
+  [
+    [
+      "Distance",
+      "About 4.2",
+      "light-years"
+    ],
+    [
+      "Stellar class",
+      "M-type",
+      "main sequence"
+    ],
+    [
+      "Activity",
+      "Flare star",
+      "magnetically active"
+    ],
+    [
+      "Fuel",
+      "Hydrogen",
+      "core fusion"
+    ]
+  ],
+  "Nearby does not necessarily mean bright in our sky.",
+  "A warm orange-red photosphere illustrates a cooler star. The mottling suggests convection; it is not a resolved photograph of Proxima’s surface.",
+  "How can such a faint star flare?",
+  "Magnetic fields store energy in the stellar atmosphere. When their configuration changes, they can release that energy in a flare—even on a star much less luminous than the Sun.",
+  "https://www.eso.org/public/news/eso1629/",
+  "Predominantly hydrogen and helium, with heavier elements present in smaller amounts. Proxima is a hydrogen-burning red dwarf, not a red giant.",
+  "Illustrative photosphere and colour, not a measured surface map. Brightness is adjusted so the star is easy to inspect."
+],
+[
+  "alpha-centauri-a",
+  "Alpha Centauri A",
+  "sunlike",
+  "yildizlar",
+  "G-type · main-sequence star",
+  "Alpha Centauri A is a nearby Sun-like star, about 4.3 light-years away. It orbits Alpha Centauri B; the much fainter Proxima is the third member of their stellar system.",
+  [
+    [
+      "Distance",
+      "About 4.3",
+      "light-years"
+    ],
+    [
+      "Stellar class",
+      "G-type",
+      "main sequence"
+    ],
+    [
+      "Mass",
+      "About 1.1",
+      "solar masses"
+    ],
+    [
+      "System",
+      "Alpha Centauri",
+      "three stars"
+    ]
+  ],
+  "A nearby comparison for understanding our own Sun.",
+  "A pale, warm-white photosphere with subtle granulation. It is shown on its own here, rather than as the A–B binary or an orbital simulation.",
+  "Why compare it with the Sun?",
+  "Both are G-type stars powered by core hydrogen fusion. Comparing their atmospheres helps astronomers understand how energy travels through stars like our own.",
+  "https://svs.gsfc.nasa.gov/20377/",
+  "Mostly hydrogen and helium with a smaller fraction of heavier elements. Core hydrogen fusion keeps this main-sequence star shining.",
+  "Illustrative photosphere; the granules are procedural, not an observed map of this star. Display brightness and colour are approximate."
+]
 ];
   window.AstroCatalog=data.map(([id,name,kind,category,type,intro,facts,highlight,appearance,question,explanation,path,composition,modelNote])=>({
     id,name,kind,category,type,intro,facts,highlight,appearance,question,explanation,
     group:category==='yildizlar'?'Stars':category==='derin-uzay'?'Deep space':'Solar system',
-    subtitle:type,sceneLabel:type,source:'https://science.nasa.gov/'+path,
+    subtitle:type,sceneLabel:type,source:path.startsWith('https://')?path:'https://science.nasa.gov/'+path,
     technical:[['What it’s made of',composition]],
     modelNote:modelNote+' Sizes and animation speeds are adjusted for viewing.'
   }));

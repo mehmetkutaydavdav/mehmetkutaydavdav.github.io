@@ -169,3 +169,7 @@ body.astronomi{--void:#030814;--paper:#E6EDF9;--muted:#96A7C2;--hydro:#91BDFA;--
 .astro-mini[data-kind=whitedwarf]{background:radial-gradient(circle at 40% 35%,#FFF,#E8F4FF 50%,#84B5DE 85%,#416580);box-shadow:0 0 8px #9DD7FF60}
 .astro-mini[data-kind=neutron]{background:radial-gradient(circle at 35% 30%,#FFF,#CAEAFE 55%,#5D94C5);box-shadow:0 0 8px #88BDDF88}
 .astro-mini[data-kind=blackhole]{background:radial-gradient(ellipse at center,#000 0 42%,#FFE2AC 47%,#DC8744 53%,#5D3018 62%,transparent 72%);box-shadow:none}
+
+.astro-mini[data-kind=io]{background:radial-gradient(ellipse at 36% 30%,#4B3823 0 8%,transparent 12%),radial-gradient(ellipse at 67% 66%,#AD6540 0 13%,transparent 19%),radial-gradient(circle at 35% 30%,#E4D39B,#BFA554 65%,#695737)}
+.astro-mini[data-kind=reddwarf]{background:radial-gradient(circle at 36% 30%,#FFD6AE,#DB9666 65%,#8E5339);box-shadow:0 0 7px #D8916633}
+.astro-mini[data-kind=sunlike]{background:radial-gradient(circle at 36% 30%,#FFFCF2,#F7E8C9 65%,#CFB68D);box-shadow:0 0 7px #F7E8C944}

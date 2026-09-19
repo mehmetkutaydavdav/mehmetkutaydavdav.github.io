@@ -60,3 +60,13 @@ User-supplied course notes: Zerefşan Kaymaz, *Planetary Atmospheres*: Star Form
 | Milky Way, Andromeda | Morphological disks/bulges. Arms and inspection rotation are illustrative. |
 
 The Milky Way marker uses the disk's transformation. [NASA: Local Arm](https://science.nasa.gov/resource/the-milky-way-galaxy/); [NASA: approximately 26,000 light-years](https://science.nasa.gov/mission/webb/galaxies-over-time/). Marker size and azimuth are schematic.
+
+## Io and nearby stars (September 2026 update)
+
+- [NASA: Io](https://science.nasa.gov/jupiter/jupiter-moons/io/) and [Io facts](https://science.nasa.gov/jupiter/jupiter-moons/io/facts/): volcanic resurfacing, tidal heating, synchronous rotation and composition.
+- [ESO: Proxima Centauri](https://www.eso.org/public/news/eso1629/): nearby red dwarf, low visible brightness and magnetic activity. The model is an illustrative photosphere, not a resolved surface observation.
+- [NASA SVS: Alpha Centauri stellar system](https://svs.gsfc.nasa.gov/20377/): distance, G-type classification, approximate mass and system membership. [ESA: comparison with the Sun](https://www.esa.int/Science_Exploration/Space_Science/A_cool_discovery_about_the_Sun_s_next-door_twin) provides atmospheric context.
+
+The two new stellar models use subtle procedural granulation and approximate visible-light colours, with display brightness adjusted for inspection. They are not surface maps or binary-orbit simulations. Io uses a spacecraft-derived mosaic with variable resolution; small missing polar edges are extended for display and are not measured terrain.
+
+All solid objects, stars, compact objects and galaxies now share a rotation matrix. Galaxy dragging uses the depth of the grabbed disk point when the disk can be picked reliably; dragging the background or a nearly edge-on disk uses a virtual trackball. Automatic galaxy rotation pauses while dragging. Black-hole disk inclination and neutron-star magnetic geometry respond to the same rotation. The black-hole lensing remains an illustration, not numerical relativistic ray tracing. A white dwarf has little intrinsic visible surface contrast: a temporary orientation grid appears only while dragging and is labelled as a guide.

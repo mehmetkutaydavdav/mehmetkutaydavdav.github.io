@@ -10,3 +10,8 @@ The twelve 2K source maps retain 2048 × 1024 pixels and are encoded as WebP in 
 Europa and Enceladus: NASA 3D Resources, https://github.com/nasa/NASA-3D-Resources/tree/master/Images%20and%20Textures . Native 1440 × 720 visualization maps, converted to WebP without resizing. They are grayscale display composites with varying coverage, not measured 3D terrain. Credit: NASA. See the repository's media usage guidance.
 
 Pluto: NASA/JHUAPL/SwRI, New Horizons MVIC PIA11707, https://www.jpl.nasa.gov/images/pia11707-pluto-color-map/ . The existing 1024 × 512 asset is retained. Runtime resampling adds no observed detail; the unobserved southern region receives a disclosed neutral display completion. See ../KAYNAKLAR.md for limitations.
+
+### Io
+
+- Source: [NASA 3D Resources — Jupiter - Io (A)](https://github.com/nasa/NASA-3D-Resources/tree/master/Images%20and%20Textures/Jupiter%20-%20Io%20(A)), original `Jupiter - Io (A).jpg` (1440 × 720).
+- Stored locally as WebP inside `io.js`. Only edge-connected black polar gaps were extended from adjacent valid rows. Dark volcanic features inside the map were preserved. The extension is a display approximation, not observation data; image colour and resolution reflect the source mosaic.
