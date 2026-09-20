@@ -148,10 +148,7 @@
     $('explanation-title').textContent=object.question;
     $('object-explanation').textContent=object.explanation;
     $('object-model-note').textContent=object.modelNote;
-    $('scene-help').textContent=(object.kind==='nebula'
-      ? 'Drag to move this illustrative view. '
-      : 'Drag to rotate. ')
-      +'Scroll to zoom. Arrow keys also work. Reset restores the initial view.';
+    $('scene-help').textContent='Drag to rotate. Scroll to zoom. Arrow keys also rotate. Reset restores the initial view.';
     $('scene-name').textContent=object.name.toUpperCase();
     $('scene-caption').textContent=object.sceneLabel;
     $('scene-category').textContent=`${object.group} / ${String(index).padStart(2,'0')}`;

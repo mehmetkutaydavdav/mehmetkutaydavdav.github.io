@@ -1,10 +1,10 @@
 /* Lazy local texture loading; no third-party requests. */
 (() => {
-  const keys=new Set(['mercury','venus','earth','earth-night','earth-clouds','moon','mars','jupiter','saturn','uranus','neptune','sun','pluto','io','europa','enceladus','ceres']);
+  const keys=new Set(['mercury','venus','earth','earth-night','earth-clouds','moon','mars','jupiter','saturn','uranus','neptune','sun','pluto','io','europa','enceladus','ceres','bennu']);
   const pending=new Map();
   window.AstroTextures={load(key) {
     if(!keys.has(key))return Promise.resolve(null);
-    if(pending.has(key))return pending.get(key);
+    if(pending.has(key)){const task=pending.get(key);pending.delete(key);pending.set(key,task);while(pending.size>4)pending.delete(pending.keys().next().value);return task;}
     const task=new Promise(resolve=>{
       const script=document.createElement('script');
       const finish=value=>{clearTimeout(timer);script.remove();resolve(value);};
@@ -16,9 +16,10 @@
         img.onerror=()=>finish(null);
         img.onload=()=>{
           try {
-            const canvas=document.createElement('canvas');canvas.width=2048;canvas.height=1024;
-            const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,2048,1024);
-            finish(ctx.getImageData(0,0,2048,1024).data);
+            const canvas=document.createElement('canvas');canvas.width=['moon','enceladus'].includes(key)?4096:2048;canvas.height=canvas.width/2;
+            const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,canvas.width,canvas.height);
+            const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+            pixels.width=canvas.width;pixels.height=canvas.height;finish(pixels);
           } catch {finish(null);}
         };
         img.src=window.AstroTextureData[key];
@@ -26,6 +27,6 @@
       };
       document.head.append(script);
     });
-    pending.set(key,task);return task;
+    pending.set(key,task);while(pending.size>4)pending.delete(pending.keys().next().value);return task;
   }};
 })();
