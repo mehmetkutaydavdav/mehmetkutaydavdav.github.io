@@ -308,6 +308,28 @@ const frames = [
   },
 
   {
+    title: "Dusk Crescent",
+    place: "Menton, France",
+    lat: 43.768405, lng: 7.491522,
+    date: "2025-05-29",
+    ulke: "Fransa", sehir: "Menton",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/200 · f/5.6 · ISO 400",
+    src: "fotograflar/web/img-5245.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "La Recyclerie",
+    place: "18th Arr, Paris",
+    lat: 48.89751, lng: 2.343281,
+    date: "2025-05-24",
+    ulke: "Fransa", sehir: "Paris",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/4000 · f/5 · ISO 800",
+    src: "fotograflar/web/img-4981.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
     title: "Institut de France",
     place: "Pont de Arts, Paris",
     lat: 48.86, lng: 2.34,
@@ -326,6 +348,17 @@ const frames = [
     ulke: "Fransa", sehir: "Strazburg",
     cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/500 · f/7.1 · ISO 100",
     src: "fotograflar/web/img-4760.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Img 4870",
+    place: "",
+    lat: null, lng: null,
+    date: "2025-05-18",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/500 · f/5.6 · ISO 100",
+    src: "fotograflar/web/img-4870.jpg",
     tone: ["#15272B","#5E8F86"]
   },
 
@@ -352,6 +385,17 @@ const frames = [
   },
 
   {
+    title: "The Golden Dome and Other Metal Thing",
+    place: "Paris",
+    lat: 48.853963, lng: 2.315483,
+    date: "2025-04-29",
+    ulke: "Fransa", sehir: "Paris",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/500 · f/8 · ISO 100",
+    src: "fotograflar/web/img-4448.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
     title: "Plaza Mayor's Exit 1",
     place: "Madrid, Spain",
     lat: 40.414856, lng: -3.707587,
@@ -374,46 +418,13 @@ const frames = [
   },
 
   {
-    title: "The Golden Dome and Other Metal Thing",
-    place: "Paris",
-    lat: 48.853963, lng: 2.315483,
-    date: "2025-04-29",
+    title: "Galerie de Paleontologie",
+    place: "5th Arr, Paris",
+    lat: 48.843229, lng: 2.363243,
+    date: "2025-02-14",
     ulke: "", sehir: "",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/500 · f/8 · ISO 100",
-    src: "fotograflar/web/img-4448.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "Img 4870",
-    place: "",
-    lat: null, lng: null,
-    date: "2025-05-18",
-    ulke: "", sehir: "",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/500 · f/5.6 · ISO 100",
-    src: "fotograflar/web/img-4870.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "Dusk Crescent",
-    place: "Menton, France",
-    lat: 43.768405, lng: 7.491522,
-    date: "2025-05-29",
-    ulke: "", sehir: "",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/200 · f/5.6 · ISO 400",
-    src: "fotograflar/web/img-5245.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "La Recyclerie",
-    place: "18th Arr, Paris",
-    lat: 48.89751, lng: 2.343281,
-    date: "2025-05-24",
-    ulke: "", sehir: "",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/4000 · f/5 · ISO 800",
-    src: "fotograflar/web/img-4981.jpg",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/40 · f/6.3 · ISO 500",
+    src: "fotograflar/web/img-3222.jpg",
     tone: ["#15272B","#5E8F86"]
   }
 
