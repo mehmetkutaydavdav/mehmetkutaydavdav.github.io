@@ -105,12 +105,12 @@
       ]
     ],
     "The sidereal orbital period and the lunar phase cycle are different.",
-    "The dark patches are maria: plains of ancient basaltic lava. The brighter highlands are older and more heavily cratered.",
+    "Dark basaltic maria stand out against brighter, heavily cratered highlands. Rotate the globe to compare the familiar near side with the more heavily cratered far side.",
     "Why do we see the same side?",
     "Tidal evolution synchronized the Moon’s rotation with its orbit. Libration still lets us see a little more than half its surface over time.",
     "moon/facts/",
     "A rocky interior with a small metallic core. Basalt forms the dark maria; anorthosite makes up much of the bright highlands. Broken rock and dust form the surface regolith.",
-    "Mapped surface with adjustable lighting; terrain height is not modelled."
+    "A 4K display map derived from the Solar System Scope 8K composite. Lighting in the source images is partly baked in; this is not a measured elevation model."
   ],
   [
     "mars",
@@ -327,12 +327,12 @@
       ]
     ],
     "Glowing ionized gas and cold molecular material trace different physical environments.",
-    "Glowing gas surrounds young stars, while dust hides parts of the cloud. This view sketches the structure rather than reproducing an exact 3D map.",
+    "Turn the cloud to see depth between the bright gas and embedded stars. Their three-dimensional arrangement here is an illustration, not a reconstruction of the observed nebula.",
     "How does a star form?",
     "Gravity pulls a dense pocket of gas inward. If pressure cannot hold it up, it contracts and heats into a protostar, often surrounded by a disk.",
     "mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-42/",
     "Ultraviolet light from young stars ionizes hydrogen, creating an H II region. Nearby dust and colder molecular gas provide material for future stars.",
-    "Gas colours and depth are schematic, not measured 3D structure."
+    "A rotatable cloud volume inspired by Orion’s appearance. Gas depth, colours and star placement are illustrative; this is not a measured 3D reconstruction."
   ],
   [
     "samanyolu",
@@ -623,12 +623,12 @@
       ]
     ],
     "Tidal deformation provides an important source of internal energy.",
-    "Dark lines called lineae cross the bright ice. These fractures record stress and movement in the shell; the map here is shown in grayscale.",
+    "Fine lineae cross the icy plains. A restrained warm-ice tint makes the darker terrain easier to distinguish; those colours are illustrative, not a calibrated measurement.",
     "How can an ocean remain liquid?",
     "Tidal dissipation and internal heat can help maintain liquid water below an insulating ice shell. Shell thickness and ocean properties remain uncertain.",
     "jupiter/moons/europa/",
     "An outer water-ice shell, a likely salty ocean and a rocky interior with a metallic core. Salts and other materials mixed into the ice affect its colour.",
-    "NASA grayscale visualization map; no measured terrain height."
+    "NASA spacecraft-derived grayscale map with an approximate display tint. Line locations come from the mosaic; colour and relief are not measured by this model."
   ],
   [
     "titan",
@@ -660,12 +660,12 @@
       ]
     ],
     "Titan’s orange haze hides most surface detail in visible light.",
-    "The smooth orange globe is an atmosphere, not bare ground. A faint bluish haze outlines the edge; the lakes below are hidden in this view.",
+    "A soft orange atmosphere hides the surface. Subtle polar haze and a thin upper atmospheric layer become easier to see along the limb.",
     "What fills the lakes?",
     "Methane and ethane form surface liquids in Titan’s cold environment. Water ice instead acts as rock, while a water-rich ocean may exist deeper inside.",
     "saturn/moons/titan/facts/",
     "A nitrogen-rich atmosphere contains methane and organic haze particles. Water ice forms the crust, while methane and ethane fill surface lakes. A deeper water ocean may also exist.",
-    "Illustrated haze inspired by Cassini; atmospheric light scattering is approximate."
+    "A procedural illustration of Titan’s visible-light haze, inspired by Cassini. The atmosphere remains low contrast; this is not an infrared surface map or a radiative-transfer calculation."
   ],
   [
     "enceladus",
@@ -697,12 +697,12 @@
       ]
     ],
     "Cassini sampled material emitted from the south-polar region.",
-    "Bright ice covers both cratered terrain and fractured regions. The map shows the surface; it does not animate the south-polar plumes.",
+    "Cratered northern terrain gives way to fractured plains and the south polar tiger stripes. Blue-green accents in this map highlight fractures in enhanced colour, not what your eyes would see directly.",
     "What escapes through the fractures?",
     "Water vapour and ice grains carry salts and organic compounds from the interior. Tidal heating helps sustain geological activity.",
     "saturn/moons/enceladus/",
     "An icy shell covers a salty global ocean and rocky interior. Cassini found salts and organic compounds in material carried by the plumes.",
-    "NASA visualization map with uneven coverage; no plume simulation."
+    "Cassini PIA18435 mosaic displayed at 4K. Colours include ultraviolet and infrared information and are enhanced. The globe shows a surface mosaic, not measured 3D terrain."
   ],
   [
     "bennu",
@@ -734,12 +734,12 @@
       ]
     ],
     "Its low gravity allows a loose aggregate structure rather than a single solid rock.",
-    "Look for the raised equator and uneven outline. This NASA shape model shows the overall body, without a photographic surface texture.",
+    "A spacecraft image mosaic adds the rough, boulder-strewn appearance missing from a plain shaded mesh. Turn the body to inspect its equatorial ridge and irregular outline.",
     "Why return a sample?",
     "A sample lets us examine minerals and organic compounds in far more detail than a spacecraft camera can. It also helps connect laboratory results to a known place in the solar system.",
     "solar-system/asteroids/101955-bennu/",
     "Dark, carbon-rich rock, water-bearing minerals and organic compounds. The material is gathered into a rubble pile rather than one solid block.",
-    "NASA visualization mesh, shown brighter for inspection; no photographic texture."
+    "NASA visualization mesh with an OSIRIS-REx PolyCam surface mosaic. Texture registration is approximate and lighting is partly baked into the images. Exposure is raised for inspection."
   ],
   [
     "67p",
@@ -771,12 +771,12 @@
       ]
     ],
     "The nucleus is extremely dark; display exposure is increased to reveal its shape.",
-    "Rotate the nucleus to explore its two lobes and narrow neck. The shape is approximate, and the close-up leaves out the much larger tails.",
+    "Two unequal lobes join at a narrow neck. Subtle dusty texture gives the surface more definition as it turns; these small details are illustrative rather than individually mapped features.",
     "Why are comet tails different?",
     "Dust responds to radiation pressure and orbital motion, while ionized gas couples to the solar wind. Neither tail is a rigid structure attached to the rotating nucleus.",
     "solar-system/comets/67p-churyumov-gerasimenko/",
     "Dust, organic-rich material and ices such as water, carbon dioxide and carbon monoxide. Sunlight warms exposed areas and drives gas and dust away from the nucleus.",
-    "An approximate shape, not the Rosetta SHAP5 mission mesh. Shown brighter for inspection."
+    "An approximate bilobed shape with procedural dust texture, not a Rosetta shape model or a measured terrain map. Surface brightness is raised for inspection."
   ],
   [
     "kirmizi-dev",
@@ -919,12 +919,12 @@
     ]
   ],
   "Volcanoes replace old terrain with fresh lava and colourful deposits.",
-  "Look for pale sulfur-rich plains, reddish deposits and dark volcanic centres. The map combines spacecraft observations, so sharpness varies across the globe.",
+  "A newer colour mosaic shows volcanic centres, sulfur-rich deposits and mountains more clearly. Some regions remain softer because the spacecraft images have different resolutions.",
   "Why is a small moon so active?",
   "Orbital resonance with Europa and Ganymede keeps Io’s orbit slightly eccentric. Jupiter’s varying tidal pull stretches and squeezes the moon, turning orbital energy into heat.",
   "jupiter/jupiter-moons/io/",
   "A rocky silicate interior beneath a surface coated with sulfur-bearing material and sulfur dioxide frost. A thin, variable atmosphere is dominated by sulfur dioxide.",
-  "NASA spacecraft-derived surface mosaic. Small missing polar areas use a blended extension, not observed terrain. Rotation is slowed for inspection; this view does not simulate its orbit."
+  "USGS Galileo/Voyager colour mosaic. Map grid lines were removed by interpolating narrow strips. Image resolution varies; this is not a terrain-height model."
 ],
 [
   "proxima-centauri",
