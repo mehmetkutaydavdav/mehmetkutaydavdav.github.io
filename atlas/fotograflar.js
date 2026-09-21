@@ -396,6 +396,28 @@ const frames = [
   },
 
   {
+    title: "The Old Mill of Vernon",
+    place: "Vernon, France",
+    lat: 49.097449, lng: 1.488596,
+    date: "2025-04-06",
+    ulke: "Fransa", sehir: "Vernon",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/640 · f/8 · ISO 100",
+    src: "fotograflar/web/img-4039.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Meaux",
+    place: "Meuax, France",
+    lat: 48.956752, lng: 2.882125,
+    date: "2025-04-04",
+    ulke: "Fransa", sehir: "Meaux",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/800 · f/8 · ISO 100",
+    src: "fotograflar/web/img-3984.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
     title: "Galerie de Paleontologie",
     place: "5th Arr, Paris",
     lat: 48.843229, lng: 2.363243,
@@ -403,6 +425,17 @@ const frames = [
     ulke: "Fransa", sehir: "Paris",
     cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/40 · f/6.3 · ISO 500",
     src: "fotograflar/web/img-3222.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "The City of Light",
+    place: "Paris",
+    lat: 48.866256, lng: 2.322912,
+    date: "2025-02-10",
+    ulke: "Fransa", sehir: "Paris",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/8 · f/8 · ISO 1600",
+    src: "fotograflar/web/img-2851.jpg",
     tone: ["#15272B","#5E8F86"]
   },
 
@@ -429,35 +462,13 @@ const frames = [
   },
 
   {
-    title: "The City of Light",
-    place: "Paris",
-    lat: 48.866256, lng: 2.322912,
-    date: "2025-02-10",
+    title: "I Could Easily Live Here",
+    place: "Ghent, Belgium",
+    lat: 51.045256, lng: 3.720732,
+    date: "2025-04-19",
     ulke: "", sehir: "",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/8 · f/8 · ISO 1600",
-    src: "fotograflar/web/img-2851.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "Meaux",
-    place: "Meuax, France",
-    lat: 48.956752, lng: 2.882125,
-    date: "2025-04-04",
-    ulke: "", sehir: "",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/800 · f/8 · ISO 100",
-    src: "fotograflar/web/img-3984.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "The Old Mill of Vernon",
-    place: "Vernon, France",
-    lat: 49.097449, lng: 1.488596,
-    date: "2025-04-06",
-    ulke: "", sehir: "",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/640 · f/8 · ISO 100",
-    src: "fotograflar/web/img-4039.jpg",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/320 · f/5.6 · ISO 100",
+    src: "fotograflar/web/img-4274.jpg",
     tone: ["#15272B","#5E8F86"]
   }
 
