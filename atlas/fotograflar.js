@@ -297,6 +297,17 @@ const frames = [
   },
 
   {
+    title: "Magestic",
+    place: "Paris",
+    lat: 48.850154, lng: 2.348116,
+    date: "2025-06-17",
+    ulke: "Fransa", sehir: "Paris",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/250 · f/5.6 · ISO 100",
+    src: "fotograflar/web/img-5707.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
     title: "Hotel de Ville Menton",
     place: "Menton, France",
     lat: 43.775388, lng: 7.502978,
@@ -484,13 +495,13 @@ const frames = [
   },
 
   {
-    title: "Magestic",
-    place: "Paris",
-    lat: 48.850154, lng: 2.348116,
-    date: "2025-06-17",
+    title: "No Yellow Filter",
+    place: "Boğaziçi, İstanbul",
+    lat: 41.083259, lng: 29.048407,
+    date: "2025-07-26",
     ulke: "", sehir: "",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/250 · f/5.6 · ISO 100",
-    src: "fotograflar/web/img-5707.jpg",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/500 · f/11 · ISO 100",
+    src: "fotograflar/web/img-6046-2.jpg",
     tone: ["#15272B","#5E8F86"]
   }
 
