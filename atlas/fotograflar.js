@@ -426,6 +426,39 @@ const frames = [
     cam: "Canon PowerShot G11", lens: "6mm", exp: "1/320 · f/2.8 · ISO 400",
     src: "fotograflar/web/img-3827.jpg",
     tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "The City of Light",
+    place: "Paris",
+    lat: 48.866256, lng: 2.322912,
+    date: "2025-02-10",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/8 · f/8 · ISO 1600",
+    src: "fotograflar/web/img-2851.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "Meaux",
+    place: "Meuax, France",
+    lat: 48.956752, lng: 2.882125,
+    date: "2025-04-04",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/800 · f/8 · ISO 100",
+    src: "fotograflar/web/img-3984.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
+    title: "The Old Mill of Vernon",
+    place: "Vernon, France",
+    lat: 49.097449, lng: 1.488596,
+    date: "2025-04-06",
+    ulke: "", sehir: "",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/640 · f/8 · ISO 100",
+    src: "fotograflar/web/img-4039.jpg",
+    tone: ["#15272B","#5E8F86"]
   }
 
 ];
