@@ -66,7 +66,7 @@ const frames = [
   },
 
   {
-    title: "The Statue With No Hand",
+    title: "Handless Man",
     place: "Palais Royale, Paris",
     lat: 48.864171, lng: 2.337415,
     date: "2026-06-16",
