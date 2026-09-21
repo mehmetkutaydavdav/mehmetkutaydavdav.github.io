@@ -396,6 +396,17 @@ const frames = [
   },
 
   {
+    title: "I Could Easily Live Here",
+    place: "Ghent, Belgium",
+    lat: 51.045256, lng: 3.720732,
+    date: "2025-04-19",
+    ulke: "Belçika", sehir: "Gent",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/320 · f/5.6 · ISO 100",
+    src: "fotograflar/web/img-4274.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
     title: "The Old Mill of Vernon",
     place: "Vernon, France",
     lat: 49.097449, lng: 1.488596,
@@ -462,13 +473,13 @@ const frames = [
   },
 
   {
-    title: "I Could Easily Live Here",
-    place: "Ghent, Belgium",
-    lat: 51.045256, lng: 3.720732,
-    date: "2025-04-19",
+    title: "Arenberg Castle, KU Leuven",
+    place: "Leuven, Belgium",
+    lat: 50.861503, lng: 4.6858,
+    date: "2025-04-20",
     ulke: "", sehir: "",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/320 · f/5.6 · ISO 100",
-    src: "fotograflar/web/img-4274.jpg",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/1000 · f/7.1 · ISO 100",
+    src: "fotograflar/web/img-4286.jpg",
     tone: ["#15272B","#5E8F86"]
   }
 
