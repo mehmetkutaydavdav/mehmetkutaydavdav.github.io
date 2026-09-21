@@ -286,6 +286,17 @@ const frames = [
   },
 
   {
+    title: "No Yellow Filter",
+    place: "Boğaziçi, İstanbul",
+    lat: 41.083259, lng: 29.048407,
+    date: "2025-07-26",
+    ulke: "Türkiye", sehir: "İstanbul",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/500 · f/11 · ISO 100",
+    src: "fotograflar/web/img-6046-2.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
     title: "Paris Air Show'da Ay Yıldız",
     place: "Paris",
     lat: 48.958297, lng: 2.439201,
@@ -491,17 +502,6 @@ const frames = [
     ulke: "İspanya", sehir: "Madrid",
     cam: "Canon PowerShot G11", lens: "6mm", exp: "1/320 · f/2.8 · ISO 400",
     src: "fotograflar/web/img-3827.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "No Yellow Filter",
-    place: "Boğaziçi, İstanbul",
-    lat: 41.083259, lng: 29.048407,
-    date: "2025-07-26",
-    ulke: "", sehir: "",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/500 · f/11 · ISO 100",
-    src: "fotograflar/web/img-6046-2.jpg",
     tone: ["#15272B","#5E8F86"]
   }
 
