@@ -143,8 +143,8 @@ const frames = [
   },
 
   {
-    title: "Cabel Car",
-    place: "",
+    title: "Cabel Car over Barcelona",
+    place: "Barcelona",
     lat: 41.374584, lng: 2.178233,
     date: "2026-03-07",
     ulke: "İspanya", sehir: "Barselona",
