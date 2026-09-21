@@ -407,7 +407,7 @@ const frames = [
   },
 
   {
-    title: "The golden dome and tip of other metal thing",
+    title: "The Golden Dome and Tip of Other Metal Thing",
     place: "Paris",
     lat: 48.853963, lng: 2.315483,
     date: "2025-04-29",
