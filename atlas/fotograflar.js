@@ -396,6 +396,17 @@ const frames = [
   },
 
   {
+    title: "Galerie de Paleontologie",
+    place: "5th Arr, Paris",
+    lat: 48.843229, lng: 2.363243,
+    date: "2025-02-14",
+    ulke: "Fransa", sehir: "Paris",
+    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/40 · f/6.3 · ISO 500",
+    src: "fotograflar/web/img-3222.jpg",
+    tone: ["#15272B","#5E8F86"]
+  },
+
+  {
     title: "Plaza Mayor's Exit 1",
     place: "Madrid, Spain",
     lat: 40.414856, lng: -3.707587,
@@ -414,17 +425,6 @@ const frames = [
     ulke: "İspanya", sehir: "Madrid",
     cam: "Canon PowerShot G11", lens: "6mm", exp: "1/320 · f/2.8 · ISO 400",
     src: "fotograflar/web/img-3827.jpg",
-    tone: ["#15272B","#5E8F86"]
-  },
-
-  {
-    title: "Galerie de Paleontologie",
-    place: "5th Arr, Paris",
-    lat: 48.843229, lng: 2.363243,
-    date: "2025-02-14",
-    ulke: "", sehir: "",
-    cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/40 · f/6.3 · ISO 500",
-    src: "fotograflar/web/img-3222.jpg",
     tone: ["#15272B","#5E8F86"]
   }
 
