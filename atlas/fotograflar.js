@@ -374,11 +374,11 @@ const frames = [
   },
 
   {
-    title: "Img 4870",
+    title: "Architecture of Strasbourg",
     place: "",
     lat: null, lng: null,
     date: "2025-05-18",
-    ulke: "", sehir: "",
+    ulke: "Fransa", sehir: "Strasbourg",
     cam: "Canon EOS 760D", lens: "EF-S18-135mm f/3.5-5.6 IS STM", exp: "1/500 · f/5.6 · ISO 100",
     src: "fotograflar/web/img-4870.jpg",
     tone: ["#15272B","#5E8F86"]
@@ -407,7 +407,7 @@ const frames = [
   },
 
   {
-    title: "The Golden Dome and Other Metal Thing",
+    title: "The golden dome and tip of other metal thing",
     place: "Paris",
     lat: 48.853963, lng: 2.315483,
     date: "2025-04-29",
