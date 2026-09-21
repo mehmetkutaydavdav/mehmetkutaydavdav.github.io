@@ -121,7 +121,7 @@ const frames = [
   },
 
   {
-    title: "The Seine",
+    title: "Stairs",
     place: "Paris",
     lat: 48.853717, lng: 2.344823,
     date: "2026-06-13",
